@@ -3,7 +3,13 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.30002.166
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FinanceApp", "FinanceApp.csproj", "{E71ED344-3419-44D9-A54E-55AD30928EBB}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Web", "Web.csproj", "{E71ED344-3419-44D9-A54E-55AD30928EBB}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{609AA2D2-36D0-4E4C-BC88-F8F1E07553F3}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{2272F6DB-D397-4B4A-9DBF-1379703EF555}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Web", "Web", "{5B7609B2-2AC2-40E5-8C45-EA6FCEC10432}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -18,6 +24,10 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{E71ED344-3419-44D9-A54E-55AD30928EBB} = {5B7609B2-2AC2-40E5-8C45-EA6FCEC10432}
+		{5B7609B2-2AC2-40E5-8C45-EA6FCEC10432} = {609AA2D2-36D0-4E4C-BC88-F8F1E07553F3}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {5F1DFA83-A457-4420-A56E-B61258BB13C8}
