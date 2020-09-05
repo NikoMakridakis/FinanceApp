@@ -1,3 +1,9 @@
-﻿appsettings.json
+﻿.*
+*.log
+bin/
+obj/
+appsettings.json
 appsettings.Development.json
 launchSettings.json
+
+!.gitignore
