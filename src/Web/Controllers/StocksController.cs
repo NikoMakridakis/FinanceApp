@@ -19,6 +19,7 @@ namespace Web.Controllers
             _context = context;
         }
 
+
         [HttpGet]
         public async Task<ActionResult<List<Stock>>> GetStocks()
         {
