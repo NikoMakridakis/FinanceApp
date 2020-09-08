@@ -19,19 +19,20 @@ namespace Web.Controllers
             _context = context;
         }
 
-
         [HttpGet]
         public async Task<ActionResult<List<Stock>>> GetStocks()
         {
-            var stocks = await _context.Stocks.ToListAsync();
+            List<Stock> stocks = await _context.Stocks.ToListAsync();
 
             return Ok(stocks);
         }
 
         [HttpGet("{id}")]
-        public string GetStock(int id)
+        public async Task<ActionResult<Stock>> GetStock(int id)
         {
-            return "this will return one stock";
+            Stock stock = await _context.Stocks.FindAsync(id);
+
+            return Ok(stock);
         }
     }
 }
