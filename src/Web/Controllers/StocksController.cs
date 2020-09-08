@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Infrastructure.Data;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Web.Controllers
 {
@@ -6,6 +7,13 @@ namespace Web.Controllers
     [ApiController]
     public class StocksController : ControllerBase
     {
+        private readonly CatalogContext _context;
+
+        public StocksController(CatalogContext context)
+        {
+            _context = context;
+        }
+
         [HttpGet]
         public string GetStocks()
         {
