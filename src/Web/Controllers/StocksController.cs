@@ -1,5 +1,10 @@
-﻿using Infrastructure.Data;
+﻿using ApplicationCore.Entities;
+using Infrastructure.Data;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace Web.Controllers
 {
@@ -15,9 +20,11 @@ namespace Web.Controllers
         }
 
         [HttpGet]
-        public string GetStocks()
+        public async Task<ActionResult<List<Stock>>> GetStocks()
         {
-            return "this will return a list of stocks";
+            var stocks = await _context.Stocks.ToListAsync();
+
+            return Ok(stocks);
         }
 
         [HttpGet("{id}")]
