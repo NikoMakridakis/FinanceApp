@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace Infrastructure.Data
 {
-    class StockRepository : IStockRepository
+    public class StockRepository : IStockRepository
     {
         public Task<Stock> GetStockByIdAsync(int id)
         {

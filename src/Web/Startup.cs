@@ -6,6 +6,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Infrastructure.Data;
+using ApplicationCore.Interfaces;
 
 namespace Web
 {
@@ -23,9 +24,11 @@ namespace Web
         {
 
             services.AddControllersWithViews();
-
+            
             services.AddDbContext<CatalogContext>(options =>
                 options.UseSqlServer(_configuration.GetConnectionString("DefaultConnection")));
+
+            services.AddScoped<IStockRepository, StockRepository>();
 
             // In production, the React files will be served from this directory
             services.AddSpaStaticFiles(configuration =>
