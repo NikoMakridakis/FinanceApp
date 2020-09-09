@@ -1,9 +1,7 @@
 ﻿using ApplicationCore.Entities;
-using Infrastructure.Data;
+using ApplicationCore.Interfaces;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace Web.Controllers
@@ -12,16 +10,16 @@ namespace Web.Controllers
     [ApiController]
     public class StocksController : ControllerBase
     {
-        private readonly CatalogContext _context;
-        public StocksController(CatalogContext context)
+        private readonly IStockRepository _repo;
+        public StocksController(IStockRepository repo)
         {
-            _context = context;
+            _repo = repo;
         }
 
         [HttpGet]
         public async Task<ActionResult<List<Stock>>> GetStocks()
         {
-            List<Stock> stocks = await _context.Stocks.ToListAsync();
+            IReadOnlyList<Stock> stocks = await _repo.GetStocksAsync();
 
             return Ok(stocks);
         }
@@ -29,7 +27,7 @@ namespace Web.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<Stock>> GetStock(int id)
         {
-            Stock stock = await _context.Stocks.FindAsync(id);
+            Stock stock = await _repo.GetStockByIdAsync(id);
 
             return Ok(stock);
         }
