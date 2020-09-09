@@ -13,7 +13,6 @@ namespace Web.Controllers
     public class StocksController : ControllerBase
     {
         private readonly CatalogContext _context;
-
         public StocksController(CatalogContext context)
         {
             _context = context;
