@@ -13,11 +13,11 @@ namespace Infrastructure.Data.Migrations
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Symbol = table.Column<string>(nullable: true),
-                    Exchange = table.Column<string>(nullable: true),
-                    Name = table.Column<string>(nullable: true),
+                    Symbol = table.Column<string>(maxLength: 10, nullable: false),
+                    Exchange = table.Column<string>(maxLength: 50, nullable: true),
+                    Name = table.Column<string>(maxLength: 100, nullable: true),
                     TodaysDate = table.Column<DateTime>(nullable: false),
-                    LatestPrice = table.Column<decimal>(type: "decimal(19,4)", nullable: false),
+                    LatestPrice = table.Column<decimal>(type: "decimal(18,4)", nullable: false),
                     LatestDate = table.Column<DateTime>(nullable: false),
                     Open = table.Column<double>(nullable: false),
                     OpenTime = table.Column<DateTime>(nullable: false),

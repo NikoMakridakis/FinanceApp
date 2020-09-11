@@ -9,8 +9,6 @@ namespace ApplicationCore.Entities
         public string Exchange { get; set; }
         public string Name { get; set; }
         public DateTime TodaysDate { get; set; }
-
-        [Column(TypeName = "decimal(19,4)")]
         public decimal LatestPrice { get; set; }
         public DateTime LatestDate { get; set; }
         public double Open { get; set; }
