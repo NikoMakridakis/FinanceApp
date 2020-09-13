@@ -4,9 +4,9 @@ using System.Threading.Tasks;
 
 namespace ApplicationCore.Interfaces
 {
-    public interface IStockRepository
+    public interface IBudgetRepository
     {
-        Task<Stock> GetStockByIdAsync(int id);
-        Task<IReadOnlyList<Stock>> GetStocksAsync();
+        Task<Budget> GetBudgetByIdAsync(int id);
+        Task<IReadOnlyList<Budget>> GetBudgetsAsync();
     }
 }

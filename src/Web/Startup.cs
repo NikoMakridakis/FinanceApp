@@ -25,10 +25,10 @@ namespace Web
 
             services.AddControllersWithViews();
             
-            services.AddDbContext<CatalogContext>(options =>
+            services.AddDbContext<FinanceAppContext>(options =>
                 options.UseSqlServer(_configuration.GetConnectionString("DefaultConnection")));
 
-            services.AddScoped<IStockRepository, StockRepository>();
+            services.AddScoped<IBudgetRepository, BudgetRepository>();
 
             // In production, the React files will be served from this directory
             services.AddSpaStaticFiles(configuration =>
