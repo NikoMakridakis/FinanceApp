@@ -1,8 +1,8 @@
-﻿using ApplicationCore.Entities;
+﻿using Core.Entities;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace ApplicationCore.Interfaces
+namespace Core.Interfaces
 {
     public interface IBudgetRepository
     {

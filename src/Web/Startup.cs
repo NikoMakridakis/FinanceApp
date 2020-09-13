@@ -6,7 +6,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Infrastructure.Data;
-using ApplicationCore.Interfaces;
+using Core.Interfaces;
 
 namespace Web
 {

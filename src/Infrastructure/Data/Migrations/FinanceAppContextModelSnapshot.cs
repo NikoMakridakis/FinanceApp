@@ -19,7 +19,7 @@ namespace Infrastructure.Data.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-            modelBuilder.Entity("ApplicationCore.Entities.Budget", b =>
+            modelBuilder.Entity("Core.Entities.Budget", b =>
                 {
                     b.Property<int>("BudgetId")
                         .ValueGeneratedOnAdd()
