@@ -9,6 +9,7 @@ namespace Infrastructure.Data.Config
         public void Configure(EntityTypeBuilder<Group> builder)
         {
             builder.Property(g => g.GroupId).IsRequired();
+            builder.Property(i => i.Title).HasMaxLength(150);
         }
     }
 }

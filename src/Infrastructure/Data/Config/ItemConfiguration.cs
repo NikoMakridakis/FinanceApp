@@ -9,7 +9,9 @@ namespace Infrastructure.Data.Config
         public void Configure(EntityTypeBuilder<Item> builder)
         {
             builder.Property(i => i.ItemId).IsRequired();
+            builder.Property(i => i.Label).HasMaxLength(150);
             builder.Property(i => i.Amount).HasColumnType("decimal(18,4)");
+            builder.Property(i => i.Notes).HasMaxLength(500);
         }
     }
 }
