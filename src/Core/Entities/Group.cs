@@ -1,6 +1,12 @@
-﻿namespace Core.Entities
+﻿using System.Collections.Generic;
+
+namespace Core.Entities
 {
-    class Group
+    public class Group
     {
+        public int GroupId { get; set; }
+        public string Title { get; set; }
+        public List<Item> Items { get; set; }
+        public List<Fund> Funds { get; set; }
     }
 }

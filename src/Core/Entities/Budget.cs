@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace Core.Entities
 {
@@ -6,6 +7,7 @@ namespace Core.Entities
     {
         public int BudgetId { get; set; }
         public DateTime Date { get; set; }
+        public List<Group> Groups { get; set; }
     }
 }
 
