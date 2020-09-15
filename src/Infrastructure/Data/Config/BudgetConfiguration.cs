@@ -9,6 +9,7 @@ namespace Infrastructure.Data.Config
         public void Configure(EntityTypeBuilder<Budget> builder)
         {
             builder.Property(b => b.BudgetId).IsRequired();
+            builder.Property(b => b.Date).HasColumnType("date");
         }
     }
 }

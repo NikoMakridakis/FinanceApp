@@ -10,9 +10,11 @@ namespace Infrastructure.Data.Config
         {
             builder.Property(f => f.FundId).IsRequired();
             builder.Property(f => f.Label).HasMaxLength(150);
-            builder.Property(f => f.GoalAmount).HasColumnType("decimal(18,4)");
-            builder.Property(f => f.CurrentAmount).HasColumnType("decimal(18,4)");
-            builder.Property(f => f.MonthlyFundAmount).HasColumnType("decimal(18,4)");
+            builder.Property(f => f.GoalAmount).HasColumnType("decimal(18,2)");
+            builder.Property(f => f.CurrentAmount).HasColumnType("decimal(18,2)");
+            builder.Property(f => f.MonthlyFundAmount).HasColumnType("decimal(18,2)");
+            builder.Property(f => f.GoalDate).HasColumnType("date");
+            builder.Property(f => f.CurrentDate).HasColumnType("date");
         }
     }
 }

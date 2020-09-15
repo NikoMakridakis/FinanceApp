@@ -13,7 +13,7 @@ namespace Infrastructure.Data.Migrations
                 {
                     BudgetId = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Date = table.Column<DateTime>(nullable: false)
+                    Date = table.Column<DateTime>(type: "date", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -47,11 +47,11 @@ namespace Infrastructure.Data.Migrations
                     FundId = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Label = table.Column<string>(maxLength: 150, nullable: true),
-                    GoalAmount = table.Column<decimal>(type: "decimal(18,4)", nullable: false),
-                    CurrentAmount = table.Column<decimal>(type: "decimal(18,4)", nullable: false),
-                    MonthlyFundAmount = table.Column<decimal>(type: "decimal(18,4)", nullable: false),
-                    GoalDate = table.Column<DateTime>(nullable: false),
-                    CurrentDate = table.Column<DateTime>(nullable: false),
+                    GoalAmount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    CurrentAmount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    MonthlyFundAmount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    GoalDate = table.Column<DateTime>(type: "date", nullable: false),
+                    CurrentDate = table.Column<DateTime>(type: "date", nullable: false),
                     GroupId = table.Column<int>(nullable: true)
                 },
                 constraints: table =>
@@ -72,8 +72,8 @@ namespace Infrastructure.Data.Migrations
                     ItemId = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Label = table.Column<string>(maxLength: 150, nullable: true),
-                    Amount = table.Column<decimal>(type: "decimal(18,4)", nullable: false),
-                    Date = table.Column<DateTime>(nullable: false),
+                    Amount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    Date = table.Column<DateTime>(type: "date", nullable: false),
                     Notes = table.Column<string>(maxLength: 500, nullable: true),
                     IsDone = table.Column<bool>(nullable: false),
                     IsIncome = table.Column<bool>(nullable: false),
