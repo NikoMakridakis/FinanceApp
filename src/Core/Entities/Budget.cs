@@ -7,7 +7,7 @@ namespace Core.Entities
     {
         public int BudgetId { get; set; }
         public DateTime Date { get; set; }
-        public List<Group> Groups { get; set; }
+        public ICollection<Group> Groups { get; set; }
     }
 }
 
