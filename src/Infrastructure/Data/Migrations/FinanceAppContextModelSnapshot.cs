@@ -34,42 +34,6 @@ namespace Infrastructure.Data.Migrations
                     b.ToTable("Budgets");
                 });
 
-            modelBuilder.Entity("Core.Entities.Fund", b =>
-                {
-                    b.Property<int>("FundId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<decimal>("CurrentAmount")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<DateTime>("CurrentDate")
-                        .HasColumnType("date");
-
-                    b.Property<decimal>("GoalAmount")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<DateTime>("GoalDate")
-                        .HasColumnType("date");
-
-                    b.Property<int?>("GroupId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Label")
-                        .HasColumnType("nvarchar(150)")
-                        .HasMaxLength(150);
-
-                    b.Property<decimal>("MonthlyFundAmount")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.HasKey("FundId");
-
-                    b.HasIndex("GroupId");
-
-                    b.ToTable("Funds");
-                });
-
             modelBuilder.Entity("Core.Entities.Group", b =>
                 {
                     b.Property<int>("GroupId")
@@ -77,7 +41,7 @@ namespace Infrastructure.Data.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int?>("BudgetId")
+                    b.Property<int>("BudgetId")
                         .HasColumnType("int");
 
                     b.Property<string>("Title")
@@ -104,14 +68,8 @@ namespace Infrastructure.Data.Migrations
                     b.Property<DateTime>("Date")
                         .HasColumnType("date");
 
-                    b.Property<int?>("GroupId")
+                    b.Property<int>("GroupId")
                         .HasColumnType("int");
-
-                    b.Property<bool>("IsDone")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("IsIncome")
-                        .HasColumnType("bit");
 
                     b.Property<string>("Label")
                         .HasColumnType("nvarchar(150)")
@@ -128,25 +86,22 @@ namespace Infrastructure.Data.Migrations
                     b.ToTable("Items");
                 });
 
-            modelBuilder.Entity("Core.Entities.Fund", b =>
-                {
-                    b.HasOne("Core.Entities.Group", null)
-                        .WithMany("Funds")
-                        .HasForeignKey("GroupId");
-                });
-
             modelBuilder.Entity("Core.Entities.Group", b =>
                 {
-                    b.HasOne("Core.Entities.Budget", null)
+                    b.HasOne("Core.Entities.Budget", "Budget")
                         .WithMany("Groups")
-                        .HasForeignKey("BudgetId");
+                        .HasForeignKey("BudgetId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("Core.Entities.Item", b =>
                 {
-                    b.HasOne("Core.Entities.Group", null)
+                    b.HasOne("Core.Entities.Group", "Group")
                         .WithMany("Items")
-                        .HasForeignKey("GroupId");
+                        .HasForeignKey("GroupId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 #pragma warning restore 612, 618
         }

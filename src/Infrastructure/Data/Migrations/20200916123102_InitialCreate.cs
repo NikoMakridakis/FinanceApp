@@ -27,7 +27,7 @@ namespace Infrastructure.Data.Migrations
                     GroupId = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Title = table.Column<string>(maxLength: 150, nullable: true),
-                    BudgetId = table.Column<int>(nullable: true)
+                    BudgetId = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -37,32 +37,7 @@ namespace Infrastructure.Data.Migrations
                         column: x => x.BudgetId,
                         principalTable: "Budgets",
                         principalColumn: "BudgetId",
-                        onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Funds",
-                columns: table => new
-                {
-                    FundId = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Label = table.Column<string>(maxLength: 150, nullable: true),
-                    GoalAmount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    CurrentAmount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    MonthlyFundAmount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    GoalDate = table.Column<DateTime>(type: "date", nullable: false),
-                    CurrentDate = table.Column<DateTime>(type: "date", nullable: false),
-                    GroupId = table.Column<int>(nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Funds", x => x.FundId);
-                    table.ForeignKey(
-                        name: "FK_Funds_Groups_GroupId",
-                        column: x => x.GroupId,
-                        principalTable: "Groups",
-                        principalColumn: "GroupId",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -75,9 +50,7 @@ namespace Infrastructure.Data.Migrations
                     Amount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     Date = table.Column<DateTime>(type: "date", nullable: false),
                     Notes = table.Column<string>(maxLength: 500, nullable: true),
-                    IsDone = table.Column<bool>(nullable: false),
-                    IsIncome = table.Column<bool>(nullable: false),
-                    GroupId = table.Column<int>(nullable: true)
+                    GroupId = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -87,13 +60,8 @@ namespace Infrastructure.Data.Migrations
                         column: x => x.GroupId,
                         principalTable: "Groups",
                         principalColumn: "GroupId",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Funds_GroupId",
-                table: "Funds",
-                column: "GroupId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Groups_BudgetId",
@@ -108,9 +76,6 @@ namespace Infrastructure.Data.Migrations
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropTable(
-                name: "Funds");
-
             migrationBuilder.DropTable(
                 name: "Items");
 
