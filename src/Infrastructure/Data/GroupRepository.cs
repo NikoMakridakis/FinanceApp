@@ -14,9 +14,9 @@ namespace Infrastructure.Data
             _context = context;
         }
 
-        public async Task<Group> GetGroupByIdAsync(int id)
+        public async Task<Group> GetGroupByIdAsync(int groupId)
         {
-            return await _context.Groups.FindAsync(id);
+            return await _context.Groups.FindAsync(groupId);
         }
 
         public async Task<List<Group>> GetGroupsAsync()

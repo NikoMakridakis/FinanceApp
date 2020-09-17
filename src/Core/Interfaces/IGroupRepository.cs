@@ -6,7 +6,7 @@ namespace Core.Interfaces
 {
     public interface IGroupRepository
     {
-        Task<Group> GetGroupByIdAsync(int id);
+        Task<Group> GetGroupByIdAsync(int groupId);
         Task<List<Group>> GetGroupsAsync();
     }
 }

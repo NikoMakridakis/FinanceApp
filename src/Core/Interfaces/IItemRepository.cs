@@ -6,7 +6,7 @@ namespace Core.Interfaces
 {
     public interface IItemRepository
     {
-        Task<Item> GetItemByIdAsync(int id);
+        Task<Item> GetItemByIdAsync(int itemId);
         Task<List<Item>> GetItemsAsync();
     }
 }
