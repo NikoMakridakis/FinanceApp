@@ -26,8 +26,8 @@ namespace Infrastructure.Data.Migrations
                 {
                     GroupId = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Title = table.Column<string>(maxLength: 150, nullable: true),
-                    BudgetId = table.Column<int>(nullable: false)
+                    BudgetId = table.Column<int>(nullable: false),
+                    Title = table.Column<string>(maxLength: 150, nullable: true)
                 },
                 constraints: table =>
                 {
@@ -46,11 +46,12 @@ namespace Infrastructure.Data.Migrations
                 {
                     ItemId = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
+                    GroupId = table.Column<int>(nullable: false),
                     Label = table.Column<string>(maxLength: 150, nullable: true),
                     Amount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    isIncome = table.Column<bool>(nullable: false),
                     Date = table.Column<DateTime>(type: "date", nullable: false),
-                    Notes = table.Column<string>(maxLength: 500, nullable: true),
-                    GroupId = table.Column<int>(nullable: false)
+                    Notes = table.Column<string>(maxLength: 500, nullable: true)
                 },
                 constraints: table =>
                 {

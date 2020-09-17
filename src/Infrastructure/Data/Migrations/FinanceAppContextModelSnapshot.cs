@@ -79,6 +79,9 @@ namespace Infrastructure.Data.Migrations
                         .HasColumnType("nvarchar(500)")
                         .HasMaxLength(500);
 
+                    b.Property<bool>("isIncome")
+                        .HasColumnType("bit");
+
                     b.HasKey("ItemId");
 
                     b.HasIndex("GroupId");
@@ -88,7 +91,7 @@ namespace Infrastructure.Data.Migrations
 
             modelBuilder.Entity("Core.Entities.Group", b =>
                 {
-                    b.HasOne("Core.Entities.Budget", "Budget")
+                    b.HasOne("Core.Entities.Budget", null)
                         .WithMany("Groups")
                         .HasForeignKey("BudgetId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -97,7 +100,7 @@ namespace Infrastructure.Data.Migrations
 
             modelBuilder.Entity("Core.Entities.Item", b =>
                 {
-                    b.HasOne("Core.Entities.Group", "Group")
+                    b.HasOne("Core.Entities.Group", null)
                         .WithMany("Items")
                         .HasForeignKey("GroupId")
                         .OnDelete(DeleteBehavior.Cascade)

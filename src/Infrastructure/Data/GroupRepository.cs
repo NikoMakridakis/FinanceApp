@@ -23,5 +23,26 @@ namespace Infrastructure.Data
         {
             return await _context.Groups.ToListAsync();
         }
+
+        public async Task<Group> PostGroupAsync(Group group)
+        {
+            _context.Groups.Add(group);
+            await _context.SaveChangesAsync();
+            return group;
+        }
+
+        public async Task<Group> UpdateGroupAsync(Group group)
+        {
+            _context.Entry(group).State = EntityState.Modified;
+            await _context.SaveChangesAsync();
+            return group;
+        }
+        public async Task<Group> DeleteGroupByIdAsync(int groupId)
+        {
+            Group group = await _context.Groups.FindAsync(groupId);
+            _context.Groups.Remove(group);
+            await _context.SaveChangesAsync();
+            return group;
+        }
     }
 }

@@ -34,11 +34,14 @@ namespace Web.Controllers
             return Ok(group);
         }
 
-        //// POST: api/Group
-        //[HttpPost]
-        //public void Post([FromBody] string value)
-        //{
-        //}
+        // POST: api/Group
+        [HttpPost]
+        public async Task<ActionResult<Budget>> PostGroup(int groupId)
+        {
+            _repo.GetGroupByIdAsync(groupId);
+
+            return Ok(group);
+        }
 
         //// PUT: api/Group/5
         //[HttpPut("{id}")]
