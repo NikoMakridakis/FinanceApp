@@ -16,7 +16,7 @@ namespace Web.Controllers
             _repo = repo;
         }
 
-        // api/Budget
+        // GET: api/Budget
         [HttpGet]
         public async Task<ActionResult<List<Budget>>> GetBudgets()
         {
@@ -25,8 +25,8 @@ namespace Web.Controllers
             return Ok(budget);
         }
 
-        // api/Budget/id
-        [HttpGet("{id}")]
+        // GET: api/Budget/budgetId
+        [HttpGet("{budgetId}")]
         public async Task<ActionResult<Budget>> GetBudget(int budgetId)
         {
             Budget budget = await _repo.GetBudgetByIdAsync(budgetId);
