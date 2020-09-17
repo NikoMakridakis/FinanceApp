@@ -30,7 +30,7 @@ namespace Web
 
             services.AddScoped<IBudgetRepository, BudgetRepository>();
             services.AddScoped<IGroupRepository, GroupRepository>();
-
+            services.AddScoped<IItemRepository, ItemRepository>();
 
             // In production, the React files will be served from this directory
             services.AddSpaStaticFiles(configuration =>

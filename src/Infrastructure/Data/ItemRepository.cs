@@ -19,7 +19,7 @@ namespace Infrastructure.Data
             return await _context.Items.FindAsync(itemId);
         }
 
-        public async Task<List<Item>> GetItemsAsync()
+        public async Task<IReadOnlyList<Item>> GetItemsAsync()
         {
             return await _context.Items.ToListAsync();
         }
