@@ -29,6 +29,8 @@ namespace Web
                 options.UseSqlServer(_configuration.GetConnectionString("DefaultConnection")));
 
             services.AddScoped<IBudgetRepository, BudgetRepository>();
+            services.AddScoped<IGroupRepository, GroupRepository>();
+
 
             // In production, the React files will be served from this directory
             services.AddSpaStaticFiles(configuration =>

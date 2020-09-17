@@ -19,7 +19,7 @@ namespace Infrastructure.Data
             return await _context.Groups.FindAsync(groupId);
         }
 
-        public async Task<List<Group>> GetGroupsAsync()
+        public async Task<IReadOnlyList<Group>> GetGroupsAsync()
         {
             return await _context.Groups.ToListAsync();
         }
