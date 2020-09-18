@@ -9,7 +9,7 @@ namespace Core.Interfaces
         Task<Group> GetGroupByIdAsync(int groupId);
         Task<IReadOnlyList<Group>> GetGroupsAsync();
         Task<Group> PostGroupAsync(Group group);
-        Task<Group> UpdateGroupAsync(Group group);
+        Task<Group> UpdateGroupAsync(int groupId, Group group);
         Task<Group> DeleteGroupByIdAsync(int groupId);
 
     }

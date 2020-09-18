@@ -31,7 +31,7 @@ namespace Infrastructure.Data
             return group;
         }
 
-        public async Task<Group> UpdateGroupAsync(Group group)
+        public async Task<Group> UpdateGroupAsync(int groupId, Group group)
         {
             _context.Entry(group).State = EntityState.Modified;
             await _context.SaveChangesAsync();

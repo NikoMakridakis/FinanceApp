@@ -18,7 +18,7 @@ namespace Web.Controllers
 
         // GET: api/Group
         [HttpGet]
-        public async Task<ActionResult<List<Budget>>> GetGroups()
+        public async Task<ActionResult<List<Group>>> GetGroups()
         {
             IReadOnlyList<Group> group = await _repo.GetGroupsAsync();
 
@@ -27,7 +27,7 @@ namespace Web.Controllers
 
         // GET: api/Group/groupId
         [HttpGet("{groupId}")]
-        public async Task<ActionResult<Budget>> GetGroup(int groupId)
+        public async Task<ActionResult<Group>> GetGroup(int groupId)
         {
             Group group = await _repo.GetGroupByIdAsync(groupId);
 
@@ -36,23 +36,29 @@ namespace Web.Controllers
 
         // POST: api/Group
         [HttpPost]
-        public async Task<ActionResult<Budget>> PostGroup(int groupId)
+        public async Task<ActionResult<Group>> PostGroup(Group group)
         {
-            _repo.GetGroupByIdAsync(groupId);
+            await _repo.PostGroupAsync(group);
 
             return Ok(group);
         }
 
-        //// PUT: api/Group/5
-        //[HttpPut("{id}")]
-        //public void Put(int id, [FromBody] string value)
-        //{
-        //}
+        // PUT: api/Group/groupId
+        [HttpPut("{groupId}")]
+        public async Task<ActionResult<Group>> PutGroup(int groupId, Group group)
+        {
+            await _repo.UpdateGroupAsync(groupId, group);
 
-        //// DELETE: api/ApiWithActions/5
-        //[HttpDelete("{id}")]
-        //public void Delete(int id)
-        //{
-        //}
+            return Ok(group);
+        }
+
+        // DELETE: api/ApiWithActions/groupId
+        [HttpDelete("{groupId}")]
+        public async Task<ActionResult<Group>> DeleteGroup(int groupId)
+        {
+            await _repo.DeleteGroupByIdAsync(groupId);
+
+            return Ok();
+        }
     }
 }
