@@ -6,7 +6,7 @@ namespace Core.Interfaces
 {
     public interface IBudgetRepository
     {
-        Task<Budget> GetBudgetByIdAsync(int budgetId);
+        Task<Budget> GetBudgetByBudgetIdAsync(int budgetId);
         Task<IReadOnlyList<Budget>> GetBudgetsAsync();
     }
 }

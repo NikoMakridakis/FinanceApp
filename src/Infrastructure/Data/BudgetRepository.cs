@@ -14,7 +14,7 @@ namespace Infrastructure.Data
             _context = context;
         }
 
-        public async Task<Budget> GetBudgetByIdAsync(int budgetId)
+        public async Task<Budget> GetBudgetByBudgetIdAsync(int budgetId)
         {
             return await _context.Budgets.FindAsync(budgetId);
         }

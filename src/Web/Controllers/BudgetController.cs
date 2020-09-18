@@ -29,7 +29,7 @@ namespace Web.Controllers
         [HttpGet("{budgetId}")]
         public async Task<ActionResult<Budget>> GetBudget(int budgetId)
         {
-            Budget budget = await _repo.GetBudgetByIdAsync(budgetId);
+            Budget budget = await _repo.GetBudgetByBudgetIdAsync(budgetId);
 
             return Ok(budget);
         }

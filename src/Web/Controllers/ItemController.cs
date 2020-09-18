@@ -29,7 +29,7 @@ namespace Web.Controllers
         [HttpGet("{itemId}")]
         public async Task<ActionResult<Item>> GetItem(int itemId)
         {
-            Item item = await _repo.GetItemByIdAsync(itemId);
+            Item item = await _repo.GetItemByItemIdAsync(itemId);
 
             return Ok(item);
         }

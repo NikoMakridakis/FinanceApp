@@ -15,7 +15,7 @@ namespace Infrastructure.Data
             _context = context;
         }
 
-        public async Task<Group> GetGroupByIdAsync(int groupId)
+        public async Task<Group> GetGroupByGroupIdAsync(int groupId)
         {
             return await _context.Groups.FindAsync(groupId);
         }
@@ -27,6 +27,11 @@ namespace Infrastructure.Data
 
         public async Task<Group> PostGroupAsync(Group group)
         {
+            if (group == null)
+            {
+                throw new ArgumentNullException(nameof(group));
+            }
+
             _context.Groups.Add(group);
             await _context.SaveChangesAsync();
             return group;
@@ -38,7 +43,7 @@ namespace Infrastructure.Data
             await _context.SaveChangesAsync();
             return group;
         }
-        public async Task<Group> DeleteGroupByIdAsync(int groupId)
+        public async Task<Group> DeleteGroupByGroupIdAsync(int groupId)
         {
             Group group = await _context.Groups.FindAsync(groupId);
             _context.Groups.Remove(group);

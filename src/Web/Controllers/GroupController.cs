@@ -29,7 +29,7 @@ namespace Web.Controllers
         [HttpGet("{groupId}")]
         public async Task<ActionResult<Group>> GetGroup(int groupId)
         {
-            Group group = await _repo.GetGroupByIdAsync(groupId);
+            Group group = await _repo.GetGroupByGroupIdAsync(groupId);
 
             if (group == null)
             {
@@ -43,6 +43,7 @@ namespace Web.Controllers
         [HttpPost]
         public async Task<ActionResult<Group>> PostGroup(Group group)
         {
+
             await _repo.PostGroupAsync(group);
 
             return Ok(group);
@@ -61,7 +62,7 @@ namespace Web.Controllers
         [HttpDelete("{groupId}")]
         public async Task<ActionResult<Group>> DeleteGroup(int groupId)
         {
-            await _repo.DeleteGroupByIdAsync(groupId);
+            await _repo.DeleteGroupByGroupIdAsync(groupId);
 
             return Ok();
         }
