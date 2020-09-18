@@ -4,12 +4,6 @@ namespace Core.Entities
 {
     public class Item
     {
-        public Item(int groupId, string label)
-        {
-            GroupId = groupId;
-            Label = label;
-        }
-
         public int ItemId { get; set; }
         public int GroupId { get; set; }
         public string Label { get; set; }
@@ -17,5 +11,14 @@ namespace Core.Entities
         public bool isIncome { get; set; }
         public DateTime Date { get; set; }
         public string Notes { get; set; }
+
+        public Item()
+        {
+        }
+        public Item(int groupId, string label)
+        {
+            GroupId = groupId;
+            Label = label;
+        }
     }
 }

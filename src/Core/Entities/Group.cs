@@ -4,6 +4,11 @@ namespace Core.Entities
 {
     public class Group
     {
+        public int GroupId { get; set; }
+        public int BudgetId { get; set; }
+        public string Title { get; set; }
+        public List<Item> Items { get; set; }
+
         public Group()
         {
         }
@@ -13,10 +18,5 @@ namespace Core.Entities
             BudgetId = budgetId;
             Title = title;
         }
-
-        public int GroupId { get; set; }
-        public int BudgetId { get; set; }
-        public string Title { get; set; }
-        public List<Item> Items { get; set; }
     }
 }

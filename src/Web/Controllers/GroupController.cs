@@ -31,6 +31,11 @@ namespace Web.Controllers
         {
             Group group = await _repo.GetGroupByIdAsync(groupId);
 
+            if (group == null)
+            {
+                return NotFound();
+            }
+
             return Ok(group);
         }
 
