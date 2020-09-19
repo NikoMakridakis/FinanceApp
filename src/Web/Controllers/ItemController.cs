@@ -1,37 +1,41 @@
-﻿using Core.Entities;
+﻿using AutoMapper;
+using Core.Entities;
 using Core.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Web.Models;
 
 namespace Web.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/budget/{budgetId}/group/{groupId}/item")]
     [ApiController]
     public class ItemController : ControllerBase
     {
-        private readonly IItemRepository _repo;
-        public ItemController(IItemRepository repo)
+        private readonly IFinanceAppRepository _repo;
+        private readonly IMapper _mapper;
+        public ItemController(IFinanceAppRepository repo, IMapper mapper)
         {
             _repo = repo;
+            _mapper = mapper;
         }
 
-        // GET: api/Item
+        // GET: api/budget/{budgetId}/group/{groupId}/item
         [HttpGet]
-        public async Task<ActionResult<List<Item>>> GetItems()
+        public async Task<ActionResult<IEnumerable<ItemDto>>> GetItems()
         {
-            IReadOnlyList<Item> item = await _repo.GetItemsAsync();
+            IEnumerable<Item> item = await _repo.GetItemsAsync();
 
-            return Ok(item);
+            return Ok(_mapper.Map<IEnumerable<ItemDto>>(item));
         }
 
-        // GET: api/Item/itemId
+        // GET: api/budget/{budgetId}/group/{groupId}/item/{itemId}
         [HttpGet("{itemId}")]
-        public async Task<ActionResult<Item>> GetItem(int itemId)
+        public async Task<ActionResult<ItemDto>> GetItem(int itemId)
         {
             Item item = await _repo.GetItemByItemIdAsync(itemId);
 
-            return Ok(item);
+            return Ok(_mapper.Map<ItemDto>(item));
         }
     }
 }

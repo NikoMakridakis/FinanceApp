@@ -7,6 +7,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Infrastructure.Data;
 using Core.Interfaces;
+using AutoMapper;
+using System;
 
 namespace Web
 {
@@ -24,13 +26,13 @@ namespace Web
         {
 
             services.AddControllersWithViews();
+
+            services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
             
             services.AddDbContext<FinanceAppContext>(options =>
                 options.UseSqlServer(_configuration.GetConnectionString("DefaultConnection")));
 
-            services.AddScoped<IBudgetRepository, BudgetRepository>();
-            services.AddScoped<IGroupRepository, GroupRepository>();
-            services.AddScoped<IItemRepository, ItemRepository>();
+            services.AddScoped<IFinanceAppRepository, FinanceAppRepository>();
 
             // In production, the React files will be served from this directory
             services.AddSpaStaticFiles(configuration =>

@@ -1,33 +1,37 @@
-﻿using Core.Entities;
+﻿using AutoMapper;
+using Core.Entities;
 using Core.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Web.Models;
 
 namespace Web.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/budget/{budgetId}/group")]
     [ApiController]
     public class GroupController : ControllerBase
     {
-        private readonly IGroupRepository _repo;
-        public GroupController(IGroupRepository repo)
+        private readonly IFinanceAppRepository _repo;
+        private readonly IMapper _mapper;
+        public GroupController(IFinanceAppRepository repo, IMapper mapper)
         {
             _repo = repo;
+            _mapper = mapper;
         }
 
-        // GET: api/Group
+        // GET: api/budget/{budgetId}/group
         [HttpGet]
-        public async Task<ActionResult<List<Group>>> GetGroups()
+        public async Task<ActionResult<IEnumerable<GroupDto>>> GetGroups()
         {
-            IReadOnlyList<Group> group = await _repo.GetGroupsAsync();
+            IEnumerable<Group> group = await _repo.GetGroupsAsync();
 
-            return Ok(group);
+            return Ok(_mapper.Map<IEnumerable<GroupDto>>(group));
         }
 
-        // GET: api/Group/groupId
+        // GET: api/budget/{budgetId}/group/{groupId}
         [HttpGet("{groupId}")]
-        public async Task<ActionResult<Group>> GetGroup(int groupId)
+        public async Task<ActionResult<GroupDto>> GetGroup(int groupId)
         {
             Group group = await _repo.GetGroupByGroupIdAsync(groupId);
 
@@ -36,20 +40,20 @@ namespace Web.Controllers
                 return NotFound();
             }
 
-            return Ok(group);
+            return Ok(_mapper.Map<GroupDto>(group));
         }
 
-        // POST: api/Group
+        // POST: api/budget/{budgetId}/group
         [HttpPost]
-        public async Task<ActionResult<Group>> PostGroup(Group group)
+        public async Task<ActionResult<GroupDto>> PostGroup(Group group)
         {
 
-            await _repo.PostGroupAsync(group);
+            await _repo.AddGroupAsync(group);
 
             return Ok(group);
         }
 
-        // PUT: api/Group/groupId
+        // PUT: api/budget/{budgetId}/group/{groupId}
         [HttpPut("{groupId}")]
         public async Task<ActionResult<Group>> PutGroup(int groupId, Group group)
         {
@@ -58,7 +62,7 @@ namespace Web.Controllers
             return Ok(group);
         }
 
-        // DELETE: api/ApiWithActions/groupId
+        // DELETE: api/budget/{budgetId}/group/{groupId}
         [HttpDelete("{groupId}")]
         public async Task<ActionResult<Group>> DeleteGroup(int groupId)
         {
