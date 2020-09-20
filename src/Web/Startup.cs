@@ -5,10 +5,13 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.OpenApi.Models;
 using Infrastructure.Data;
 using Core.Interfaces;
 using AutoMapper;
 using System;
+using System.Reflection;
+using System.IO;
 
 namespace Web
 {
@@ -31,6 +34,16 @@ namespace Web
             
             services.AddDbContext<FinanceAppContext>(options =>
                 options.UseSqlServer(_configuration.GetConnectionString("DefaultConnection")));
+
+            services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", new OpenApiInfo
+                {
+                    Version = "v1",
+                    Title = "FinanceApp API",
+                    Description = "ASP.NET Core Web API"
+                });
+            });
 
             services.AddScoped<IFinanceAppRepository, FinanceAppRepository>();
 
@@ -58,6 +71,13 @@ namespace Web
             app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseSpaStaticFiles();
+
+            app.UseSwagger();
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "FinanceApp API V1");
+                c.RoutePrefix = string.Empty;
+            });
 
             app.UseRouting();
 
