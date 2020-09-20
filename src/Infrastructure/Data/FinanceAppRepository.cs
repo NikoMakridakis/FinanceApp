@@ -1,8 +1,10 @@
 ﻿using Core.Entities;
 using Core.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Internal;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Infrastructure.Data
@@ -14,6 +16,9 @@ namespace Infrastructure.Data
         {
             _context = context ?? throw new ArgumentNullException(nameof(context)); ;
         }
+
+
+
         public async Task<Budget> GetBudgetByBudgetIdAsync(int budgetId)
         {
             return await _context.Budgets.FindAsync(budgetId);
@@ -37,6 +42,7 @@ namespace Infrastructure.Data
             await _context.SaveChangesAsync();
             return budget;
         }
+
         public async Task<Budget> DeleteBudgetByBudgetIdAsync(int budgetId)
         {
             Budget budget = await _context.Budgets.FindAsync(budgetId);
@@ -44,6 +50,12 @@ namespace Infrastructure.Data
             await _context.SaveChangesAsync();
             return budget;
         }
+
+        public bool BudgetByBudgetIdExists(int budgetId)
+        {
+            return _context.Budgets.Any(b => b.BudgetId == budgetId);
+        }
+
 
 
         public async Task<Group> GetGroupByGroupIdAsync(int groupId)
@@ -69,6 +81,7 @@ namespace Infrastructure.Data
             await _context.SaveChangesAsync();
             return group;
         }
+
         public async Task<Group> DeleteGroupByGroupIdAsync(int groupId)
         {
             Group group = await _context.Groups.FindAsync(groupId);
@@ -76,6 +89,13 @@ namespace Infrastructure.Data
             await _context.SaveChangesAsync();
             return group;
         }
+
+        public bool GroupByGroupIdExists(int groupId)
+        {
+            return _context.Groups.Any(g => g.GroupId == groupId);
+        }
+
+
 
         public async Task<Item> GetItemByItemIdAsync(int itemId)
         {
@@ -100,12 +120,18 @@ namespace Infrastructure.Data
             await _context.SaveChangesAsync();
             return item;
         }
+
         public async Task<Item> DeleteItemByItemIdAsync(int itemId)
         {
             Item item = await _context.Items.FindAsync(itemId);
             _context.Items.Remove(item);
             await _context.SaveChangesAsync();
             return item;
+        }
+
+        public bool ItemByItemIdExists(int itemId)
+        {
+            return _context.Items.Any(i => i.ItemId == itemId);
         }
     }
 }
