@@ -7,7 +7,7 @@ namespace Core.Entities
         public int GroupId { get; set; }
         public int BudgetId { get; set; }
         public string Title { get; set; }
-        public List<Item> Items { get; set; }
+        public List<Item> Items { get; set; } = new List<Item>();
 
         public Group()
         {
