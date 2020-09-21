@@ -45,8 +45,8 @@ namespace Infrastructure.Data.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("Title")
-                        .HasColumnType("nvarchar(150)")
-                        .HasMaxLength(150);
+                        .HasColumnType("nvarchar(40)")
+                        .HasMaxLength(40);
 
                     b.HasKey("GroupId");
 
@@ -72,8 +72,8 @@ namespace Infrastructure.Data.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("Label")
-                        .HasColumnType("nvarchar(150)")
-                        .HasMaxLength(150);
+                        .HasColumnType("nvarchar(40)")
+                        .HasMaxLength(40);
 
                     b.Property<string>("Notes")
                         .HasColumnType("nvarchar(500)")

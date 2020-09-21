@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Infrastructure.Data.Migrations
 {
     [DbContext(typeof(FinanceAppContext))]
-    [Migration("20200920160435_InitialCreate")]
+    [Migration("20200921233014_InitialCreate")]
     partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -47,8 +47,8 @@ namespace Infrastructure.Data.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("Title")
-                        .HasColumnType("nvarchar(150)")
-                        .HasMaxLength(150);
+                        .HasColumnType("nvarchar(40)")
+                        .HasMaxLength(40);
 
                     b.HasKey("GroupId");
 
@@ -74,8 +74,8 @@ namespace Infrastructure.Data.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("Label")
-                        .HasColumnType("nvarchar(150)")
-                        .HasMaxLength(150);
+                        .HasColumnType("nvarchar(40)")
+                        .HasMaxLength(40);
 
                     b.Property<string>("Notes")
                         .HasColumnType("nvarchar(500)")
