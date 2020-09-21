@@ -8,7 +8,8 @@ namespace Web.Profiles
     {
         public GroupProfile()
         {
-            CreateMap<Group, GroupDto>();
+            CreateMap<Group, GroupReadDto>();
+            CreateMap<GroupCreateDto, Group>();
         }
     }
 }

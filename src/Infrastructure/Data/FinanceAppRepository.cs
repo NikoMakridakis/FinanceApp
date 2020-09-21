@@ -17,8 +17,7 @@ namespace Infrastructure.Data
             _context = context ?? throw new ArgumentNullException(nameof(context)); ;
         }
 
-
-
+        #region Budget Repository Methods
         public async Task<Budget> GetBudgetByBudgetIdAsync(int budgetId)
         {
             return await _context.Budgets.FindAsync(budgetId);
@@ -55,9 +54,9 @@ namespace Infrastructure.Data
         {
             return _context.Budgets.Any(b => b.BudgetId == budgetId);
         }
+        #endregion
 
-
-
+        #region Group Repository Methods
         public async Task<Group> GetGroupByGroupIdAsync(int groupId)
         {
             return await _context.Groups.FindAsync(groupId);
@@ -94,9 +93,9 @@ namespace Infrastructure.Data
         {
             return _context.Groups.Any(g => g.GroupId == groupId);
         }
+        #endregion
 
-
-
+        #region Item Repository Methods
         public async Task<Item> GetItemByItemIdAsync(int itemId)
         {
             return await _context.Items.FindAsync(itemId);
@@ -133,5 +132,6 @@ namespace Infrastructure.Data
         {
             return _context.Items.Any(i => i.ItemId == itemId);
         }
+        #endregion
     }
 }

@@ -8,7 +8,8 @@ namespace Web.Profiles
     {
         public ItemProfile()
         {
-            CreateMap<Item, ItemDto>();
+            CreateMap<Item, ItemReadDto>();
+            CreateMap<ItemCreateDto, Item>();
         }
     }
 }
