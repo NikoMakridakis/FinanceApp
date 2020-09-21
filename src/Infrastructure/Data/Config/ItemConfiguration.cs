@@ -10,7 +10,7 @@ namespace Infrastructure.Data.Config
         {
             builder.Property(i => i.ItemId).IsRequired();
             builder.Property(i => i.GroupId).IsRequired();
-            builder.Property(i => i.Label).HasMaxLength(150);
+            builder.Property(i => i.Label).HasMaxLength(40);
             builder.Property(i => i.Amount).HasColumnType("decimal(18,2)");
             builder.Property(i => i.Date).HasColumnType("date");
             builder.Property(i => i.Notes).HasMaxLength(500);
