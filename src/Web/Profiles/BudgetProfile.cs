@@ -8,8 +8,8 @@ namespace Web.Profiles
     {
         public BudgetProfile()
         {
-            CreateMap<Budget, BudgetReadDto>();
-            CreateMap<BudgetCreateDto, Budget>();
+            CreateMap<Budget, BudgetDto>();
+            CreateMap<BudgetForCreationDto, Budget>();
         }
     }
 }

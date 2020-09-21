@@ -5,9 +5,9 @@ using System.Threading.Tasks;
 
 namespace Web.Models
 {
-    public class BudgetCreateDto
+    public class BudgetForCreationDto
     {
         public DateTime Date { get; set; }
-        public List<GroupCreateDto> Groups { get; set; } = new List<GroupCreateDto>();
+        public List<GroupForCreationDto> Groups { get; set; } = new List<GroupForCreationDto>();
     }
 }

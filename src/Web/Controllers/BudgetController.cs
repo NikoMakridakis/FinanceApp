@@ -22,42 +22,42 @@ namespace Web.Controllers
 
         // GET: api/budget
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<BudgetReadDto>>> GetBudgets()
+        public async Task<ActionResult<IEnumerable<BudgetDto>>> GetBudgets()
         {
             IEnumerable<Budget> budget = await _repo.GetBudgetsAsync();
 
-            return Ok(_mapper.Map<IEnumerable<BudgetReadDto>>(budget));
+            return Ok(_mapper.Map<IEnumerable<BudgetDto>>(budget));
         }
 
         // GET: api/budget/{budgetId}
         [HttpGet("{budgetId}", Name = "GetBudget")]
-        public async Task<ActionResult<BudgetReadDto>> GetBudget(int budgetId)
+        public async Task<ActionResult<BudgetDto>> GetBudget(int budgetId)
         {
             Budget budget = await _repo.GetBudgetByBudgetIdAsync(budgetId);
 
-            return Ok(_mapper.Map<BudgetReadDto>(budget));
+            return Ok(_mapper.Map<BudgetDto>(budget));
         }
 
         // POST: api/budget
         [HttpPost]
-        public async Task<ActionResult<BudgetReadDto>> PostGroup(BudgetCreateDto budgetCreateDto)
+        public async Task<ActionResult<BudgetDto>> PostGroup(BudgetForCreationDto budgetCreateDto)
         {
             Budget budget = _mapper.Map<Budget>(budgetCreateDto);
             await _repo.AddBudgetAsync(budget);
 
-            BudgetReadDto budgetReadDto = _mapper.Map<BudgetReadDto>(budget);
+            BudgetDto budgetReadDto = _mapper.Map<BudgetDto>(budget);
 
             return CreatedAtRoute(nameof(GetBudget), new { budgetId = budgetReadDto.BudgetId }, budgetReadDto);
         }
 
         // PUT: api/budget/{budgetId}
         [HttpPut("{budgetId}")]
-        public async Task<ActionResult<BudgetReadDto>> PutBudget(int budgetId, BudgetCreateDto budgetCreateDto)
+        public async Task<ActionResult<BudgetDto>> PutBudget(int budgetId, BudgetForCreationDto budgetCreateDto)
         {
             Budget budget = _mapper.Map<Budget>(budgetCreateDto);
             await _repo.UpdateBudgetAsync(budgetId, budget);
 
-            BudgetReadDto budgetReadDto = _mapper.Map<BudgetReadDto>(budget);
+            BudgetDto budgetReadDto = _mapper.Map<BudgetDto>(budget);
 
             return CreatedAtRoute(nameof(GetBudget), new { budgetId = budgetReadDto.BudgetId }, budgetReadDto);
         }

@@ -22,20 +22,20 @@ namespace Web.Controllers
 
         // GET: api/budget/{budgetId}/group/{groupId}/item
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<ItemReadDto>>> GetItems()
+        public async Task<ActionResult<IEnumerable<ItemDto>>> GetItems()
         {
             IEnumerable<Item> item = await _repo.GetItemsAsync();
 
-            return Ok(_mapper.Map<IEnumerable<ItemReadDto>>(item));
+            return Ok(_mapper.Map<IEnumerable<ItemDto>>(item));
         }
 
         // GET: api/budget/{budgetId}/group/{groupId}/item/{itemId}
         [HttpGet("{itemId}")]
-        public async Task<ActionResult<ItemReadDto>> GetItem(int itemId)
+        public async Task<ActionResult<ItemDto>> GetItem(int itemId)
         {
             Item item = await _repo.GetItemByItemIdAsync(itemId);
 
-            return Ok(_mapper.Map<ItemReadDto>(item));
+            return Ok(_mapper.Map<ItemDto>(item));
         }
     }
 }

@@ -22,16 +22,16 @@ namespace Web.Controllers
 
         // GET: api/budget/{budgetId}/group
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<GroupReadDto>>> GetGroups()
+        public async Task<ActionResult<IEnumerable<GroupDto>>> GetGroups()
         {
             IEnumerable<Group> group = await _repo.GetGroupsAsync();
 
-            return Ok(_mapper.Map<IEnumerable<GroupReadDto>>(group));
+            return Ok(_mapper.Map<IEnumerable<GroupDto>>(group));
         }
 
         // GET: api/budget/{budgetId}/group/{groupId}
         [HttpGet("{groupId}")]
-        public async Task<ActionResult<GroupReadDto>> GetGroup(int groupId)
+        public async Task<ActionResult<GroupDto>> GetGroup(int groupId)
         {
             Group group = await _repo.GetGroupByGroupIdAsync(groupId);
 
@@ -40,12 +40,12 @@ namespace Web.Controllers
                 return NotFound();
             }
 
-            return Ok(_mapper.Map<GroupReadDto>(group));
+            return Ok(_mapper.Map<GroupDto>(group));
         }
 
         // POST: api/budget/{budgetId}/group
         [HttpPost]
-        public async Task<ActionResult<GroupReadDto>> PostGroup(Group group)
+        public async Task<ActionResult<GroupDto>> PostGroup(Group group)
         {
             await _repo.AddGroupAsync(group);
 

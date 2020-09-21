@@ -5,10 +5,10 @@ using System.Threading.Tasks;
 
 namespace Web.Models
 {
-    public class GroupCreateDto
+    public class GroupForCreationDto
     {
         public int BudgetId { get; set; }
         public string Title { get; set; }
-        public List<ItemCreateDto> Items { get; set; } = new List<ItemCreateDto>();
+        public List<ItemForCreationDto> Items { get; set; } = new List<ItemForCreationDto>();
     }
 }
