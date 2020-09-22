@@ -10,6 +10,7 @@ namespace Web.Profiles
         {
             CreateMap<Budget, BudgetDto>();
             CreateMap<BudgetForCreationDto, Budget>();
+            CreateMap<BudgetForUpdateDto, Budget>();
         }
     }
 }
