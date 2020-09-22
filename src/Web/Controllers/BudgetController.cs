@@ -33,6 +33,11 @@ namespace Web.Controllers
         [HttpGet("{budgetId}", Name = "GetBudget")]
         public async Task<ActionResult<BudgetDto>> GetBudget(int budgetId)
         {
+            if (!_repo.BudgetByBudgetIdExists(budgetId))
+            {
+                return NotFound();
+            }
+
             Budget budget = await _repo.GetBudgetByBudgetIdAsync(budgetId);
 
             return Ok(_mapper.Map<BudgetDto>(budget));
