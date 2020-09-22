@@ -42,6 +42,11 @@ namespace Infrastructure.Data
 
         public async Task<Budget> UpdateBudgetAsync(int budgetId, Budget budget)
         {
+            if (budget == null)
+            {
+                throw new ArgumentNullException(nameof(budget));
+            }
+
             _context.Entry(budget).State = EntityState.Modified;
             await _context.SaveChangesAsync();
             return budget;
