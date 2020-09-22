@@ -40,14 +40,8 @@ namespace Infrastructure.Data
             return budget;
         }
 
-        public async Task<Budget> UpdateBudgetAsync(int budgetId, Budget budget)
+        public async Task<Budget> UpdateBudgetAsync(Budget budget)
         {
-            if (budget == null)
-            {
-                throw new ArgumentNullException(nameof(budget));
-            }
-
-            _context.Entry(budget).State = EntityState.Modified;
             await _context.SaveChangesAsync();
             return budget;
         }
@@ -91,12 +85,11 @@ namespace Infrastructure.Data
             return group;
         }
 
-        public async Task<Group> DeleteGroupByGroupIdAsync(int groupId)
+        public async void DeleteGroupByGroupIdAsync(int groupId)
         {
             Group group = await _context.Groups.FindAsync(groupId);
             _context.Groups.Remove(group);
             await _context.SaveChangesAsync();
-            return group;
         }
 
         public bool GroupByGroupIdExists(int groupId)
@@ -130,12 +123,11 @@ namespace Infrastructure.Data
             return item;
         }
 
-        public async Task<Item> DeleteItemByItemIdAsync(int itemId)
+        public async void DeleteItemByItemIdAsync(int itemId)
         {
             Item item = await _context.Items.FindAsync(itemId);
             _context.Items.Remove(item);
             await _context.SaveChangesAsync();
-            return item;
         }
 
         public bool ItemByItemIdExists(int itemId)

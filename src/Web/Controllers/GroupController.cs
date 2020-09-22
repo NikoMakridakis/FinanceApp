@@ -53,21 +53,21 @@ namespace Web.Controllers
         }
 
         // PUT: api/budget/{budgetId}/group/{groupId}
-        [HttpPut("{groupId}")]
-        public async Task<ActionResult<Group>> PutGroup(int groupId, Group group)
-        {
-            await _repo.UpdateGroupAsync(groupId, group);
+        //[HttpPut("{groupId}")]
+        //public async Task<ActionResult> PutGroup(int groupId, Group group)
+        //{
+        //    _repo.UpdateGroupAsync(groupId, group);
 
-            return Ok(group);
-        }
+        //    return Ok(group);
+        //}
 
         // DELETE: api/budget/{budgetId}/group/{groupId}
-        [HttpDelete("{groupId}")]
-        public async Task<ActionResult<Group>> DeleteGroup(int groupId)
-        {
-            await _repo.DeleteGroupByGroupIdAsync(groupId);
+        //[HttpDelete("{groupId}")]
+        //public async Task<ActionResult<Group>> DeleteGroup(int groupId)
+        //{
+        //    await _repo.DeleteGroupByGroupIdAsync(groupId);
 
-            return Ok();
-        }
+        //    return Ok();
+        //}
     }
 }

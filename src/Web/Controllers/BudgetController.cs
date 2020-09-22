@@ -52,15 +52,23 @@ namespace Web.Controllers
 
         // PUT: api/budget/{budgetId}
         [HttpPut("{budgetId}")]
-        public async Task<ActionResult<BudgetDto>> PutBudget(int budgetId, BudgetForUpdateDto budgetForUpdateDto)
+        public async Task<ActionResult> PutBudget(int budgetId, BudgetForUpdateDto budgetForUpdateDto)
         {
             if (!_repo.BudgetByBudgetIdExists(budgetId))
             {
                 return NotFound();
             }
 
-            Budget budget = _mapper.Map<Budget>(budgetForUpdateDto);
-            await _repo.UpdateBudgetAsync(budgetId, budget);
+            Budget budget = await _repo.GetBudgetByBudgetIdAsync(budgetId);
+
+            if (budget == null)
+            {
+                return NotFound();
+            }
+
+            _mapper.Map(budgetForUpdateDto, budget);
+
+            await _repo.UpdateBudgetAsync(budget);
 
             BudgetDto budgetDto = _mapper.Map<BudgetDto>(budget);
 
@@ -69,16 +77,25 @@ namespace Web.Controllers
 
         // DELETE: api/budget/{budgetId}
         [HttpDelete("{budgetId}")]
-        public async Task<ActionResult<Budget>> DeleteBudget(int budgetId)
+        public async Task<ActionResult> DeleteBudget(int budgetId)
         {
             if (!_repo.BudgetByBudgetIdExists(budgetId))
             {
                 return NotFound();
             }
 
-            await _repo.DeleteGroupByGroupIdAsync(budgetId);
+            Budget budget = await _repo.GetBudgetByBudgetIdAsync(budgetId);
 
-            return NoContent();
+            if (budget == null)
+            {
+                return NotFound();
+            }
+
+            await _repo.DeleteBudgetByBudgetIdAsync(budgetId);
+
+            BudgetDto budgetDto = _mapper.Map<BudgetDto>(budget);
+
+            return Ok(budgetDto);
         }
     }
 }
