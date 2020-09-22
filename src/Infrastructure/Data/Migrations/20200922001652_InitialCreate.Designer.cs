@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Infrastructure.Data.Migrations
 {
     [DbContext(typeof(FinanceAppContext))]
-    [Migration("20200921233014_InitialCreate")]
+    [Migration("20200922001652_InitialCreate")]
     partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -73,6 +73,9 @@ namespace Infrastructure.Data.Migrations
                     b.Property<int>("GroupId")
                         .HasColumnType("int");
 
+                    b.Property<bool>("IsIncome")
+                        .HasColumnType("bit");
+
                     b.Property<string>("Label")
                         .HasColumnType("nvarchar(40)")
                         .HasMaxLength(40);
@@ -80,9 +83,6 @@ namespace Infrastructure.Data.Migrations
                     b.Property<string>("Notes")
                         .HasColumnType("nvarchar(500)")
                         .HasMaxLength(500);
-
-                    b.Property<bool>("isIncome")
-                        .HasColumnType("bit");
 
                     b.HasKey("ItemId");
 

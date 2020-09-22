@@ -40,14 +40,14 @@ namespace Web.Controllers
 
         // POST: api/budget
         [HttpPost]
-        public async Task<ActionResult<BudgetDto>> PostGroup(BudgetForCreationDto budgetCreateDto)
+        public async Task<ActionResult<BudgetDto>> PostGroup(BudgetForCreationDto budgetForCreationDto)
         {
-            Budget budget = _mapper.Map<Budget>(budgetCreateDto);
+            Budget budget = _mapper.Map<Budget>(budgetForCreationDto);
             await _repo.AddBudgetAsync(budget);
 
-            BudgetDto budgetReadDto = _mapper.Map<BudgetDto>(budget);
+            BudgetDto budgetDto = _mapper.Map<BudgetDto>(budget);
 
-            return CreatedAtRoute(nameof(GetBudget), new { budgetId = budgetReadDto.BudgetId }, budgetReadDto);
+            return CreatedAtRoute(nameof(GetBudget), new { budgetId = budgetDto.BudgetId }, budgetDto);
         }
 
         // PUT: api/budget/{budgetId}

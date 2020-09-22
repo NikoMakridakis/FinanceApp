@@ -30,6 +30,11 @@ namespace Infrastructure.Data
 
         public async Task<Budget> AddBudgetAsync(Budget budget)
         {
+            if (budget == null)
+            {
+                throw new ArgumentNullException(nameof(budget));
+            }
+
             _context.Budgets.Add(budget);
             await _context.SaveChangesAsync();
             return budget;

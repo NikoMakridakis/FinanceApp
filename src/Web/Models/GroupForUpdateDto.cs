@@ -2,7 +2,7 @@
 
 namespace Web.Models
 {
-    public class GroupForCreationDto
+    public class GroupForUpdateDto
     {
         public int BudgetId { get; set; }
         public string Title { get; set; }

@@ -49,7 +49,7 @@ namespace Infrastructure.Data.Migrations
                     GroupId = table.Column<int>(nullable: false),
                     Label = table.Column<string>(maxLength: 40, nullable: true),
                     Amount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    isIncome = table.Column<bool>(nullable: false),
+                    IsIncome = table.Column<bool>(nullable: false),
                     Date = table.Column<DateTime>(type: "date", nullable: false),
                     Notes = table.Column<string>(maxLength: 500, nullable: true)
                 },
