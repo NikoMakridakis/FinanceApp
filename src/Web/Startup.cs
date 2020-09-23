@@ -10,8 +10,6 @@ using Infrastructure.Data;
 using Core.Interfaces;
 using AutoMapper;
 using System;
-using System.Reflection;
-using System.IO;
 
 namespace Web
 {
