@@ -31,8 +31,7 @@ namespace UnitTests.Web.Controller
             var result = await controller.GetBudgets();
 
             // Assert
-            var budgets = Assert.IsAssignableFrom<IEnumerable<BudgetDto>>(result);
-            Assert.Equal(2, budgets.Count());
+            var budgets = Assert.IsAssignableFrom<ActionResult<IEnumerable<BudgetDto>>>(result);
         }
 
 
