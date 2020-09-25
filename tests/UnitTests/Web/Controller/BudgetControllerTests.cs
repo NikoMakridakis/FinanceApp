@@ -1,8 +1,11 @@
 ﻿using AutoMapper;
 using Core.Entities;
 using Core.Interfaces;
+using Microsoft.AspNetCore.Mvc;
 using Moq;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Web.Controllers;
 using Web.Models;
@@ -12,32 +15,34 @@ namespace UnitTests.Web.Controller
 {
     public class BudgetControllerTests
     {
-        private readonly BudgetController _budgetController;
-        private readonly Mock<IFinanceAppRepository> _financeAppRepoMock = new Mock<IFinanceAppRepository>();
-        private readonly IMapper _mapper;
-        public BudgetControllerTests()
+        [Fact]
+        public async Task GetBudgets_ActionExecutes_ReturnsAllBudgets()
         {
-            _budgetController = new BudgetController(_financeAppRepoMock.Object, _mapper);
+            // Arrange
+            var mockRepo = new Mock<IFinanceAppRepository>();
+            mockRepo.Setup(repo => repo.GetBudgetsAsync()).ReturnsAsync(GetTestSessions());
+
+            var mockMapper = new Mock<IMapper>();
+            mockMapper.Setup(mapper => mapper.Map<Budget, BudgetDto>(It.IsAny<Budget>())).Returns(new BudgetDto());
+
+            var controller = new BudgetController(mockRepo.Object, mockMapper.Object);
+
+            // Act
+            var result = await controller.GetBudgets();
+
+            // Assert
+            var budgets = Assert.IsAssignableFrom<IEnumerable<BudgetDto>>(result);
+            Assert.Equal(2, budgets.Count());
         }
 
 
-        [Fact]
-        public async Task GetBudgets_ShouldReturnAllBudgets()
+        private IEnumerable<Budget> GetTestSessions()
         {
-            // Arrange
-            var budgetId = 100;
-            var date = DateTime.Now;
-            var budgetDto = new BudgetDto
-            {
-                BudgetId = budgetId,
-                Date = date
-            };
-            _financeAppRepoMock.Setup(x => x.GetBudgetsAsync()).ReturnsAsync();
+            var sessions = new List<Budget>();
+            sessions.Add(new Budget(new DateTime(2020, 10, 1)));
+            sessions.Add(new Budget(new DateTime(2020, 12, 1)));
 
-            // Act
-            await _budgetController.GetBudgets();
-
-            // Assert
+            return sessions;
         }
     }
 }
