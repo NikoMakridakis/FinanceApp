@@ -19,7 +19,7 @@ namespace UnitTests.Web.Controller
         public async Task GetBudgets_ActionExecutes_ReturnsAllBudgets()
         {
             // Arrange
-            var mockRepo = new Mock<IFinanceAppRepository>();
+            var mockRepo = new Mock<IBudgetRepository>();
             mockRepo.Setup(repo => repo.GetBudgetsAsync()).ReturnsAsync(GetTestSessions());
 
             var mockMapper = new Mock<IMapper>();

@@ -12,9 +12,9 @@ namespace Web.Controllers
     [ApiController]
     public class ItemController : ControllerBase
     {
-        private readonly IFinanceAppRepository _repo;
+        private readonly IItemRepository _repo;
         private readonly IMapper _mapper;
-        public ItemController(IFinanceAppRepository repo, IMapper mapper)
+        public ItemController(IItemRepository repo, IMapper mapper)
         {
             _repo = repo;
             _mapper = mapper;

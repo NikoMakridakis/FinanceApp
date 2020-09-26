@@ -12,9 +12,9 @@ namespace Web.Controllers
     [ApiController]
     public class GroupController : ControllerBase
     {
-        private readonly IFinanceAppRepository _repo;
+        private readonly IGroupRepository _repo;
         private readonly IMapper _mapper;
-        public GroupController(IFinanceAppRepository repo, IMapper mapper)
+        public GroupController(IGroupRepository repo, IMapper mapper)
         {
             _repo = repo;
             _mapper = mapper;

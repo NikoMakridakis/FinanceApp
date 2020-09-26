@@ -12,9 +12,9 @@ namespace Web.Controllers
     [ApiController]
     public class BudgetController : ControllerBase
     {
-        private readonly IFinanceAppRepository _repo;
+        private readonly IBudgetRepository _repo;
         private readonly IMapper _mapper;
-        public BudgetController(IFinanceAppRepository repo, IMapper mapper)
+        public BudgetController(IBudgetRepository repo, IMapper mapper)
         {
             _repo = repo;
             _mapper = mapper;
