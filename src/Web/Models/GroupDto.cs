@@ -4,6 +4,7 @@
     {
         public int GroupId { get; set; }
         public int BudgetId { get; set; }
-        public string Title { get; set; }
+        public decimal GroupMonthlyTotal { get; set; }
+        public string GroupTitle { get; set; }
     }
 }

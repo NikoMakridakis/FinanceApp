@@ -15,10 +15,12 @@ namespace Infrastructure.Data
         {
             _context = context ?? throw new ArgumentNullException(nameof(context));
         }
+
         public async Task<Item> GetItemByItemIdAsync(int itemId)
         {
             return await _context.Items.FindAsync(itemId);
         }
+
         public async Task<IEnumerable<Item>> GetItemsAsync()
         {
             return await _context.Items.ToListAsync();
@@ -26,22 +28,27 @@ namespace Infrastructure.Data
 
         public async Task<Item> AddItemAsync(Item item)
         {
+            if (item == null)
+            {
+                throw new ArgumentNullException(nameof(item));
+            }
+
             _context.Items.Add(item);
             await _context.SaveChangesAsync();
             return item;
         }
 
-        public async Task<Item> UpdateItemAsync(int itemId, Item item)
+        public async Task<Item> UpdateItemAsync(Item item)
         {
-            _context.Entry(item).State = EntityState.Modified;
             await _context.SaveChangesAsync();
             return item;
         }
-        public async void DeleteItemByItemIdAsync(int itemId)
+        public async Task<Item> DeleteItemByItemIdAsync(int itemId)
         {
             Item item = await _context.Items.FindAsync(itemId);
             _context.Items.Remove(item);
             await _context.SaveChangesAsync();
+            return item;
         }
 
         public bool ItemByItemIdExists(int itemId)

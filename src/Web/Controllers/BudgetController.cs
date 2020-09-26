@@ -45,7 +45,7 @@ namespace Web.Controllers
 
         // POST: api/budget
         [HttpPost]
-        public async Task<ActionResult<BudgetDto>> PostGroup(BudgetForCreationDto budgetForCreationDto)
+        public async Task<ActionResult<BudgetDto>> PostBudget(BudgetForCreationDto budgetForCreationDto)
         {
             Budget budget = _mapper.Map<Budget>(budgetForCreationDto);
             await _repo.AddBudgetAsync(budget);
@@ -55,6 +55,7 @@ namespace Web.Controllers
             return CreatedAtRoute(nameof(GetBudget), new { budgetId = budgetDto.BudgetId }, budgetDto);
         }
 
+        // TODO: Switch to Task<ActionResult<BudgetDto>> ?
         // PUT: api/budget/{budgetId}
         [HttpPut("{budgetId}")]
         public async Task<ActionResult> PutBudget(int budgetId, BudgetForUpdateDto budgetForUpdateDto)
@@ -80,6 +81,7 @@ namespace Web.Controllers
             return CreatedAtRoute(nameof(GetBudget), new { budgetId = budgetDto.BudgetId }, budgetDto);
         }
 
+        // TODO: Switch to Task<ActionResult<BudgetDto>> ?
         // DELETE: api/budget/{budgetId}
         [HttpDelete("{budgetId}")]
         public async Task<ActionResult> DeleteBudget(int budgetId)

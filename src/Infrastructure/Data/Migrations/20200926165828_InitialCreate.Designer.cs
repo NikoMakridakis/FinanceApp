@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Infrastructure.Data.Migrations
 {
     [DbContext(typeof(FinanceAppContext))]
-    [Migration("20200922001652_InitialCreate")]
+    [Migration("20200926165828_InitialCreate")]
     partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -28,7 +28,16 @@ namespace Infrastructure.Data.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<DateTime>("Date")
+                    b.Property<int>("DaysLeftInMonth")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("MonthlyIncome")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<decimal>("MonthlySpending")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<DateTime>("TodaysDate")
                         .HasColumnType("date");
 
                     b.HasKey("BudgetId");
@@ -46,9 +55,12 @@ namespace Infrastructure.Data.Migrations
                     b.Property<int>("BudgetId")
                         .HasColumnType("int");
 
-                    b.Property<string>("Title")
-                        .HasColumnType("nvarchar(40)")
-                        .HasMaxLength(40);
+                    b.Property<decimal>("GroupMonthlyTotal")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<string>("GroupTitle")
+                        .HasColumnType("nvarchar(50)")
+                        .HasMaxLength(50);
 
                     b.HasKey("GroupId");
 
@@ -64,25 +76,15 @@ namespace Infrastructure.Data.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<decimal>("Amount")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<DateTime>("Date")
-                        .HasColumnType("date");
-
                     b.Property<int>("GroupId")
                         .HasColumnType("int");
 
-                    b.Property<bool>("IsIncome")
-                        .HasColumnType("bit");
+                    b.Property<decimal>("ItemMontlyAmount")
+                        .HasColumnType("decimal(18,2)");
 
-                    b.Property<string>("Label")
-                        .HasColumnType("nvarchar(40)")
-                        .HasMaxLength(40);
-
-                    b.Property<string>("Notes")
-                        .HasColumnType("nvarchar(500)")
-                        .HasMaxLength(500);
+                    b.Property<string>("ItemTitle")
+                        .HasColumnType("nvarchar(50)")
+                        .HasMaxLength(50);
 
                     b.HasKey("ItemId");
 

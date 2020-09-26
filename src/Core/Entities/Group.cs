@@ -6,17 +6,18 @@ namespace Core.Entities
     {
         public int GroupId { get; set; }
         public int BudgetId { get; set; }
-        public string Title { get; set; }
-        public List<Item> Items { get; set; } = new List<Item>();
+        public decimal GroupMonthlyTotal { get; set; }
+        public string GroupTitle { get; set; }
+        public List<Item> Items { get; set; }
 
         public Group()
         {
         }
 
-        public Group(int budgetId, string title)
+        public Group(int budgetId, string groupTitle)
         {
             BudgetId = budgetId;
-            Title = title;
+            GroupTitle = groupTitle;
         }
     }
 }

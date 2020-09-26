@@ -4,8 +4,7 @@
     {
         public int ItemId { get; set; }
         public int GroupId { get; set; }
-        public string Label { get; set; }
-        public decimal Amount { get; set; }
-        public bool IsIncome { get; set; }
+        public string ItemTitle { get; set; }
+        public decimal ItemMontlyAmount { get; set; }
     }
 }

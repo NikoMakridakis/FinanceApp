@@ -15,6 +15,7 @@ namespace Infrastructure.Data
         {
             _context = context ?? throw new ArgumentNullException(nameof(context));
         }
+
         public async Task<Group> GetGroupByGroupIdAsync(int groupId)
         {
             return await _context.Groups.FindAsync(groupId);
@@ -27,23 +28,28 @@ namespace Infrastructure.Data
 
         public async Task<Group> AddGroupAsync(Group group)
         {
+            if (group == null)
+            {
+                throw new ArgumentNullException(nameof(group));
+            }
+
             _context.Groups.Add(group);
             await _context.SaveChangesAsync();
             return group;
         }
 
-        public async Task<Group> UpdateGroupAsync(int groupId, Group group)
+        public async Task<Group> UpdateGroupAsync(Group group)
         {
-            _context.Entry(group).State = EntityState.Modified;
             await _context.SaveChangesAsync();
             return group;
         }
 
-        public async void DeleteGroupByGroupIdAsync(int groupId)
+        public async Task<Group> DeleteGroupByGroupIdAsync(int groupId)
         {
             Group group = await _context.Groups.FindAsync(groupId);
             _context.Groups.Remove(group);
             await _context.SaveChangesAsync();
+            return group;
         }
 
         public bool GroupByGroupIdExists(int groupId)

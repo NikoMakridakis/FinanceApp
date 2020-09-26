@@ -13,7 +13,10 @@ namespace Infrastructure.Data.Migrations
                 {
                     BudgetId = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Date = table.Column<DateTime>(type: "date", nullable: false)
+                    TodaysDate = table.Column<DateTime>(type: "date", nullable: false),
+                    DaysLeftInMonth = table.Column<int>(nullable: false),
+                    MonthlyIncome = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    MonthlySpending = table.Column<decimal>(type: "decimal(18,2)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -27,7 +30,8 @@ namespace Infrastructure.Data.Migrations
                     GroupId = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     BudgetId = table.Column<int>(nullable: false),
-                    Title = table.Column<string>(maxLength: 40, nullable: true)
+                    GroupMonthlyTotal = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    GroupTitle = table.Column<string>(maxLength: 50, nullable: true)
                 },
                 constraints: table =>
                 {
@@ -47,11 +51,8 @@ namespace Infrastructure.Data.Migrations
                     ItemId = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     GroupId = table.Column<int>(nullable: false),
-                    Label = table.Column<string>(maxLength: 40, nullable: true),
-                    Amount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    IsIncome = table.Column<bool>(nullable: false),
-                    Date = table.Column<DateTime>(type: "date", nullable: false),
-                    Notes = table.Column<string>(maxLength: 500, nullable: true)
+                    ItemTitle = table.Column<string>(maxLength: 50, nullable: true),
+                    ItemMontlyAmount = table.Column<decimal>(type: "decimal(18,2)", nullable: false)
                 },
                 constraints: table =>
                 {

@@ -30,12 +30,77 @@ namespace Web.Controllers
         }
 
         // GET: api/budget/{budgetId}/group/{groupId}/item/{itemId}
-        [HttpGet("{itemId}")]
+        [HttpGet("{itemId}", Name = "GetItem")]
         public async Task<ActionResult<ItemDto>> GetItem(int itemId)
         {
+            if (!_repo.ItemByItemIdExists(itemId))
+            {
+                return NotFound();
+            }
+
             Item item = await _repo.GetItemByItemIdAsync(itemId);
 
             return Ok(_mapper.Map<ItemDto>(item));
+        }
+
+        // POST: api/budget/{budgetId}/group/{groupId}/item
+        [HttpPost]
+        public async Task<ActionResult<ItemDto>> PostItem(ItemForCreationDto itemForCreationDto)
+        {
+            Item item = _mapper.Map<Item>(itemForCreationDto);
+            await _repo.AddItemAsync(item);
+
+            ItemDto itemDto = _mapper.Map<ItemDto>(item);
+
+            return CreatedAtRoute(nameof(GetItem), new { itemId = itemDto.ItemId }, itemDto);
+        }
+
+        // PUT: api/budget/{budgetId}/group/{groupId}/item/{itemId}
+        [HttpPut("{itemId}")]
+        public async Task<ActionResult> PutItem(int itemId, ItemForUpdateDto itemForUpdateDto)
+        {
+            if (!_repo.ItemByItemIdExists(itemId))
+            {
+                return NotFound();
+            }
+
+            Item item = await _repo.GetItemByItemIdAsync(itemId);
+
+            if (item == null)
+            {
+                return NotFound();
+            }
+
+            _mapper.Map(itemForUpdateDto, item);
+
+            await _repo.UpdateItemAsync(item);
+
+            ItemDto itemDto = _mapper.Map<ItemDto>(item);
+
+            return CreatedAtRoute(nameof(GetItem), new { itemId = itemDto.ItemId }, itemDto);
+        }
+
+        // DELETE: api/budget/{budgetId}/group/{groupId}/item/{itemId}
+        [HttpDelete("{itemId}")]
+        public async Task<ActionResult> DeleteItem(int itemId)
+        {
+            if (!_repo.ItemByItemIdExists(itemId))
+            {
+                return NotFound();
+            }
+
+            Item item = await _repo.GetItemByItemIdAsync(itemId);
+
+            if (item == null)
+            {
+                return NotFound();
+            }
+
+            await _repo.DeleteItemByItemIdAsync(itemId);
+
+            ItemDto itemDto = _mapper.Map<ItemDto>(item);
+
+            return Ok(itemDto);
         }
     }
 }

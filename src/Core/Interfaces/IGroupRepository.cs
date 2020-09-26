@@ -9,8 +9,8 @@ namespace Core.Interfaces
         Task<Group> GetGroupByGroupIdAsync(int groupId);
         Task<IEnumerable<Group>> GetGroupsAsync();
         Task<Group> AddGroupAsync(Group group);
-        Task<Group> UpdateGroupAsync(int groupId, Group group);
-        void DeleteGroupByGroupIdAsync(int groupId);
+        Task<Group> UpdateGroupAsync(Group group);
+        Task<Group> DeleteGroupByGroupIdAsync(int groupId);
         bool GroupByGroupIdExists(int groupId);
     }
 }
