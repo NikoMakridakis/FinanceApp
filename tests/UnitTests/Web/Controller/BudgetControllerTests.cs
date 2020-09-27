@@ -38,8 +38,8 @@ namespace UnitTests.Web.Controller
         private IEnumerable<Budget> GetTestSessions()
         {
             var sessions = new List<Budget>();
-            sessions.Add(new Budget(new DateTime(2020, 10, 1), 4000, 2000));
-            sessions.Add(new Budget(new DateTime(2020, 9, 1), 5000, 3000));
+            sessions.Add(new Budget(4000, 2000));
+            sessions.Add(new Budget(5000, 3000));
 
 
             return sessions;
