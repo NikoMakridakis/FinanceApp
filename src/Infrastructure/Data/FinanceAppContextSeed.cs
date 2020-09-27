@@ -42,7 +42,7 @@ namespace Infrastructure.Data
 
         static Budget GetPreconfiguredBudget()
         {
-            return new Budget(DateTime.Now, 4000, 2000);
+            return new Budget(4000, 2000);
         }
 
         static IEnumerable<Group> GetPreconfiguredGroups()

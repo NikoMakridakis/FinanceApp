@@ -26,13 +26,14 @@ namespace Infrastructure.Data
             return await _context.Groups.ToListAsync();
         }
 
-        public async Task<Group> AddGroupAsync(Group group)
+        public async Task<Group> AddGroupAsync(int budgetId, Group group)
         {
             if (group == null)
             {
                 throw new ArgumentNullException(nameof(group));
             }
 
+            group.BudgetId = budgetId;
             _context.Groups.Add(group);
             await _context.SaveChangesAsync();
             return group;

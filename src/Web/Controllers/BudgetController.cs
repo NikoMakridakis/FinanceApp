@@ -35,7 +35,7 @@ namespace Web.Controllers
         {
             if (!_repo.BudgetByBudgetIdExists(budgetId))
             {
-                return NotFound();
+                return NotFound($"Unable to find budget with ID '{budgetId}'.");
             }
 
             Budget budget = await _repo.GetBudgetByBudgetIdAsync(budgetId);
@@ -55,21 +55,15 @@ namespace Web.Controllers
             return CreatedAtRoute(nameof(GetBudget), new { budgetId = budgetDto.BudgetId }, budgetDto);
         }
 
-        // TODO: Switch to Task<ActionResult<BudgetDto>> ?
         // PUT: api/budget/{budgetId}
         [HttpPut("{budgetId}")]
-        public async Task<ActionResult> PutBudget(int budgetId, BudgetForUpdateDto budgetForUpdateDto)
+        public async Task<ActionResult<BudgetDto>> PutBudget(int budgetId, BudgetForUpdateDto budgetForUpdateDto)
         {
-            if (!_repo.BudgetByBudgetIdExists(budgetId))
-            {
-                return NotFound();
-            }
-
             Budget budget = await _repo.GetBudgetByBudgetIdAsync(budgetId);
 
             if (budget == null)
             {
-                return NotFound();
+                return NotFound($"Unable to find budget with ID '{budgetId}'.");
             }
 
             _mapper.Map(budgetForUpdateDto, budget);
@@ -81,21 +75,15 @@ namespace Web.Controllers
             return CreatedAtRoute(nameof(GetBudget), new { budgetId = budgetDto.BudgetId }, budgetDto);
         }
 
-        // TODO: Switch to Task<ActionResult<BudgetDto>> ?
         // DELETE: api/budget/{budgetId}
         [HttpDelete("{budgetId}")]
-        public async Task<ActionResult> DeleteBudget(int budgetId)
+        public async Task<ActionResult<BudgetDto>> DeleteBudget(int budgetId)
         {
-            if (!_repo.BudgetByBudgetIdExists(budgetId))
-            {
-                return NotFound();
-            }
-
             Budget budget = await _repo.GetBudgetByBudgetIdAsync(budgetId);
 
             if (budget == null)
             {
-                return NotFound();
+                return NotFound($"Unable to find budget with ID '{budgetId}'.");
             }
 
             await _repo.DeleteBudgetByBudgetIdAsync(budgetId);

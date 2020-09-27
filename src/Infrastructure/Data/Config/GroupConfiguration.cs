@@ -10,7 +10,6 @@ namespace Infrastructure.Data.Config
         {
             builder.Property(g => g.GroupId).IsRequired();
             builder.Property(g => g.BudgetId).IsRequired();
-            builder.Property(g => g.GroupMonthlyTotal).HasColumnType("decimal(18,2)");
             builder.Property(g => g.GroupTitle).HasMaxLength(50);
         }
     }

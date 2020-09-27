@@ -10,6 +10,7 @@ namespace Web.Profiles
         {
             CreateMap<Item, ItemDto>();
             CreateMap<ItemForCreationDto, Item>();
+            CreateMap<ItemForUpdateDto, Item>();
         }
     }
 }

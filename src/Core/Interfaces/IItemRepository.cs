@@ -8,7 +8,7 @@ namespace Core.Interfaces
     {
         Task<Item> GetItemByItemIdAsync(int itemId);
         Task<IEnumerable<Item>> GetItemsAsync();
-        Task<Item> AddItemAsync(Item item);
+        Task<Item> AddItemAsync(int groupId, Item item);
         Task<Item> UpdateItemAsync(Item item);
         Task<Item> DeleteItemByItemIdAsync(int itemId);
         bool ItemByItemIdExists(int itemId);

@@ -13,17 +13,24 @@ namespace Web.Controllers
     public class ItemController : ControllerBase
     {
         private readonly IItemRepository _repo;
+        private readonly IGroupRepository _groupRepo;
         private readonly IMapper _mapper;
-        public ItemController(IItemRepository repo, IMapper mapper)
+        public ItemController(IItemRepository repo, IGroupRepository groupRepo, IMapper mapper)
         {
             _repo = repo;
+            _groupRepo = groupRepo;
             _mapper = mapper;
         }
 
         // GET: api/budget/{budgetId}/group/{groupId}/item
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<ItemDto>>> GetItems()
+        public async Task<ActionResult<IEnumerable<ItemDto>>> GetItems([FromRoute] int groupId)
         {
+            if (!_groupRepo.GroupByGroupIdExists(groupId))
+            {
+                return NotFound($"Unable to find group with ID '{groupId}'.");
+            }
+
             IEnumerable<Item> item = await _repo.GetItemsAsync();
 
             return Ok(_mapper.Map<IEnumerable<ItemDto>>(item));
@@ -31,11 +38,16 @@ namespace Web.Controllers
 
         // GET: api/budget/{budgetId}/group/{groupId}/item/{itemId}
         [HttpGet("{itemId}", Name = "GetItem")]
-        public async Task<ActionResult<ItemDto>> GetItem(int itemId)
+        public async Task<ActionResult<ItemDto>> GetItem([FromRoute] int groupId, int itemId)
         {
+            if (!_groupRepo.GroupByGroupIdExists(groupId))
+            {
+                return NotFound($"Unable to find group with ID '{groupId}'.");
+            }
+
             if (!_repo.ItemByItemIdExists(itemId))
             {
-                return NotFound();
+                return NotFound($"Unable to find item with ID '{itemId}'.");
             }
 
             Item item = await _repo.GetItemByItemIdAsync(itemId);
@@ -45,30 +57,35 @@ namespace Web.Controllers
 
         // POST: api/budget/{budgetId}/group/{groupId}/item
         [HttpPost]
-        public async Task<ActionResult<ItemDto>> PostItem(ItemForCreationDto itemForCreationDto)
+        public async Task<ActionResult<ItemDto>> PostItem([FromRoute] int groupId, ItemForCreationDto itemForCreationDto)
         {
+            if (!_groupRepo.GroupByGroupIdExists(groupId))
+            {
+                return NotFound($"Unable to find group with ID '{groupId}'.");
+            }
+
             Item item = _mapper.Map<Item>(itemForCreationDto);
-            await _repo.AddItemAsync(item);
+            await _repo.AddItemAsync(groupId, item);
 
             ItemDto itemDto = _mapper.Map<ItemDto>(item);
 
-            return CreatedAtRoute(nameof(GetItem), new { itemId = itemDto.ItemId }, itemDto);
+            return CreatedAtRoute(nameof(GetItem), new { groupId = item.GroupId, itemId = itemDto.ItemId }, itemDto);
         }
 
         // PUT: api/budget/{budgetId}/group/{groupId}/item/{itemId}
         [HttpPut("{itemId}")]
-        public async Task<ActionResult> PutItem(int itemId, ItemForUpdateDto itemForUpdateDto)
+        public async Task<ActionResult<ItemDto>> PutItem([FromRoute] int groupId, int itemId, ItemForUpdateDto itemForUpdateDto)
         {
-            if (!_repo.ItemByItemIdExists(itemId))
+            if (!_groupRepo.GroupByGroupIdExists(groupId))
             {
-                return NotFound();
+                return NotFound($"Unable to find group with ID '{groupId}'.");
             }
 
             Item item = await _repo.GetItemByItemIdAsync(itemId);
 
             if (item == null)
             {
-                return NotFound();
+                return NotFound($"Unable to find item with ID '{itemId}'.");
             }
 
             _mapper.Map(itemForUpdateDto, item);
@@ -77,23 +94,23 @@ namespace Web.Controllers
 
             ItemDto itemDto = _mapper.Map<ItemDto>(item);
 
-            return CreatedAtRoute(nameof(GetItem), new { itemId = itemDto.ItemId }, itemDto);
+            return CreatedAtRoute(nameof(GetItem), new { groupId = item.GroupId, itemId = itemDto.ItemId }, itemDto);
         }
 
         // DELETE: api/budget/{budgetId}/group/{groupId}/item/{itemId}
         [HttpDelete("{itemId}")]
-        public async Task<ActionResult> DeleteItem(int itemId)
+        public async Task<ActionResult<ItemDto>> DeleteItem([FromRoute] int groupId, int itemId)
         {
-            if (!_repo.ItemByItemIdExists(itemId))
+            if (!_groupRepo.GroupByGroupIdExists(groupId))
             {
-                return NotFound();
+                return NotFound($"Unable to find group with ID '{groupId}'.");
             }
 
             Item item = await _repo.GetItemByItemIdAsync(itemId);
 
             if (item == null)
             {
-                return NotFound();
+                return NotFound($"Unable to find item with ID '{itemId}'.");
             }
 
             await _repo.DeleteItemByItemIdAsync(itemId);

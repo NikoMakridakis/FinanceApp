@@ -1,5 +1,4 @@
-﻿using System;
-using Microsoft.EntityFrameworkCore.Migrations;
+﻿using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Infrastructure.Data.Migrations
 {
@@ -13,8 +12,6 @@ namespace Infrastructure.Data.Migrations
                 {
                     BudgetId = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    TodaysDate = table.Column<DateTime>(type: "date", nullable: false),
-                    DaysLeftInMonth = table.Column<int>(nullable: false),
                     MonthlyIncome = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     MonthlySpending = table.Column<decimal>(type: "decimal(18,2)", nullable: false)
                 },
@@ -30,7 +27,6 @@ namespace Infrastructure.Data.Migrations
                     GroupId = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     BudgetId = table.Column<int>(nullable: false),
-                    GroupMonthlyTotal = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     GroupTitle = table.Column<string>(maxLength: 50, nullable: true)
                 },
                 constraints: table =>

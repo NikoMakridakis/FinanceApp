@@ -10,6 +10,7 @@ namespace Web.Profiles
         {
             CreateMap<Group, GroupDto>();
             CreateMap<GroupForCreationDto, Group>();
+            CreateMap<GroupForUpdateDto, Group>();
         }
     }
 }
