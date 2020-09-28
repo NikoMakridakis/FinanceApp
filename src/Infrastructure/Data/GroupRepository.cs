@@ -16,24 +16,28 @@ namespace Infrastructure.Data
             _context = context ?? throw new ArgumentNullException(nameof(context));
         }
 
+        public async Task<IEnumerable<Group>> GetGroupsAsync(int? budgetId)
+        {
+            if (budgetId == null)
+            {
+                return await _context.Groups.ToListAsync();
+            }
+
+            return await _context.Groups.Where(g => g.BudgetId == budgetId).ToListAsync();
+        }
+
         public async Task<Group> GetGroupByGroupIdAsync(int groupId)
         {
             return await _context.Groups.FindAsync(groupId);
         }
 
-        public async Task<IEnumerable<Group>> GetGroupsAsync()
-        {
-            return await _context.Groups.ToListAsync();
-        }
-
-        public async Task<Group> AddGroupAsync(int budgetId, Group group)
+        public async Task<Group> AddGroupAsync(Group group)
         {
             if (group == null)
             {
                 throw new ArgumentNullException(nameof(group));
             }
 
-            group.BudgetId = budgetId;
             _context.Groups.Add(group);
             await _context.SaveChangesAsync();
             return group;
@@ -56,6 +60,11 @@ namespace Infrastructure.Data
         public bool GroupByGroupIdExists(int groupId)
         {
             return _context.Groups.Any(g => g.GroupId == groupId);
+        }
+
+        public bool BudgetByBudgetIdExists(int budgetId)
+        {
+            return _context.Budgets.Any(b => b.BudgetId == budgetId);
         }
     }
 }

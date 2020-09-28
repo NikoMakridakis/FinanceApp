@@ -25,7 +25,6 @@ namespace Web.Controllers
         public async Task<ActionResult<IEnumerable<ItemDto>>> GetItems([FromQuery] int? groupId)
         {
             IEnumerable<Item> item = await _repo.GetItemsAsync(groupId);
-
             return Ok(_mapper.Map<IEnumerable<ItemDto>>(item));
         }
 
@@ -39,7 +38,6 @@ namespace Web.Controllers
             }
 
             Item item = await _repo.GetItemByItemIdAsync(itemId);
-
             return Ok(_mapper.Map<ItemDto>(item));
         }
 
@@ -54,9 +52,7 @@ namespace Web.Controllers
 
             Item item = _mapper.Map<Item>(itemForCreationDto);
             await _repo.AddItemAsync(item);
-
             ItemDto itemDto = _mapper.Map<ItemDto>(item);
-
             return CreatedAtRoute(nameof(GetItem), new { itemId = itemDto.ItemId }, itemDto);
         }
 
@@ -72,11 +68,8 @@ namespace Web.Controllers
             }
 
             _mapper.Map(itemForUpdateDto, item);
-
             await _repo.UpdateItemAsync(item);
-
             ItemDto itemDto = _mapper.Map<ItemDto>(item);
-
             return CreatedAtRoute(nameof(GetItem), new { itemId = itemDto.ItemId }, itemDto);
         }
 
@@ -92,9 +85,7 @@ namespace Web.Controllers
             }
 
             await _repo.DeleteItemByItemIdAsync(itemId);
-
             ItemDto itemDto = _mapper.Map<ItemDto>(item);
-
             return Ok(itemDto);
         }
     }
