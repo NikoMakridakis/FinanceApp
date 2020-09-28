@@ -13,33 +13,33 @@ using Xunit;
 
 namespace UnitTests.Web.Controller
 {
-    public class BudgetControllerTests
+    public class UserControllerTests
     {
         [Fact]
         public async Task GetBudgets_ActionExecutes_ReturnsAllBudgets()
         {
             // Arrange
-            var mockRepo = new Mock<IBudgetRepository>();
+            var mockRepo = new Mock<IUserRepository>();
             mockRepo.Setup(repo => repo.GetBudgetsAsync()).ReturnsAsync(GetTestSessions());
 
             var mockMapper = new Mock<IMapper>();
-            mockMapper.Setup(mapper => mapper.Map<Budget, BudgetDto>(It.IsAny<Budget>())).Returns(new BudgetDto());
+            mockMapper.Setup(mapper => mapper.Map<User, UserDto>(It.IsAny<User>())).Returns(new UserDto());
 
-            var controller = new BudgetController(mockRepo.Object, mockMapper.Object);
+            var controller = new UserController(mockRepo.Object, mockMapper.Object);
 
             // Act
             var result = await controller.GetBudgets();
 
             // Assert
-            var budgets = Assert.IsAssignableFrom<ActionResult<IEnumerable<BudgetDto>>>(result);
+            var budgets = Assert.IsAssignableFrom<ActionResult<IEnumerable<UserDto>>>(result);
         }
 
 
-        private IEnumerable<Budget> GetTestSessions()
+        private IEnumerable<User> GetTestSessions()
         {
-            var sessions = new List<Budget>();
-            sessions.Add(new Budget(4000, 2000));
-            sessions.Add(new Budget(5000, 3000));
+            var sessions = new List<User>();
+            sessions.Add(new User(4000, 2000));
+            sessions.Add(new User(5000, 3000));
 
 
             return sessions;

@@ -10,11 +10,11 @@ namespace Web.Controllers
 {
     [Route("api/budget")]
     [ApiController]
-    public class BudgetController : ControllerBase
+    public class UserController : ControllerBase
     {
-        private readonly IBudgetRepository _repo;
+        private readonly IUserRepository _repo;
         private readonly IMapper _mapper;
-        public BudgetController(IBudgetRepository repo, IMapper mapper)
+        public UserController(IUserRepository repo, IMapper mapper)
         {
             _repo = repo;
             _mapper = mapper;
@@ -22,44 +22,44 @@ namespace Web.Controllers
 
         // GET: api/budget
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<BudgetDto>>> GetBudgets()
+        public async Task<ActionResult<IEnumerable<UserDto>>> GetBudgets()
         {
-            IEnumerable<Budget> budget = await _repo.GetBudgetsAsync();
+            IEnumerable<User> budget = await _repo.GetBudgetsAsync();
 
-            return Ok(_mapper.Map<IEnumerable<BudgetDto>>(budget));
+            return Ok(_mapper.Map<IEnumerable<UserDto>>(budget));
         }
 
         // GET: api/budget/{budgetId}
         [HttpGet("{budgetId}", Name = "GetBudget")]
-        public async Task<ActionResult<BudgetDto>> GetBudget(int budgetId)
+        public async Task<ActionResult<UserDto>> GetBudget(int budgetId)
         {
             if (!_repo.BudgetByBudgetIdExists(budgetId))
             {
                 return NotFound($"Unable to find budget with ID '{budgetId}'.");
             }
 
-            Budget budget = await _repo.GetBudgetByBudgetIdAsync(budgetId);
+            User budget = await _repo.GetBudgetByBudgetIdAsync(budgetId);
 
-            return Ok(_mapper.Map<BudgetDto>(budget));
+            return Ok(_mapper.Map<UserDto>(budget));
         }
 
         // POST: api/budget
         [HttpPost]
-        public async Task<ActionResult<BudgetDto>> PostBudget(BudgetForCreationDto budgetForCreationDto)
+        public async Task<ActionResult<UserDto>> PostBudget(UserForCreationDto budgetForCreationDto)
         {
-            Budget budget = _mapper.Map<Budget>(budgetForCreationDto);
+            User budget = _mapper.Map<User>(budgetForCreationDto);
             await _repo.AddBudgetAsync(budget);
 
-            BudgetDto budgetDto = _mapper.Map<BudgetDto>(budget);
+            UserDto budgetDto = _mapper.Map<UserDto>(budget);
 
             return CreatedAtRoute(nameof(GetBudget), new { budgetId = budgetDto.BudgetId }, budgetDto);
         }
 
         // PUT: api/budget/{budgetId}
         [HttpPut("{budgetId}")]
-        public async Task<ActionResult<BudgetDto>> PutBudget(int budgetId, BudgetForUpdateDto budgetForUpdateDto)
+        public async Task<ActionResult<UserDto>> PutBudget(int budgetId, UserForUpdateDto budgetForUpdateDto)
         {
-            Budget budget = await _repo.GetBudgetByBudgetIdAsync(budgetId);
+            User budget = await _repo.GetBudgetByBudgetIdAsync(budgetId);
 
             if (budget == null)
             {
@@ -70,16 +70,16 @@ namespace Web.Controllers
 
             await _repo.UpdateBudgetAsync(budget);
 
-            BudgetDto budgetDto = _mapper.Map<BudgetDto>(budget);
+            UserDto budgetDto = _mapper.Map<UserDto>(budget);
 
             return CreatedAtRoute(nameof(GetBudget), new { budgetId = budgetDto.BudgetId }, budgetDto);
         }
 
         // DELETE: api/budget/{budgetId}
         [HttpDelete("{budgetId}")]
-        public async Task<ActionResult<BudgetDto>> DeleteBudget(int budgetId)
+        public async Task<ActionResult<UserDto>> DeleteBudget(int budgetId)
         {
-            Budget budget = await _repo.GetBudgetByBudgetIdAsync(budgetId);
+            User budget = await _repo.GetBudgetByBudgetIdAsync(budgetId);
 
             if (budget == null)
             {
@@ -88,7 +88,7 @@ namespace Web.Controllers
 
             await _repo.DeleteBudgetByBudgetIdAsync(budgetId);
 
-            BudgetDto budgetDto = _mapper.Map<BudgetDto>(budget);
+            UserDto budgetDto = _mapper.Map<UserDto>(budget);
 
             return Ok(budgetDto);
         }

@@ -2,17 +2,17 @@
 
 namespace Core.Entities
 {
-    public class Budget
+    public class User
     {
         public int BudgetId { get; set; }
         public decimal MonthlyIncome { get; set; }
         public decimal MonthlySpending { get; set; }
-        public List<Group> Groups { get; set; } = new List<Group>();
+        public List<BudgetGroup> Groups { get; set; } = new List<BudgetGroup>();
 
-        public Budget()
+        public User()
         {
         }
-        public Budget(decimal monthlyIncome, decimal monthlySpending)
+        public User(decimal monthlyIncome, decimal monthlySpending)
         {
             MonthlyIncome = monthlyIncome;
             MonthlySpending = monthlySpending;

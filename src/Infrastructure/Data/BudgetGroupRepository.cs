@@ -8,15 +8,15 @@ using System.Threading.Tasks;
 
 namespace Infrastructure.Data
 {
-    public class GroupRepository : IGroupRepository
+    public class BudgetGroupRepository : IBudgetGroupRepository
     {
         private readonly FinanceAppContext _context;
-        public GroupRepository(FinanceAppContext context)
+        public BudgetGroupRepository(FinanceAppContext context)
         {
             _context = context ?? throw new ArgumentNullException(nameof(context));
         }
 
-        public async Task<IEnumerable<Group>> GetGroupsAsync(int? budgetId)
+        public async Task<IEnumerable<BudgetGroup>> GetGroupsAsync(int? budgetId)
         {
             if (budgetId == null)
             {
@@ -26,12 +26,12 @@ namespace Infrastructure.Data
             return await _context.Groups.Where(g => g.BudgetId == budgetId).ToListAsync();
         }
 
-        public async Task<Group> GetGroupByGroupIdAsync(int groupId)
+        public async Task<BudgetGroup> GetGroupByGroupIdAsync(int groupId)
         {
             return await _context.Groups.FindAsync(groupId);
         }
 
-        public async Task<Group> AddGroupAsync(Group group)
+        public async Task<BudgetGroup> AddGroupAsync(BudgetGroup group)
         {
             if (group == null)
             {
@@ -43,15 +43,15 @@ namespace Infrastructure.Data
             return group;
         }
 
-        public async Task<Group> UpdateGroupAsync(Group group)
+        public async Task<BudgetGroup> UpdateGroupAsync(BudgetGroup group)
         {
             await _context.SaveChangesAsync();
             return group;
         }
 
-        public async Task<Group> DeleteGroupByGroupIdAsync(int groupId)
+        public async Task<BudgetGroup> DeleteGroupByGroupIdAsync(int groupId)
         {
-            Group group = await _context.Groups.FindAsync(groupId);
+            BudgetGroup group = await _context.Groups.FindAsync(groupId);
             _context.Groups.Remove(group);
             await _context.SaveChangesAsync();
             return group;

@@ -40,22 +40,22 @@ namespace Infrastructure.Data
             }
         }
 
-        static Budget GetPreconfiguredBudget()
+        static User GetPreconfiguredBudget()
         {
-            return new Budget(4000, 2000);
+            return new User(4000, 2000);
         }
 
-        static IEnumerable<Group> GetPreconfiguredGroups()
+        static IEnumerable<BudgetGroup> GetPreconfiguredGroups()
         {
-            return new List<Group>()
+            return new List<BudgetGroup>()
             {
-                new Group(1, "Housing"),
-                new Group(1, "Transportation"),
-                new Group(1, "Food"),
-                new Group(1, "Personal"),
-                new Group(1, "Health"),
-                new Group(1, "Insurance"),
-                new Group(1, "Debt")
+                new BudgetGroup(1, "Housing"),
+                new BudgetGroup(1, "Transportation"),
+                new BudgetGroup(1, "Food"),
+                new BudgetGroup(1, "Personal"),
+                new BudgetGroup(1, "Health"),
+                new BudgetGroup(1, "Insurance"),
+                new BudgetGroup(1, "Debt")
             };
         }
 

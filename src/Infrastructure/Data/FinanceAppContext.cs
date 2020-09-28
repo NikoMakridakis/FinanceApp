@@ -10,8 +10,8 @@ namespace Infrastructure.Data
         {
         }
 
-        public DbSet<Budget> Budgets { get; set; }
-        public DbSet<Group> Groups { get; set; }
+        public DbSet<User> Budgets { get; set; }
+        public DbSet<BudgetGroup> Groups { get; set; }
         public DbSet<Item> Items { get; set; }
 
         //When creating the database migration, the specified configuration settings will be applied from Data/Config.

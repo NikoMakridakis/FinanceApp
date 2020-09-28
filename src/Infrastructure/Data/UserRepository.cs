@@ -8,25 +8,25 @@ using System.Threading.Tasks;
 
 namespace Infrastructure.Data
 {
-    public class BudgetRepository : IBudgetRepository
+    public class UserRepository : IUserRepository
     {
         private readonly FinanceAppContext _context;
-        public BudgetRepository(FinanceAppContext context)
+        public UserRepository(FinanceAppContext context)
         {
             _context = context ?? throw new ArgumentNullException(nameof(context));
         }
 
-        public async Task<Budget> GetBudgetByBudgetIdAsync(int budgetId)
+        public async Task<User> GetBudgetByBudgetIdAsync(int budgetId)
         {
             return await _context.Budgets.FindAsync(budgetId);
         }
 
-        public async Task<IEnumerable<Budget>> GetBudgetsAsync()
+        public async Task<IEnumerable<User>> GetBudgetsAsync()
         {
             return await _context.Budgets.ToListAsync();
         }
 
-        public async Task<Budget> AddBudgetAsync(Budget budget)
+        public async Task<User> AddBudgetAsync(User budget)
         {
             if (budget == null)
             {
@@ -38,15 +38,15 @@ namespace Infrastructure.Data
             return budget;
         }
 
-        public async Task<Budget> UpdateBudgetAsync(Budget budget)
+        public async Task<User> UpdateBudgetAsync(User budget)
         {
             await _context.SaveChangesAsync();
             return budget;
         }
 
-        public async Task<Budget> DeleteBudgetByBudgetIdAsync(int budgetId)
+        public async Task<User> DeleteBudgetByBudgetIdAsync(int budgetId)
         {
-            Budget budget = await _context.Budgets.FindAsync(budgetId);
+            User budget = await _context.Budgets.FindAsync(budgetId);
             _context.Budgets.Remove(budget);
             await _context.SaveChangesAsync();
             return budget;
