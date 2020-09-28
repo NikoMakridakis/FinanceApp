@@ -47,6 +47,11 @@ namespace Web.Controllers
         [HttpPost]
         public async Task<ActionResult<ItemDto>> PostItem(ItemForCreationDto itemForCreationDto)
         {
+            if (!_repo.GroupByGroupIdExists(itemForCreationDto.GroupId))
+            {
+                return NotFound($"Unable to find group with ID '{itemForCreationDto.GroupId}'.");
+            }
+
             Item item = _mapper.Map<Item>(itemForCreationDto);
             await _repo.AddItemAsync(item);
 

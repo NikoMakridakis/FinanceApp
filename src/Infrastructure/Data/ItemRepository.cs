@@ -60,5 +60,10 @@ namespace Infrastructure.Data
         {
             return _context.Items.Any(i => i.ItemId == itemId);
         }
+
+        public bool GroupByGroupIdExists(int groupId)
+        {
+            return _context.Groups.Any(g => g.GroupId == groupId);
+        }
     }
 }
