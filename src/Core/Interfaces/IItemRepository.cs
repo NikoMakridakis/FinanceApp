@@ -6,9 +6,9 @@ namespace Core.Interfaces
 {
     public interface IItemRepository
     {
+        Task<IEnumerable<Item>> GetItemsAsync(int? groupId);
         Task<Item> GetItemByItemIdAsync(int itemId);
-        Task<IEnumerable<Item>> GetItemsAsync();
-        Task<Item> AddItemAsync(int groupId, Item item);
+        Task<Item> AddItemAsync(Item item);
         Task<Item> UpdateItemAsync(Item item);
         Task<Item> DeleteItemByItemIdAsync(int itemId);
         bool ItemByItemIdExists(int itemId);

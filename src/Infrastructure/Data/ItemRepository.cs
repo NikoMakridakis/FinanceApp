@@ -16,24 +16,28 @@ namespace Infrastructure.Data
             _context = context ?? throw new ArgumentNullException(nameof(context));
         }
 
+        public async Task<IEnumerable<Item>> GetItemsAsync(int? groupId)
+        {
+            if (groupId == null)
+            {
+                return await _context.Items.ToListAsync();
+            }
+
+            return await _context.Items.Where(i => i.GroupId == groupId).ToListAsync();
+        }
+
         public async Task<Item> GetItemByItemIdAsync(int itemId)
         {
             return await _context.Items.FindAsync(itemId);
         }
 
-        public async Task<IEnumerable<Item>> GetItemsAsync()
-        {
-            return await _context.Items.ToListAsync();
-        }
-
-        public async Task<Item> AddItemAsync(int groupId, Item item)
+        public async Task<Item> AddItemAsync(Item item)
         {
             if (item == null)
             {
                 throw new ArgumentNullException(nameof(item));
             }
 
-            item.GroupId = groupId;
             _context.Items.Add(item);
             await _context.SaveChangesAsync();
             return item;
