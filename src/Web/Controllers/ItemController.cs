@@ -22,10 +22,10 @@ namespace Web.Controllers
 
         // GET: api/item
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<ItemDto>>> GetItems([FromQuery] int? budgetGroupId)
+        public async Task<ActionResult<IReadOnlyList<ItemDto>>> GetItems([FromQuery] int? budgetGroupId)
         {
-            IEnumerable<Item> item = await _repo.GetItemsAsync(budgetGroupId);
-            return Ok(_mapper.Map<IEnumerable<ItemDto>>(item));
+            IReadOnlyList<Item> item = await _repo.GetItemsAsync(budgetGroupId);
+            return Ok(_mapper.Map<IReadOnlyList<ItemDto>>(item));
         }
 
         // GET: api/item/{itemId}

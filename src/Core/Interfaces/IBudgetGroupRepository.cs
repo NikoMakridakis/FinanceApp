@@ -6,7 +6,7 @@ namespace Core.Interfaces
 {
     public interface IBudgetGroupRepository
     {
-        Task<IEnumerable<BudgetGroup>> GetBudgetGroupsAsync(int? userId);
+        Task<IReadOnlyList<BudgetGroup>> GetBudgetGroupsAsync(int? userId);
         Task<BudgetGroup> GetBudgetGroupByIdAsync(int budgetGroupId);
         Task<BudgetGroup> AddBudgetGroupAsync(BudgetGroup budgetGroup);
         Task<BudgetGroup> UpdateBudgetGroupAsync(BudgetGroup budgetGroup);

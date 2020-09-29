@@ -40,7 +40,7 @@ namespace Infrastructure.Data
             }
         }
 
-        static IEnumerable<User> GetPreconfiguredUsers()
+        static List<User> GetPreconfiguredUsers()
         {
             return new List<User>()
             {
@@ -49,7 +49,7 @@ namespace Infrastructure.Data
             };
         }
 
-        static IEnumerable<BudgetGroup> GetPreconfiguredGroups()
+        static List<BudgetGroup> GetPreconfiguredGroups()
         {
             return new List<BudgetGroup>()
             {
@@ -71,7 +71,7 @@ namespace Infrastructure.Data
             };
         }
 
-        static IEnumerable<Item> GetPreconfiguredItems()
+        static List<Item> GetPreconfiguredItems()
         {
             return new List<Item>()
             {

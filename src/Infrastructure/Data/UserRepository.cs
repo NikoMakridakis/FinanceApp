@@ -16,14 +16,14 @@ namespace Infrastructure.Data
             _context = context ?? throw new ArgumentNullException(nameof(context));
         }
 
+        public async Task<IReadOnlyList<User>> GetUsersAsync()
+        {
+            return await _context.Users.ToListAsync();
+        }
+
         public async Task<User> GetUserByUserIdAsync(int userId)
         {
             return await _context.Users.FindAsync(userId);
-        }
-
-        public async Task<IEnumerable<User>> GetUsersAsync()
-        {
-            return await _context.Users.ToListAsync();
         }
 
         public async Task<User> AddUserAsync(User user)

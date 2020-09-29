@@ -22,10 +22,10 @@ namespace Web.Controllers
 
         // GET: api/budgetGroup
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<BudgetGroupDto>>> GetBudgetGroups([FromQuery] int? userId)
+        public async Task<ActionResult<IReadOnlyList<BudgetGroupDto>>> GetBudgetGroups([FromQuery] int? userId)
         {
-            IEnumerable<BudgetGroup> group = await _repo.GetBudgetGroupsAsync(userId);
-            return Ok(_mapper.Map<IEnumerable<BudgetGroupDto>>(group));
+            IReadOnlyList<BudgetGroup> group = await _repo.GetBudgetGroupsAsync(userId);
+            return Ok(_mapper.Map<IReadOnlyList<BudgetGroupDto>>(group));
         }
 
         // GET: api/budgetGroup/{budgetGroupId}

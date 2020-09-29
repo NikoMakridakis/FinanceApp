@@ -16,11 +16,11 @@ namespace UnitTests.Web.Controller
     public class UserControllerTests
     {
         [Fact]
-        public async Task GetBudgets_ActionExecutes_ReturnsAllBudgets()
+        public async Task GetUsers_ActionExecutes_ReturnsAllUsers()
         {
             // Arrange
             var mockRepo = new Mock<IUserRepository>();
-            mockRepo.Setup(repo => repo.GetUsersAsync()).ReturnsAsync(GetTestSessions());
+            mockRepo.Setup(repo => repo.GetUsersAsync()).ReturnsAsync(GetTestUsers());
 
             var mockMapper = new Mock<IMapper>();
             mockMapper.Setup(mapper => mapper.Map<User, UserDto>(It.IsAny<User>())).Returns(new UserDto());
@@ -31,18 +31,17 @@ namespace UnitTests.Web.Controller
             var result = await controller.GetUsers();
 
             // Assert
-            var budgets = Assert.IsAssignableFrom<ActionResult<IEnumerable<UserDto>>>(result);
+            Assert.Equal(2, result.Count);
         }
 
 
-        private IEnumerable<User> GetTestSessions()
+        private List<User> GetTestUsers()
         {
-            var sessions = new List<User>();
-            sessions.Add(new User(4000, "nmak@gmail.com", "password"));
-            sessions.Add(new User(5000, "abar@gmail.com", "password"));
+            List<User> users = new List<User>();
+            users.Add(new User(4000, "nmak@gmail.com", "password"));
+            users.Add(new User(5000, "abar@gmail.com", "password"));
 
-
-            return sessions;
+            return users;
         }
     }
 }

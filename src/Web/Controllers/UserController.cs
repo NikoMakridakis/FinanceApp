@@ -22,10 +22,10 @@ namespace Web.Controllers
 
         // GET: api/user
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<UserDto>>> GetUsers()
+        public async Task<ActionResult<IReadOnlyList<UserDto>>> GetUsers()
         {
-            IEnumerable<User> user = await _repo.GetUsersAsync();
-            return Ok(_mapper.Map<IEnumerable<UserDto>>(user));
+            IReadOnlyList<User> user = await _repo.GetUsersAsync();
+            return Ok(_mapper.Map<IReadOnlyList<UserDto>>(user));
         }
 
         // GET: api/user/{userId}

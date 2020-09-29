@@ -6,7 +6,7 @@ namespace Core.Interfaces
 {
     public interface IItemRepository
     {
-        Task<IEnumerable<Item>> GetItemsAsync(int? budgetGroupId);
+        Task<IReadOnlyList<Item>> GetItemsAsync(int? budgetGroupId);
         Task<Item> GetItemByItemIdAsync(int itemId);
         Task<Item> AddItemAsync(Item item);
         Task<Item> UpdateItemAsync(Item item);

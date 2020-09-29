@@ -16,7 +16,7 @@ namespace Infrastructure.Data
             _context = context ?? throw new ArgumentNullException(nameof(context));
         }
 
-        public async Task<IEnumerable<Item>> GetItemsAsync(int? budgetGroupId)
+        public async Task<IReadOnlyList<Item>> GetItemsAsync(int? budgetGroupId)
         {
             if (budgetGroupId == null)
             {
