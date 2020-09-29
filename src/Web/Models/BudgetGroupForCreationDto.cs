@@ -2,7 +2,7 @@
 {
     public class BudgetGroupForCreationDto
     {
-        public int BudgetId { get; set; }
-        public string GroupTitle { get; set; }
+        public int UserId { get; set; }
+        public string BudgetGroupTitle { get; set; }
     }
 }

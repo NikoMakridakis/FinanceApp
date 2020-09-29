@@ -22,15 +22,15 @@ namespace Web.Controllers
 
         // GET: api/item
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<ItemDto>>> GetItems([FromQuery] int? groupId)
+        public async Task<ActionResult<IEnumerable<ItemDto>>> GetItems([FromQuery] int? budgetGroupId)
         {
-            IEnumerable<Item> item = await _repo.GetItemsAsync(groupId);
+            IEnumerable<Item> item = await _repo.GetItemsAsync(budgetGroupId);
             return Ok(_mapper.Map<IEnumerable<ItemDto>>(item));
         }
 
         // GET: api/item/{itemId}
         [HttpGet("{itemId}", Name = "GetItem")]
-        public async Task<ActionResult<ItemDto>> GetItem(int itemId, int? groupId)
+        public async Task<ActionResult<ItemDto>> GetItem(int itemId)
         {
             if (!_repo.ItemByItemIdExists(itemId))
             {
@@ -45,9 +45,11 @@ namespace Web.Controllers
         [HttpPost]
         public async Task<ActionResult<ItemDto>> PostItem(ItemForCreationDto itemForCreationDto)
         {
-            if (!_repo.GroupByGroupIdExists(itemForCreationDto.GroupId))
+            int budgetGroupId = itemForCreationDto.BudgetGroupId;
+
+            if (!_repo.BudgetGroupByBudgetGroupIdExists(budgetGroupId))
             {
-                return NotFound($"Unable to find group with ID '{itemForCreationDto.GroupId}'.");
+                return NotFound($"Unable to find budget group with ID '{budgetGroupId}'.");
             }
 
             Item item = _mapper.Map<Item>(itemForCreationDto);

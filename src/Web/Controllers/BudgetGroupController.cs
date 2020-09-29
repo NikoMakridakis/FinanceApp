@@ -20,73 +20,75 @@ namespace Web.Controllers
             _mapper = mapper;
         }
 
-        // GET: api/group
+        // GET: api/budgetGroup
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<BudgetGroupDto>>> GetGroups([FromQuery] int? budgetId)
+        public async Task<ActionResult<IEnumerable<BudgetGroupDto>>> GetBudgetGroups([FromQuery] int? userId)
         {
-            IEnumerable<BudgetGroup> group = await _repo.GetGroupsAsync(budgetId);
+            IEnumerable<BudgetGroup> group = await _repo.GetBudgetGroupsAsync(userId);
             return Ok(_mapper.Map<IEnumerable<BudgetGroupDto>>(group));
         }
 
-        // GET: api/group/{groupId}
-        [HttpGet("{groupId}", Name = "GetGroup")]
-        public async Task<ActionResult<BudgetGroupDto>> GetGroup([FromRoute] int budgetId, int groupId)
+        // GET: api/budgetGroup/{budgetGroupId}
+        [HttpGet("{budgetGroupId}", Name = "GetBudgetGroup")]
+        public async Task<ActionResult<BudgetGroupDto>> GetBudgetGroup(int budgetGroupId)
         {
-            if (!_repo.GroupByGroupIdExists(groupId))
+            if (!_repo.BudgetGroupByIdExists(budgetGroupId))
             {
-                return NotFound($"Unable to find group with ID '{groupId}'.");
+                return NotFound($"Unable to find budget group with ID '{budgetGroupId}'.");
             }
 
-            BudgetGroup group = await _repo.GetGroupByGroupIdAsync(groupId);
-            return Ok(_mapper.Map<BudgetGroupDto>(group));
+            BudgetGroup budgetGroup = await _repo.GetBudgetGroupByIdAsync(budgetGroupId);
+            return Ok(_mapper.Map<BudgetGroupDto>(budgetGroup));
         }
 
-        // POST: api/group
+        // POST: api/budgetGroup
         [HttpPost]
-        public async Task<ActionResult<BudgetGroupDto>> PostGroup([FromRoute] int budgetId, BudgetGroupForCreationDto groupForCreationDto)
+        public async Task<ActionResult<BudgetGroupDto>> PostBudgetGroup(BudgetGroupForCreationDto budgetGroupForCreationDto)
         {
-            if (!_repo.BudgetByBudgetIdExists(groupForCreationDto.BudgetId))
+            int userId = budgetGroupForCreationDto.UserId;
+
+            if (!_repo.UserByUserIdExists(userId))
             {
-                return NotFound($"Unable to find budget with ID '{groupForCreationDto.BudgetId}'.");
+                return NotFound($"Unable to find user with ID '{userId}'.");
             }
 
-            BudgetGroup group = _mapper.Map<BudgetGroup>(groupForCreationDto);
-            await _repo.AddGroupAsync(group);
-            BudgetGroupDto groupDto = _mapper.Map<BudgetGroupDto>(group);
-            return CreatedAtRoute(nameof(GetGroup), new { groupId = groupDto.GroupId }, groupDto);
+            BudgetGroup budgetGroup = _mapper.Map<BudgetGroup>(budgetGroupForCreationDto);
+            await _repo.AddBudgetGroupAsync(budgetGroup);
+            BudgetGroupDto budgetGroupDto = _mapper.Map<BudgetGroupDto>(budgetGroup);
+            return CreatedAtRoute(nameof(GetBudgetGroup), new { budgetGroupId = budgetGroupDto.BudgetGroupId }, budgetGroupDto);
         }
 
-        // PUT: api/group/{groupId}
-        [HttpPut("{groupId}")]
-        public async Task<ActionResult<BudgetGroupDto>> PutGroup([FromRoute] int budgetId, int groupId, BudgetGroupForUpdateDto groupForUpdateDto)
+        // PUT: api/budgetGroup/{budgetGroupId}
+        [HttpPut("{budgetGroupId}")]
+        public async Task<ActionResult<BudgetGroupDto>> PutBudgetGroup(int budgetGroupId, BudgetGroupForUpdateDto budgetGroupForUpdateDto)
         {
-            BudgetGroup group = await _repo.GetGroupByGroupIdAsync(groupId);
+            BudgetGroup budgetGroup = await _repo.GetBudgetGroupByIdAsync(budgetGroupId);
 
-            if (group == null)
+            if (budgetGroup == null)
             {
-                return NotFound($"Unable to find group with ID '{groupId}'.");
+                return NotFound($"Unable to find budget group with ID '{budgetGroupId}'.");
             }
 
-            _mapper.Map(groupForUpdateDto, group);
-            await _repo.UpdateGroupAsync(group);
-            BudgetGroupDto groupDto = _mapper.Map<BudgetGroupDto>(group);
-            return CreatedAtRoute(nameof(GetGroup), new { budgetId = group.BudgetId, groupId = groupDto.GroupId }, groupDto);
+            _mapper.Map(budgetGroupForUpdateDto, budgetGroup);
+            await _repo.UpdateBudgetGroupAsync(budgetGroup);
+            BudgetGroupDto budgetGroupDto = _mapper.Map<BudgetGroupDto>(budgetGroup);
+            return CreatedAtRoute(nameof(GetBudgetGroup), new { budgetGroupId = budgetGroupDto.BudgetGroupId }, budgetGroupDto);
         }
 
-        // DELETE: api/group/{groupId}
-        [HttpDelete("{groupId}")]
-        public async Task<ActionResult<BudgetGroupDto>> DeleteGroup([FromRoute] int budgetId, int groupId)
+        // DELETE: api/budgetGroup/{budgetGroupId}
+        [HttpDelete("{budgetGroupId}")]
+        public async Task<ActionResult<BudgetGroupDto>> DeleteBudgetGroup(int budgetGroupId)
         {
-            BudgetGroup group = await _repo.GetGroupByGroupIdAsync(groupId);
+            BudgetGroup budgetGroup = await _repo.GetBudgetGroupByIdAsync(budgetGroupId);
 
-            if (group == null)
+            if (budgetGroup == null)
             {
-                return NotFound($"Unable to find group with ID '{groupId}'.");
+                return NotFound($"Unable to find budget group with ID '{budgetGroupId}'.");
             }
 
-            await _repo.DeleteGroupByGroupIdAsync(groupId);
-            BudgetGroupDto groupDto = _mapper.Map<BudgetGroupDto>(group);
-            return Ok(groupDto);
+            await _repo.DeleteBudgetGroupByIdAsync(budgetGroupId);
+            BudgetGroupDto budgetGroupDto = _mapper.Map<BudgetGroupDto>(budgetGroup);
+            return Ok(budgetGroupDto);
         }
     }
 }

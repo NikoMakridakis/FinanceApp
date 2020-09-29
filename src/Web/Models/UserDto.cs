@@ -1,9 +1,15 @@
-﻿namespace Web.Models
+﻿using Core.Entities;
+using System.Collections.Generic;
+
+namespace Web.Models
 {
     public class UserDto
     {
-        public int BudgetId { get; set; }
+        public int UserId { get; set; }
         public decimal MonthlyIncome { get; set; }
-        public decimal MonthlySpending { get; set; }
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
+        public string Email { get; set; }
+        public List<BudgetGroup> BudgetGroups { get; set; }
     }
 }

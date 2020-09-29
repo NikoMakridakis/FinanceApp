@@ -4,19 +4,19 @@ namespace Core.Entities
 {
     public class BudgetGroup
     {
-        public int GroupId { get; set; }
-        public int BudgetId { get; set; }
-        public string GroupTitle { get; set; }
+        public int BudgetGroupId { get; set; }
+        public int UserId { get; set; }
+        public string BudgetGroupTitle { get; set; }
         public List<Item> Items { get; set; }
 
         public BudgetGroup()
         {
         }
 
-        public BudgetGroup(int budgetId, string groupTitle)
+        public BudgetGroup(int userId, string budgetGroupTitle)
         {
-            BudgetId = budgetId;
-            GroupTitle = groupTitle;
+            UserId = userId;
+            BudgetGroupTitle = budgetGroupTitle;
         }
     }
 }

@@ -6,11 +6,11 @@ namespace Core.Interfaces
 {
     public interface IUserRepository
     {
-        Task<User> GetBudgetByBudgetIdAsync(int budgetId);
-        Task<IEnumerable<User>> GetBudgetsAsync();
-        Task<User> AddBudgetAsync(User budget);
-        Task<User> UpdateBudgetAsync(User budget);
-        Task<User> DeleteBudgetByBudgetIdAsync(int budgetId);
-        bool BudgetByBudgetIdExists(int budgetId);
+        Task<User> GetUserByUserIdAsync(int userId);
+        Task<IEnumerable<User>> GetUsersAsync();
+        Task<User> AddUserAsync(User user);
+        Task<User> UpdateUserAsync(User user);
+        Task<User> DeleteUserByUserIdAsync(int userId);
+        bool UserByUserIdExists(int userId);
     }
 }

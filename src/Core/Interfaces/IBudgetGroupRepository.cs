@@ -6,12 +6,12 @@ namespace Core.Interfaces
 {
     public interface IBudgetGroupRepository
     {
-        Task<IEnumerable<BudgetGroup>> GetGroupsAsync(int? budgetId);
-        Task<BudgetGroup> GetGroupByGroupIdAsync(int groupId);
-        Task<BudgetGroup> AddGroupAsync(BudgetGroup group);
-        Task<BudgetGroup> UpdateGroupAsync(BudgetGroup group);
-        Task<BudgetGroup> DeleteGroupByGroupIdAsync(int groupId);
-        bool GroupByGroupIdExists(int groupId);
-        bool BudgetByBudgetIdExists(int budgetId);
+        Task<IEnumerable<BudgetGroup>> GetBudgetGroupsAsync(int? userId);
+        Task<BudgetGroup> GetBudgetGroupByIdAsync(int budgetGroupId);
+        Task<BudgetGroup> AddBudgetGroupAsync(BudgetGroup budgetGroup);
+        Task<BudgetGroup> UpdateBudgetGroupAsync(BudgetGroup budgetGroup);
+        Task<BudgetGroup> DeleteBudgetGroupByIdAsync(int budgetGroupId);
+        bool BudgetGroupByIdExists(int budgetGroupId);
+        bool UserByUserIdExists(int userId);
     }
 }

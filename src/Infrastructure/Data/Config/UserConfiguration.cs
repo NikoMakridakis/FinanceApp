@@ -8,9 +8,10 @@ namespace Infrastructure.Data.Config
     {
         public void Configure(EntityTypeBuilder<User> builder)
         {
-            builder.Property(b => b.BudgetId).IsRequired();
-            builder.Property(b => b.MonthlyIncome).HasColumnType("decimal(18,2)");
-            builder.Property(b => b.MonthlySpending).HasColumnType("decimal(18,2)");
+            builder.Property(u => u.UserId).IsRequired();
+            builder.Property(u => u.MonthlyIncome).HasColumnType("decimal(18,2)");
+            builder.Property(u => u.Email).IsRequired();
+            builder.Property(u => u.Password).IsRequired();
         }
     }
 }

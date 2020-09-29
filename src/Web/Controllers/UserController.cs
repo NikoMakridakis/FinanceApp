@@ -8,7 +8,7 @@ using Web.Models;
 
 namespace Web.Controllers
 {
-    [Route("api/budget")]
+    [Route("api/[controller]")]
     [ApiController]
     public class UserController : ControllerBase
     {
@@ -20,77 +20,68 @@ namespace Web.Controllers
             _mapper = mapper;
         }
 
-        // GET: api/budget
+        // GET: api/user
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<UserDto>>> GetBudgets()
+        public async Task<ActionResult<IEnumerable<UserDto>>> GetUsers()
         {
-            IEnumerable<User> budget = await _repo.GetBudgetsAsync();
-
-            return Ok(_mapper.Map<IEnumerable<UserDto>>(budget));
+            IEnumerable<User> user = await _repo.GetUsersAsync();
+            return Ok(_mapper.Map<IEnumerable<UserDto>>(user));
         }
 
-        // GET: api/budget/{budgetId}
-        [HttpGet("{budgetId}", Name = "GetBudget")]
-        public async Task<ActionResult<UserDto>> GetBudget(int budgetId)
+        // GET: api/user/{userId}
+        [HttpGet("{userId}", Name = "GetUser")]
+        public async Task<ActionResult<UserDto>> GetUser(int userId)
         {
-            if (!_repo.BudgetByBudgetIdExists(budgetId))
+            if (!_repo.UserByUserIdExists(userId))
             {
-                return NotFound($"Unable to find budget with ID '{budgetId}'.");
+                return NotFound($"Unable to find user with ID '{userId}'.");
             }
 
-            User budget = await _repo.GetBudgetByBudgetIdAsync(budgetId);
-
-            return Ok(_mapper.Map<UserDto>(budget));
+            User user = await _repo.GetUserByUserIdAsync(userId);
+            return Ok(_mapper.Map<UserDto>(user));
         }
 
-        // POST: api/budget
+        // POST: api/user
         [HttpPost]
-        public async Task<ActionResult<UserDto>> PostBudget(UserForCreationDto budgetForCreationDto)
+        public async Task<ActionResult<UserDto>> PostUser(UserForCreationDto userForCreationDto)
         {
-            User budget = _mapper.Map<User>(budgetForCreationDto);
-            await _repo.AddBudgetAsync(budget);
-
-            UserDto budgetDto = _mapper.Map<UserDto>(budget);
-
-            return CreatedAtRoute(nameof(GetBudget), new { budgetId = budgetDto.BudgetId }, budgetDto);
+            User user = _mapper.Map<User>(userForCreationDto);
+            await _repo.AddUserAsync(user);
+            UserDto userDto = _mapper.Map<UserDto>(user);
+            return CreatedAtRoute(nameof(GetUser), new { userId = userDto.UserId }, userDto);
         }
 
-        // PUT: api/budget/{budgetId}
-        [HttpPut("{budgetId}")]
-        public async Task<ActionResult<UserDto>> PutBudget(int budgetId, UserForUpdateDto budgetForUpdateDto)
+        // PUT: api/user/{userId}
+        [HttpPut("{userId}")]
+        public async Task<ActionResult<UserDto>> PutUser(int userId, UserForUpdateDto userForUpdateDto)
         {
-            User budget = await _repo.GetBudgetByBudgetIdAsync(budgetId);
+            User user = await _repo.GetUserByUserIdAsync(userId);
 
-            if (budget == null)
+            if (user == null)
             {
-                return NotFound($"Unable to find budget with ID '{budgetId}'.");
+                return NotFound($"Unable to find user with ID '{userId}'.");
             }
 
-            _mapper.Map(budgetForUpdateDto, budget);
-
-            await _repo.UpdateBudgetAsync(budget);
-
-            UserDto budgetDto = _mapper.Map<UserDto>(budget);
-
-            return CreatedAtRoute(nameof(GetBudget), new { budgetId = budgetDto.BudgetId }, budgetDto);
+            _mapper.Map(userForUpdateDto, user);
+            await _repo.UpdateUserAsync(user);
+            UserDto userDto = _mapper.Map<UserDto>(user);
+            return CreatedAtRoute(nameof(GetUser), new { userId = userDto.UserId }, userDto);
         }
 
-        // DELETE: api/budget/{budgetId}
-        [HttpDelete("{budgetId}")]
-        public async Task<ActionResult<UserDto>> DeleteBudget(int budgetId)
+        // DELETE: api/user/{userId}
+        [HttpDelete("{userId}")]
+        public async Task<ActionResult<UserDto>> DeleteUser(int userId)
         {
-            User budget = await _repo.GetBudgetByBudgetIdAsync(budgetId);
+            User user = await _repo.GetUserByUserIdAsync(userId);
 
-            if (budget == null)
+            if (user == null)
             {
-                return NotFound($"Unable to find budget with ID '{budgetId}'.");
+                return NotFound($"Unable to find user with ID '{userId}'.");
             }
 
-            await _repo.DeleteBudgetByBudgetIdAsync(budgetId);
-
-            UserDto budgetDto = _mapper.Map<UserDto>(budget);
-
-            return Ok(budgetDto);
+            await _repo.DeleteUserByUserIdAsync(userId);
+            UserDto userDto = _mapper.Map<UserDto>(user);
+            return Ok(userDto);
         }
     }
 }

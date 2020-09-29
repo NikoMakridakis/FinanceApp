@@ -7,36 +7,39 @@ namespace Infrastructure.Data.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "Budgets",
+                name: "Users",
                 columns: table => new
                 {
-                    BudgetId = table.Column<int>(nullable: false)
+                    UserId = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     MonthlyIncome = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    MonthlySpending = table.Column<decimal>(type: "decimal(18,2)", nullable: false)
+                    FirstName = table.Column<string>(nullable: true),
+                    LastName = table.Column<string>(nullable: true),
+                    Email = table.Column<string>(nullable: false),
+                    Password = table.Column<string>(nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Budgets", x => x.BudgetId);
+                    table.PrimaryKey("PK_Users", x => x.UserId);
                 });
 
             migrationBuilder.CreateTable(
-                name: "Groups",
+                name: "BudgetGroups",
                 columns: table => new
                 {
-                    GroupId = table.Column<int>(nullable: false)
+                    BudgetGroupId = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    BudgetId = table.Column<int>(nullable: false),
-                    GroupTitle = table.Column<string>(maxLength: 50, nullable: true)
+                    UserId = table.Column<int>(nullable: false),
+                    BudgetGroupTitle = table.Column<string>(maxLength: 50, nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Groups", x => x.GroupId);
+                    table.PrimaryKey("PK_BudgetGroups", x => x.BudgetGroupId);
                     table.ForeignKey(
-                        name: "FK_Groups_Budgets_BudgetId",
-                        column: x => x.BudgetId,
-                        principalTable: "Budgets",
-                        principalColumn: "BudgetId",
+                        name: "FK_BudgetGroups_Users_UserId",
+                        column: x => x.UserId,
+                        principalTable: "Users",
+                        principalColumn: "UserId",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -46,7 +49,7 @@ namespace Infrastructure.Data.Migrations
                 {
                     ItemId = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    GroupId = table.Column<int>(nullable: false),
+                    BudgetGroupId = table.Column<int>(nullable: false),
                     ItemTitle = table.Column<string>(maxLength: 50, nullable: true),
                     ItemMontlyAmount = table.Column<decimal>(type: "decimal(18,2)", nullable: false)
                 },
@@ -54,22 +57,22 @@ namespace Infrastructure.Data.Migrations
                 {
                     table.PrimaryKey("PK_Items", x => x.ItemId);
                     table.ForeignKey(
-                        name: "FK_Items_Groups_GroupId",
-                        column: x => x.GroupId,
-                        principalTable: "Groups",
-                        principalColumn: "GroupId",
+                        name: "FK_Items_BudgetGroups_BudgetGroupId",
+                        column: x => x.BudgetGroupId,
+                        principalTable: "BudgetGroups",
+                        principalColumn: "BudgetGroupId",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Groups_BudgetId",
-                table: "Groups",
-                column: "BudgetId");
+                name: "IX_BudgetGroups_UserId",
+                table: "BudgetGroups",
+                column: "UserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Items_GroupId",
+                name: "IX_Items_BudgetGroupId",
                 table: "Items",
-                column: "GroupId");
+                column: "BudgetGroupId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -78,10 +81,10 @@ namespace Infrastructure.Data.Migrations
                 name: "Items");
 
             migrationBuilder.DropTable(
-                name: "Groups");
+                name: "BudgetGroups");
 
             migrationBuilder.DropTable(
-                name: "Budgets");
+                name: "Users");
         }
     }
 }

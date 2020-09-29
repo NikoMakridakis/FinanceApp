@@ -9,7 +9,7 @@ namespace Infrastructure.Data.Config
         public void Configure(EntityTypeBuilder<Item> builder)
         {
             builder.Property(i => i.ItemId).IsRequired();
-            builder.Property(i => i.GroupId).IsRequired();
+            builder.Property(i => i.BudgetGroupId).IsRequired();
             builder.Property(i => i.ItemTitle).HasMaxLength(50);
             builder.Property(i => i.ItemMontlyAmount).HasColumnType("decimal(18,2)");
         }

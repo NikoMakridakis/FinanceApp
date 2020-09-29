@@ -2,6 +2,6 @@
 {
     public class BudgetGroupForUpdateDto
     {
-        public string GroupTitle { get; set; }
+        public string BudgetGroupTitle { get; set; }
     }
 }

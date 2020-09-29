@@ -6,12 +6,12 @@ namespace Core.Interfaces
 {
     public interface IItemRepository
     {
-        Task<IEnumerable<Item>> GetItemsAsync(int? groupId);
+        Task<IEnumerable<Item>> GetItemsAsync(int? budgetGroupId);
         Task<Item> GetItemByItemIdAsync(int itemId);
         Task<Item> AddItemAsync(Item item);
         Task<Item> UpdateItemAsync(Item item);
         Task<Item> DeleteItemByItemIdAsync(int itemId);
         bool ItemByItemIdExists(int itemId);
-        bool GroupByGroupIdExists(int groupId);
+        bool BudgetGroupByBudgetGroupIdExists(int budgetGroupId);
     }
 }

@@ -15,15 +15,15 @@ namespace Infrastructure.Data
             {
                 context.Database.Migrate();
 
-                if(!await context.Budgets.AnyAsync())
+                if(!await context.Users.AnyAsync())
                 {
-                    await context.Budgets.AddRangeAsync(GetPreconfiguredBudget());
+                    await context.Users.AddRangeAsync(GetPreconfiguredUsers());
                     await context.SaveChangesAsync();
                 }
 
-                if (!await context.Groups.AnyAsync())
+                if (!await context.BudgetGroups.AnyAsync())
                 {
-                    await context.Groups.AddRangeAsync(GetPreconfiguredGroups());
+                    await context.BudgetGroups.AddRangeAsync(GetPreconfiguredGroups());
                     await context.SaveChangesAsync();
                 }
 
@@ -40,9 +40,13 @@ namespace Infrastructure.Data
             }
         }
 
-        static User GetPreconfiguredBudget()
+        static IEnumerable<User> GetPreconfiguredUsers()
         {
-            return new User(4000, 2000);
+            return new List<User>()
+            {
+                new User(4000, "nmak@gmail.com", "password"),
+                new User(5000, "abar@gmail.com", "password")
+            };
         }
 
         static IEnumerable<BudgetGroup> GetPreconfiguredGroups()
@@ -55,7 +59,15 @@ namespace Infrastructure.Data
                 new BudgetGroup(1, "Personal"),
                 new BudgetGroup(1, "Health"),
                 new BudgetGroup(1, "Insurance"),
-                new BudgetGroup(1, "Debt")
+                new BudgetGroup(1, "Debt"),
+
+                new BudgetGroup(2, "Housing"),
+                new BudgetGroup(2, "Transportation"),
+                new BudgetGroup(2, "Food"),
+                new BudgetGroup(2, "Personal"),
+                new BudgetGroup(2, "Health"),
+                new BudgetGroup(2, "Insurance"),
+                new BudgetGroup(2, "Debt")
             };
         }
 
@@ -89,6 +101,33 @@ namespace Infrastructure.Data
                 new Item(7, "Car Payment", 0),
                 new Item(7, "Student Loan", 0),
                 new Item(7, "Medical Bill", 0),
+
+                new Item(8, "Mortgage/Rent", 800),
+                new Item(8, "Water", 30),
+                new Item(8, "Electricity", 30),
+                new Item(8, "Natural Gas", 30),
+                new Item(8, "Internet/Cable", 20),
+                new Item(8, "Trash", 20),
+                new Item(9, "Gas", 100),
+                new Item(9, "Maintenance", 10),
+                new Item(10, "Groceries", 400),
+                new Item(10, "Restaurants", 200),
+                new Item(11, "Clothing", 200),
+                new Item(11, "Phone", 20),
+                new Item(11, "Subscriptions", 20),
+                new Item(11, "Fun Money", 200),
+                new Item(12, "Gym", 10),
+                new Item(12, "Medicine/Vitamins", 10),
+                new Item(12, "Doctor Visits", 10),
+                new Item(13, "Health Insurance", 40),
+                new Item(13, "Dental Insurance", 20),
+                new Item(13, "Life Insurance", 10),
+                new Item(13, "Auto Insurance", 40),
+                new Item(13, "Homeowner/Renter Insurance", 10),
+                new Item(14, "Credit Card", 200),
+                new Item(14, "Car Payment", 200),
+                new Item(14, "Student Loan", 200),
+                new Item(14, "Medical Bill", 200),
             };
         }
     }

@@ -16,55 +16,55 @@ namespace Infrastructure.Data
             _context = context ?? throw new ArgumentNullException(nameof(context));
         }
 
-        public async Task<IEnumerable<BudgetGroup>> GetGroupsAsync(int? budgetId)
+        public async Task<IEnumerable<BudgetGroup>> GetBudgetGroupsAsync(int? userId)
         {
-            if (budgetId == null)
+            if (userId == null)
             {
-                return await _context.Groups.ToListAsync();
+                return await _context.BudgetGroups.ToListAsync();
             }
 
-            return await _context.Groups.Where(g => g.BudgetId == budgetId).ToListAsync();
+            return await _context.BudgetGroups.Where(b => b.UserId == userId).ToListAsync();
         }
 
-        public async Task<BudgetGroup> GetGroupByGroupIdAsync(int groupId)
+        public async Task<BudgetGroup> GetBudgetGroupByIdAsync(int budgetGroupId)
         {
-            return await _context.Groups.FindAsync(groupId);
+            return await _context.BudgetGroups.FindAsync(budgetGroupId);
         }
 
-        public async Task<BudgetGroup> AddGroupAsync(BudgetGroup group)
+        public async Task<BudgetGroup> AddBudgetGroupAsync(BudgetGroup budgetGroup)
         {
-            if (group == null)
+            if (budgetGroup == null)
             {
-                throw new ArgumentNullException(nameof(group));
+                throw new ArgumentNullException(nameof(budgetGroup));
             }
 
-            _context.Groups.Add(group);
+            _context.BudgetGroups.Add(budgetGroup);
             await _context.SaveChangesAsync();
-            return group;
+            return budgetGroup;
         }
 
-        public async Task<BudgetGroup> UpdateGroupAsync(BudgetGroup group)
+        public async Task<BudgetGroup> UpdateBudgetGroupAsync(BudgetGroup budgetGroup)
         {
             await _context.SaveChangesAsync();
-            return group;
+            return budgetGroup;
         }
 
-        public async Task<BudgetGroup> DeleteGroupByGroupIdAsync(int groupId)
+        public async Task<BudgetGroup> DeleteBudgetGroupByIdAsync(int budgetGroupId)
         {
-            BudgetGroup group = await _context.Groups.FindAsync(groupId);
-            _context.Groups.Remove(group);
+            BudgetGroup budgetGroup = await _context.BudgetGroups.FindAsync(budgetGroupId);
+            _context.BudgetGroups.Remove(budgetGroup);
             await _context.SaveChangesAsync();
-            return group;
+            return budgetGroup;
         }
 
-        public bool GroupByGroupIdExists(int groupId)
+        public bool BudgetGroupByIdExists(int budgetGroupId)
         {
-            return _context.Groups.Any(g => g.GroupId == groupId);
+            return _context.BudgetGroups.Any(g => g.BudgetGroupId == budgetGroupId);
         }
 
-        public bool BudgetByBudgetIdExists(int budgetId)
+        public bool UserByUserIdExists(int userId)
         {
-            return _context.Budgets.Any(b => b.BudgetId == budgetId);
+            return _context.Users.Any(u => u.UserId == userId);
         }
     }
 }

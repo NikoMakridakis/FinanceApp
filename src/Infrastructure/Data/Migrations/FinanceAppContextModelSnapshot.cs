@@ -18,43 +18,25 @@ namespace Infrastructure.Data.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-            modelBuilder.Entity("Core.Entities.Budget", b =>
+            modelBuilder.Entity("Core.Entities.BudgetGroup", b =>
                 {
-                    b.Property<int>("BudgetId")
+                    b.Property<int>("BudgetGroupId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<decimal>("MonthlyIncome")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<decimal>("MonthlySpending")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.HasKey("BudgetId");
-
-                    b.ToTable("Budgets");
-                });
-
-            modelBuilder.Entity("Core.Entities.Group", b =>
-                {
-                    b.Property<int>("GroupId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<int>("BudgetId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("GroupTitle")
+                    b.Property<string>("BudgetGroupTitle")
                         .HasColumnType("nvarchar(50)")
                         .HasMaxLength(50);
 
-                    b.HasKey("GroupId");
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
 
-                    b.HasIndex("BudgetId");
+                    b.HasKey("BudgetGroupId");
 
-                    b.ToTable("Groups");
+                    b.HasIndex("UserId");
+
+                    b.ToTable("BudgetGroups");
                 });
 
             modelBuilder.Entity("Core.Entities.Item", b =>
@@ -64,7 +46,7 @@ namespace Infrastructure.Data.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int>("GroupId")
+                    b.Property<int>("BudgetGroupId")
                         .HasColumnType("int");
 
                     b.Property<decimal>("ItemMontlyAmount")
@@ -76,25 +58,54 @@ namespace Infrastructure.Data.Migrations
 
                     b.HasKey("ItemId");
 
-                    b.HasIndex("GroupId");
+                    b.HasIndex("BudgetGroupId");
 
                     b.ToTable("Items");
                 });
 
-            modelBuilder.Entity("Core.Entities.Group", b =>
+            modelBuilder.Entity("Core.Entities.User", b =>
                 {
-                    b.HasOne("Core.Entities.Budget", null)
-                        .WithMany("Groups")
-                        .HasForeignKey("BudgetId")
+                    b.Property<int>("UserId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("FirstName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("LastName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<decimal>("MonthlyIncome")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<string>("Password")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("UserId");
+
+                    b.ToTable("Users");
+                });
+
+            modelBuilder.Entity("Core.Entities.BudgetGroup", b =>
+                {
+                    b.HasOne("Core.Entities.User", null)
+                        .WithMany("BudgetGroups")
+                        .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
             modelBuilder.Entity("Core.Entities.Item", b =>
                 {
-                    b.HasOne("Core.Entities.Group", null)
+                    b.HasOne("Core.Entities.BudgetGroup", null)
                         .WithMany("Items")
-                        .HasForeignKey("GroupId")
+                        .HasForeignKey("BudgetGroupId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });

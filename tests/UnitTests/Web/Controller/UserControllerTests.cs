@@ -20,7 +20,7 @@ namespace UnitTests.Web.Controller
         {
             // Arrange
             var mockRepo = new Mock<IUserRepository>();
-            mockRepo.Setup(repo => repo.GetBudgetsAsync()).ReturnsAsync(GetTestSessions());
+            mockRepo.Setup(repo => repo.GetUsersAsync()).ReturnsAsync(GetTestSessions());
 
             var mockMapper = new Mock<IMapper>();
             mockMapper.Setup(mapper => mapper.Map<User, UserDto>(It.IsAny<User>())).Returns(new UserDto());
@@ -28,7 +28,7 @@ namespace UnitTests.Web.Controller
             var controller = new UserController(mockRepo.Object, mockMapper.Object);
 
             // Act
-            var result = await controller.GetBudgets();
+            var result = await controller.GetUsers();
 
             // Assert
             var budgets = Assert.IsAssignableFrom<ActionResult<IEnumerable<UserDto>>>(result);
@@ -38,8 +38,8 @@ namespace UnitTests.Web.Controller
         private IEnumerable<User> GetTestSessions()
         {
             var sessions = new List<User>();
-            sessions.Add(new User(4000, 2000));
-            sessions.Add(new User(5000, 3000));
+            sessions.Add(new User(4000, "nmak@gmail.com", "password"));
+            sessions.Add(new User(5000, "abar@gmail.com", "password"));
 
 
             return sessions;
