@@ -29,9 +29,11 @@ namespace UnitTests.Web.Controller
 
             // Act
             var result = await controller.GetUsers();
+            var okResult = result.Value as OkObjectResult;
 
             // Assert
-            Assert.Equal(2, result.Count);
+            var users = Assert.IsType<List<User>>(okResult.Value);
+            Assert.Equal(3, users.Count);
         }
 
 
