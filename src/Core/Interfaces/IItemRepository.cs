@@ -12,6 +12,6 @@ namespace Core.Interfaces
         Task<Item> UpdateItemAsync(Item item);
         Task<Item> DeleteItemByItemIdAsync(int itemId);
         bool ItemByItemIdExists(int itemId);
-        bool BudgetGroupByBudgetGroupIdExists(int budgetGroupId);
+        bool BudgetGroupByBudgetGroupIdExists(int? budgetGroupId);
     }
 }

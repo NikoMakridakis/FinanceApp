@@ -24,6 +24,11 @@ namespace Web.Controllers
         [HttpGet]
         public async Task<ActionResult<IReadOnlyList<ItemDto>>> GetItems([FromQuery] int? budgetGroupId)
         {
+            if (budgetGroupId != null && !_repo.BudgetGroupByBudgetGroupIdExists(budgetGroupId))
+            {
+                return NotFound($"Unable to find budget group with ID '{budgetGroupId}'.");
+            }
+
             IReadOnlyList<Item> item = await _repo.GetItemsAsync(budgetGroupId);
             return Ok(_mapper.Map<IReadOnlyList<ItemDto>>(item));
         }

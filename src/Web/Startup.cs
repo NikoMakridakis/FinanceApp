@@ -10,6 +10,7 @@ using Infrastructure.Data;
 using Core.Interfaces;
 using AutoMapper;
 using System;
+using Infrastructure.Identity;
 
 namespace Web
 {
@@ -32,6 +33,9 @@ namespace Web
             
             services.AddDbContext<FinanceAppContext>(options =>
                 options.UseSqlServer(_configuration.GetConnectionString("DefaultConnection")));
+
+            services.AddDbContext<AppIdentityDbContext>(options =>
+                options.UseSqlServer(_configuration.GetConnectionString("IdentityConnection")));
 
             services.AddSwaggerGen(c =>
             {

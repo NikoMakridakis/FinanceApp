@@ -24,6 +24,11 @@ namespace Web.Controllers
         [HttpGet]
         public async Task<ActionResult<IReadOnlyList<BudgetGroupDto>>> GetBudgetGroups([FromQuery] int? userId)
         {
+            if (userId != null && !_repo.UserByUserIdExists(userId))
+            {
+                return NotFound($"Unable to find user with ID '{userId}'.");
+            }
+
             IReadOnlyList<BudgetGroup> group = await _repo.GetBudgetGroupsAsync(userId);
             return Ok(_mapper.Map<IReadOnlyList<BudgetGroupDto>>(group));
         }

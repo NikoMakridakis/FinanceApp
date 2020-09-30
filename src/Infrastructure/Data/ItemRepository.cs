@@ -61,7 +61,7 @@ namespace Infrastructure.Data
             return _context.Items.Any(i => i.ItemId == itemId);
         }
 
-        public bool BudgetGroupByBudgetGroupIdExists(int budgetGroupId)
+        public bool BudgetGroupByBudgetGroupIdExists(int? budgetGroupId)
         {
             return _context.BudgetGroups.Any(g => g.BudgetGroupId == budgetGroupId);
         }

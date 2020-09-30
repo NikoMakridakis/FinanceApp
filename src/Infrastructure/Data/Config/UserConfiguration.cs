@@ -10,7 +10,7 @@ namespace Infrastructure.Data.Config
         {
             builder.Property(u => u.UserId).IsRequired();
             builder.Property(u => u.MonthlyIncome).HasColumnType("decimal(18,2)");
-            builder.Property(u => u.Email).IsRequired();
+            builder.Property(u => u.EmailAddress).IsRequired();
             builder.Property(u => u.Password).IsRequired();
         }
     }

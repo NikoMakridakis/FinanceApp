@@ -62,7 +62,7 @@ namespace Infrastructure.Data
             return _context.BudgetGroups.Any(g => g.BudgetGroupId == budgetGroupId);
         }
 
-        public bool UserByUserIdExists(int userId)
+        public bool UserByUserIdExists(int? userId)
         {
             return _context.Users.Any(u => u.UserId == userId);
         }
