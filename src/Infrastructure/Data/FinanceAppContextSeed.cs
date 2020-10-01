@@ -15,12 +15,6 @@ namespace Infrastructure.Data
             {
                 context.Database.Migrate();
 
-                if(!await context.Users.AnyAsync())
-                {
-                    await context.Users.AddRangeAsync(GetPreconfiguredUsers());
-                    await context.SaveChangesAsync();
-                }
-
                 if (!await context.BudgetGroups.AnyAsync())
                 {
                     await context.BudgetGroups.AddRangeAsync(GetPreconfiguredGroups());
@@ -38,15 +32,6 @@ namespace Infrastructure.Data
                 var log = loggerFactory.CreateLogger<FinanceAppContextSeed>();
                 log.LogError(ex.Message);
             }
-        }
-
-        static List<User> GetPreconfiguredUsers()
-        {
-            return new List<User>()
-            {
-                new User(4000, "nmak@gmail.com", "password"),
-                new User(5000, "abar@gmail.com", "password")
-            };
         }
 
         static List<BudgetGroup> GetPreconfiguredGroups()

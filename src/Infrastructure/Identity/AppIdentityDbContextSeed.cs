@@ -2,39 +2,26 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore.Internal;
 using Microsoft.Extensions.Logging;
+using System;
+using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
 
 namespace Infrastructure.Identity
 {
     public class AppIdentityDbContextSeed
     {
-        public static async Task SeedAsync(UserManager<User> userManager)
+        public static async Task SeedAsync(AppIdentityDbContext context, UserManager<AppUser> userManager, ILoggerFactory loggerFactory)
         {
             try
             {
-                if (!userManager.Users.Any())
-                {
-                    var user = new User
-                    {
-
-                    }
-                }
+                var defaultUser = new AppUser { UserName = "demouser@microsoft.com", Email = "demouser@microsoft.com" };
+                await userManager.CreateAsync(defaultUser, "Pass@word1");
             }
             catch (Exception ex)
             {
-                var log = loggerFactory.CreateLogger<FinanceAppContextSeed>();
+                var log = loggerFactory.CreateLogger<AppIdentityDbContextSeed>();
                 log.LogError(ex.Message);
             }
         }
-
-        static List<User> GetPreconfiguredUsers()
-        {
-            return new List<User>()
-            {
-                new User(4000, "nmak@gmail.com", "password"),
-                new User(5000, "abar@gmail.com", "password")
-            };
-        }
-    }
     }
 }

@@ -3,13 +3,12 @@ using System.Collections.Generic;
 
 namespace Web.Models
 {
-    public class UserDto
+    public class AppUserDto
     {
-        public int UserId { get; set; }
+        public int AppUserId { get; set; }
         public decimal MonthlyIncome { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
-        public string EmailAddress { get; set; }
         public List<BudgetGroup> BudgetGroups { get; set; }
     }
 }

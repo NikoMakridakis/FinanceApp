@@ -1,5 +1,6 @@
 ﻿using Core.Entities;
 using Core.Interfaces;
+using Infrastructure.Identity;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -8,25 +9,25 @@ using System.Threading.Tasks;
 
 namespace Infrastructure.Data
 {
-    public class UserRepository : IUserRepository
+    public class AppUserRepository : IAppUserRepository
     {
-        private readonly FinanceAppContext _context;
-        public UserRepository(FinanceAppContext context)
+        private readonly AppIdentityDbContext _context;
+        public AppUserRepository(AppIdentityDbContext context)
         {
             _context = context ?? throw new ArgumentNullException(nameof(context));
         }
 
-        public async Task<IReadOnlyList<User>> GetUsersAsync()
+        public async Task<IReadOnlyList<AppUser>> GetAppUsersAsync()
         {
             return await _context.Users.ToListAsync();
         }
 
-        public async Task<User> GetUserByUserIdAsync(int userId)
+        public async Task<AppUser> GetAppUserByIdAsync(int userId)
         {
             return await _context.Users.FindAsync(userId);
         }
 
-        public async Task<User> AddUserAsync(User user)
+        public async Task<AppUser> AddAppUserAsync(AppUser user)
         {
             if (user == null)
             {
@@ -38,23 +39,23 @@ namespace Infrastructure.Data
             return user;
         }
 
-        public async Task<User> UpdateUserAsync(User user)
+        public async Task<AppUser> UpdateAppUserAsync(AppUser user)
         {
             await _context.SaveChangesAsync();
             return user;
         }
 
-        public async Task<User> DeleteUserByUserIdAsync(int userId)
+        public async Task<AppUser> DeleteAppUserByIdAsync(int userId)
         {
-            User user = await _context.Users.FindAsync(userId);
+            AppUser user = await _context.Users.FindAsync(userId);
             _context.Users.Remove(user);
             await _context.SaveChangesAsync();
             return user;
         }
 
-        public bool UserByUserIdExists(int userId)
+        public bool AppUserByIdExists(int userId)
         {
-            return _context.Users.Any(u => u.UserId == userId);
+            return _context.Users.Any(u => u.AppUserId == userId);
         }
     }
 }

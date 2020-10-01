@@ -1,5 +1,8 @@
+using Core.Entities;
 using Infrastructure.Data;
+using Infrastructure.Identity;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
@@ -23,6 +26,10 @@ namespace Web
                 {
                     var context = services.GetRequiredService<FinanceAppContext>();
                     await FinanceAppContextSeed.SeedAsync(context, loggerFactory);
+
+                    var userManager = services.GetRequiredService<UserManager<AppUser>>();
+                    await AppIdentityDbContextSeed.SeedAsync(userManager, loggerFactory);
+
                 }
                 catch (Exception ex)
                 {

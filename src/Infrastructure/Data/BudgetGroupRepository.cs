@@ -64,7 +64,7 @@ namespace Infrastructure.Data
 
         public bool UserByUserIdExists(int? userId)
         {
-            return _context.Users.Any(u => u.UserId == userId);
+            return _context.Users.Any(u => u.AppUserId == userId);
         }
     }
 }

@@ -11,6 +11,8 @@ using Core.Interfaces;
 using AutoMapper;
 using System;
 using Infrastructure.Identity;
+using Core.Entities;
+using Microsoft.AspNetCore.Identity;
 
 namespace Web
 {
@@ -37,6 +39,10 @@ namespace Web
             services.AddDbContext<AppIdentityDbContext>(options =>
                 options.UseSqlServer(_configuration.GetConnectionString("IdentityConnection")));
 
+            services.AddIdentityCore<AppUser>().AddEntityFrameworkStores<AppIdentityDbContext>().AddSignInManager<SignInManager<AppUser>>();
+
+            services.AddAuthentication();
+
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo
@@ -47,7 +53,7 @@ namespace Web
                 });
             });
 
-            services.AddScoped<IUserRepository, UserRepository>();
+            services.AddScoped<IAppUserRepository, AppUserRepository>();
             services.AddScoped<IBudgetGroupRepository, BudgetGroupRepository>();
             services.AddScoped<IItemRepository, ItemRepository>();
 
@@ -84,6 +90,10 @@ namespace Web
             });
 
             app.UseRouting();
+
+            app.UseCookiePolicy();
+            app.UseAuthentication();
+            app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
             {
