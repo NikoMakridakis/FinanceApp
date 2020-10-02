@@ -1,6 +1,5 @@
 ﻿using Core.Entities;
 using Core.Interfaces;
-using Infrastructure.Identity;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -9,25 +8,25 @@ using System.Threading.Tasks;
 
 namespace Infrastructure.Data
 {
-    public class AppUserRepository : IAppUserRepository
+    public class UserRepository : IUserRepository
     {
-        private readonly AppIdentityDbContext _context;
-        public AppUserRepository(AppIdentityDbContext context)
+        private readonly FinanceAppDbContext _context;
+        public UserRepository(FinanceAppDbContext context)
         {
             _context = context ?? throw new ArgumentNullException(nameof(context));
         }
 
-        public async Task<IReadOnlyList<AppUser>> GetAppUsersAsync()
+        public async Task<IReadOnlyList<User>> GetUsersAsync()
         {
             return await _context.Users.ToListAsync();
         }
 
-        public async Task<AppUser> GetAppUserByIdAsync(int userId)
+        public async Task<User> GetUserByUserIdAsync(Guid userId)
         {
             return await _context.Users.FindAsync(userId);
         }
 
-        public async Task<AppUser> AddAppUserAsync(AppUser user)
+        public async Task<User> AddUserAsync(User user)
         {
             if (user == null)
             {
@@ -39,15 +38,15 @@ namespace Infrastructure.Data
             return user;
         }
 
-        public async Task<AppUser> UpdateAppUserAsync(AppUser user)
+        public async Task<User> UpdateUserAsync(User user)
         {
             await _context.SaveChangesAsync();
             return user;
         }
 
-        public async Task<AppUser> DeleteAppUserByIdAsync(int userId)
+        public async Task<User> DeleteUserByUserIdAsync(Guid userId)
         {
-            AppUser user = await _context.Users.FindAsync(userId);
+            User user = await _context.Users.FindAsync(userId);
             _context.Users.Remove(user);
             await _context.SaveChangesAsync();
             return user;

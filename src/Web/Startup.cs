@@ -10,7 +10,6 @@ using Infrastructure.Data;
 using Core.Interfaces;
 using AutoMapper;
 using System;
-using Infrastructure.Identity;
 using Core.Entities;
 using Microsoft.AspNetCore.Identity;
 
@@ -36,10 +35,7 @@ namespace Web
             services.AddDbContext<FinanceAppDbContext>(options =>
                 options.UseSqlServer(_configuration.GetConnectionString("DefaultConnection")));
 
-            services.AddDbContext<AppIdentityDbContext>(options =>
-                options.UseSqlServer(_configuration.GetConnectionString("IdentityConnection")));
-
-            services.AddIdentityCore<AppUser>().AddEntityFrameworkStores<AppIdentityDbContext>().AddSignInManager<SignInManager<AppUser>>();
+            services.AddIdentityCore<User>().AddEntityFrameworkStores<FinanceAppDbContext>().AddSignInManager<SignInManager<User>>();
 
             services.AddAuthentication();
 
@@ -53,7 +49,7 @@ namespace Web
                 });
             });
 
-            services.AddScoped<IAppUserRepository, AppUserRepository>();
+            services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IBudgetGroupRepository, BudgetGroupRepository>();
             services.AddScoped<IItemRepository, ItemRepository>();
 
@@ -91,7 +87,6 @@ namespace Web
 
             app.UseRouting();
 
-            app.UseCookiePolicy();
             app.UseAuthentication();
             app.UseAuthorization();
 

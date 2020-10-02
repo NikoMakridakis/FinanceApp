@@ -1,4 +1,5 @@
 ﻿using Core.Entities;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System;
@@ -9,11 +10,25 @@ namespace Infrastructure.Data
 {
     public class FinanceAppDbContextSeed
     {
-        public static async Task SeedAsync(FinanceAppDbContext context, ILoggerFactory loggerFactory)
+        public static async Task SeedAsync(FinanceAppDbContext context, UserManager<User> userManager, ILoggerFactory loggerFactory)
         {
             try
             {
                 context.Database.Migrate();
+
+                if (!await context.Users.AnyAsync())
+                {
+                    User user = new User
+                    {
+                        MonthlyIncome = 5000,
+                        FirstName = "Niko",
+                        LastName = "Makridakis",
+                        UserName = "demouser@microsoft.com",
+                        Email = "demouser@microsoft.com"
+                    };
+
+                    await userManager.CreateAsync(user, "Pass@word1");
+                }
 
                 if (!await context.BudgetGroups.AnyAsync())
                 {

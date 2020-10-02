@@ -1,9 +1,9 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore.Migrations;
 
-namespace Infrastructure.Identity.Migrations
+namespace Infrastructure.Data.Migrations
 {
-    public partial class InitialIdentity : Migration
+    public partial class InitialCreate : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -156,28 +156,27 @@ namespace Infrastructure.Identity.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "BudgetGroup",
+                name: "BudgetGroups",
                 columns: table => new
                 {
                     BudgetGroupId = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    AppUserId = table.Column<int>(nullable: false),
                     BudgetGroupTitle = table.Column<string>(maxLength: 50, nullable: true),
-                    AppUserId1 = table.Column<string>(nullable: true)
+                    UserId = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_BudgetGroup", x => x.BudgetGroupId);
+                    table.PrimaryKey("PK_BudgetGroups", x => x.BudgetGroupId);
                     table.ForeignKey(
-                        name: "FK_BudgetGroup_AspNetUsers_AppUserId1",
-                        column: x => x.AppUserId1,
+                        name: "FK_BudgetGroups_AspNetUsers_UserId",
+                        column: x => x.UserId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
-                name: "Item",
+                name: "Items",
                 columns: table => new
                 {
                     ItemId = table.Column<int>(nullable: false)
@@ -188,11 +187,11 @@ namespace Infrastructure.Identity.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Item", x => x.ItemId);
+                    table.PrimaryKey("PK_Items", x => x.ItemId);
                     table.ForeignKey(
-                        name: "FK_Item_BudgetGroup_BudgetGroupId",
+                        name: "FK_Items_BudgetGroups_BudgetGroupId",
                         column: x => x.BudgetGroupId,
-                        principalTable: "BudgetGroup",
+                        principalTable: "BudgetGroups",
                         principalColumn: "BudgetGroupId",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -237,13 +236,13 @@ namespace Infrastructure.Identity.Migrations
                 filter: "[NormalizedUserName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
-                name: "IX_BudgetGroup_AppUserId1",
-                table: "BudgetGroup",
-                column: "AppUserId1");
+                name: "IX_BudgetGroups_UserId",
+                table: "BudgetGroups",
+                column: "UserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Item_BudgetGroupId",
-                table: "Item",
+                name: "IX_Items_BudgetGroupId",
+                table: "Items",
                 column: "BudgetGroupId");
         }
 
@@ -265,13 +264,13 @@ namespace Infrastructure.Identity.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
-                name: "Item");
+                name: "Items");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
-                name: "BudgetGroup");
+                name: "BudgetGroups");
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");

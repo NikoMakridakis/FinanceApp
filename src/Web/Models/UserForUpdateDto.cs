@@ -1,6 +1,6 @@
 ﻿namespace Web.Models
 {
-    public class AppUserForCreationDto
+    public class UserForUpdateDto
     {
         public decimal MonthlyIncome { get; set; }
         public string FirstName { get; set; }

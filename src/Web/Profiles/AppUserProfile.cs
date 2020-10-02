@@ -8,9 +8,9 @@ namespace Web.Profiles
     {
         public AppUserProfile()
         {
-            CreateMap<AppUser, AppUserDto>();
-            CreateMap<AppUserForCreationDto, AppUser>();
-            CreateMap<AppUserForUpdateDto, AppUser>();
+            CreateMap<User, UserDto>();
+            CreateMap<UserForCreationDto, User>();
+            CreateMap<UserForUpdateDto, User>();
         }
     }
 }

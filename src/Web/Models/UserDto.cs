@@ -1,15 +1,14 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Core.Entities;
 using System.Collections.Generic;
 
-namespace Core.Entities
+namespace Web.Models
 {
-    public class AppUser : IdentityUser
+    public class UserDto
     {
+        public int UserId { get; set; }
         public decimal MonthlyIncome { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public List<BudgetGroup> BudgetGroups { get; set; }
     }
 }
-
-
