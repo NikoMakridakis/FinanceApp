@@ -32,10 +32,10 @@ namespace Web.Controllers
         [HttpGet("{appUserId}", Name = "GetAppUser")]
         public async Task<ActionResult<AppUserDto>> GetAppUser(int appUserId)
         {
-            if (!_repo.AppUserByIdExists(appUserId))
-            {
-                return NotFound($"Unable to find app user with ID '{appUserId}'.");
-            }
+            //if (!_repo.AppUserByIdExists(appUserId))
+            //{
+            //    return NotFound($"Unable to find app user with ID '{appUserId}'.");
+            //}
 
             AppUser appUser = await _repo.GetAppUserByIdAsync(appUserId);
             return Ok(_mapper.Map<AppUserDto>(appUser));

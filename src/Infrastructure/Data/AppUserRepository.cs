@@ -52,10 +52,5 @@ namespace Infrastructure.Data
             await _context.SaveChangesAsync();
             return user;
         }
-
-        public bool AppUserByIdExists(int userId)
-        {
-            return _context.Users.Any(u => u.AppUserId == userId);
-        }
     }
 }

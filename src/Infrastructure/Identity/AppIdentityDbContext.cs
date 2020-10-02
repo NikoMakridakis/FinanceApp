@@ -1,6 +1,7 @@
 ﻿using Core.Entities;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using System.Reflection;
 
 namespace Infrastructure.Identity
 {
@@ -10,9 +11,11 @@ namespace Infrastructure.Identity
         {
         }
 
-        protected override void OnModelCreating(ModelBuilder builder)
+        //When creating the database migration, the specified configuration settings will be applied from Data/Config.
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            base.OnModelCreating(builder);
+            base.OnModelCreating(modelBuilder);
+            modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
         }
     }
 }

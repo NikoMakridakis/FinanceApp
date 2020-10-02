@@ -33,7 +33,7 @@ namespace Web
 
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
             
-            services.AddDbContext<FinanceAppContext>(options =>
+            services.AddDbContext<FinanceAppDbContext>(options =>
                 options.UseSqlServer(_configuration.GetConnectionString("DefaultConnection")));
 
             services.AddDbContext<AppIdentityDbContext>(options =>

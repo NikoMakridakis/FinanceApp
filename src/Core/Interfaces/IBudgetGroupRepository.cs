@@ -12,6 +12,5 @@ namespace Core.Interfaces
         Task<BudgetGroup> UpdateBudgetGroupAsync(BudgetGroup budgetGroup);
         Task<BudgetGroup> DeleteBudgetGroupByIdAsync(int budgetGroupId);
         bool BudgetGroupByIdExists(int budgetGroupId);
-        bool UserByUserIdExists(int? userId);
     }
 }

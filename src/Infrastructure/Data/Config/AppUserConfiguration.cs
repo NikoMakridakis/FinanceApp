@@ -8,7 +8,6 @@ namespace Infrastructure.Data.Config
     {
         public void Configure(EntityTypeBuilder<AppUser> builder)
         {
-            builder.Property(a => a.AppUserId).IsRequired();
             builder.Property(a => a.MonthlyIncome).HasColumnType("decimal(18,2)");
         }
     }

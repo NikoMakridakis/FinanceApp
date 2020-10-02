@@ -10,8 +10,8 @@ namespace Infrastructure.Data
 {
     public class ItemRepository : IItemRepository
     {
-        private readonly FinanceAppContext _context;
-        public ItemRepository(FinanceAppContext context)
+        private readonly FinanceAppDbContext _context;
+        public ItemRepository(FinanceAppDbContext context)
         {
             _context = context ?? throw new ArgumentNullException(nameof(context));
         }

@@ -5,7 +5,6 @@ namespace Core.Entities
 {
     public class AppUser : IdentityUser
     {
-        public int AppUserId { get; set; }
         public decimal MonthlyIncome { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }

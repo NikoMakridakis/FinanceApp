@@ -5,17 +5,17 @@ namespace Core.Entities
     public class BudgetGroup
     {
         public int BudgetGroupId { get; set; }
-        public int UserId { get; set; }
+        public int AppUserId { get; set; }
         public string BudgetGroupTitle { get; set; }
+        public AppUser AppUser { get; set; }
         public List<Item> Items { get; set; }
 
         public BudgetGroup()
         {
         }
 
-        public BudgetGroup(int userId, string budgetGroupTitle)
+        public BudgetGroup(string budgetGroupTitle)
         {
-            UserId = userId;
             BudgetGroupTitle = budgetGroupTitle;
         }
     }

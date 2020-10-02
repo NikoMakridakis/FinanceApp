@@ -24,8 +24,8 @@ namespace Web
                 var loggerFactory = services.GetRequiredService<ILoggerFactory>();
                 try
                 {
-                    var context = services.GetRequiredService<FinanceAppContext>();
-                    await FinanceAppContextSeed.SeedAsync(context, loggerFactory);
+                    var context = services.GetRequiredService<FinanceAppDbContext>();
+                    await FinanceAppDbContextSeed.SeedAsync(context, loggerFactory);
 
                     var userManager = services.GetRequiredService<UserManager<AppUser>>();
                     await AppIdentityDbContextSeed.SeedAsync(userManager, loggerFactory);

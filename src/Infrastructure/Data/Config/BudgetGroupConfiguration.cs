@@ -9,7 +9,6 @@ namespace Infrastructure.Data.Config
         public void Configure(EntityTypeBuilder<BudgetGroup> builder)
         {
             builder.Property(b => b.BudgetGroupId).IsRequired();
-            builder.Property(b => b.UserId).IsRequired();
             builder.Property(b => b.BudgetGroupTitle).HasMaxLength(50);
         }
     }

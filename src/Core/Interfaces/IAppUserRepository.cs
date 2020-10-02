@@ -11,6 +11,5 @@ namespace Core.Interfaces
         Task<AppUser> AddAppUserAsync(AppUser user);
         Task<AppUser> UpdateAppUserAsync(AppUser user);
         Task<AppUser> DeleteAppUserByIdAsync(int userId);
-        bool AppUserByIdExists(int userId);
     }
 }

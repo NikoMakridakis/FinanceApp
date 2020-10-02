@@ -10,8 +10,8 @@ namespace Infrastructure.Data
 {
     public class BudgetGroupRepository : IBudgetGroupRepository
     {
-        private readonly FinanceAppContext _context;
-        public BudgetGroupRepository(FinanceAppContext context)
+        private readonly FinanceAppDbContext _context;
+        public BudgetGroupRepository(FinanceAppDbContext context)
         {
             _context = context ?? throw new ArgumentNullException(nameof(context));
         }
@@ -23,7 +23,7 @@ namespace Infrastructure.Data
                 return await _context.BudgetGroups.ToListAsync();
             }
 
-            return await _context.BudgetGroups.Where(b => b.UserId == userId).ToListAsync();
+            return await _context.BudgetGroups.ToListAsync();
         }
 
         public async Task<BudgetGroup> GetBudgetGroupByIdAsync(int budgetGroupId)
@@ -60,11 +60,6 @@ namespace Infrastructure.Data
         public bool BudgetGroupByIdExists(int budgetGroupId)
         {
             return _context.BudgetGroups.Any(g => g.BudgetGroupId == budgetGroupId);
-        }
-
-        public bool UserByUserIdExists(int? userId)
-        {
-            return _context.Users.Any(u => u.AppUserId == userId);
         }
     }
 }

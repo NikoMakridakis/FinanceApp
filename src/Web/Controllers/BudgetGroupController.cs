@@ -24,10 +24,10 @@ namespace Web.Controllers
         [HttpGet]
         public async Task<ActionResult<IReadOnlyList<BudgetGroupDto>>> GetBudgetGroups([FromQuery] int? userId)
         {
-            if (userId != null && !_repo.UserByUserIdExists(userId))
-            {
-                return NotFound($"Unable to find user with ID '{userId}'.");
-            }
+            //if (userId != null && !_repo.UserByUserIdExists(userId))
+            //{
+            //    return NotFound($"Unable to find user with ID '{userId}'.");
+            //}
 
             IReadOnlyList<BudgetGroup> group = await _repo.GetBudgetGroupsAsync(userId);
             return Ok(_mapper.Map<IReadOnlyList<BudgetGroupDto>>(group));
@@ -50,12 +50,12 @@ namespace Web.Controllers
         [HttpPost]
         public async Task<ActionResult<BudgetGroupDto>> PostBudgetGroup(BudgetGroupForCreationDto budgetGroupForCreationDto)
         {
-            int userId = budgetGroupForCreationDto.UserId;
+            //int userId = budgetGroupForCreationDto.UserId;
 
-            if (!_repo.UserByUserIdExists(userId))
-            {
-                return NotFound($"Unable to find user with ID '{userId}'.");
-            }
+            //if (!_repo.UserByUserIdExists(userId))
+            //{
+            //    return NotFound($"Unable to find user with ID '{userId}'.");
+            //}
 
             BudgetGroup budgetGroup = _mapper.Map<BudgetGroup>(budgetGroupForCreationDto);
             await _repo.AddBudgetGroupAsync(budgetGroup);
