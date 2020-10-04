@@ -32,7 +32,7 @@ namespace Infrastructure.Data
 
                 if (!await context.BudgetGroups.AnyAsync())
                 {
-                    await context.BudgetGroups.AddRangeAsync(GetPreconfiguredGroups());
+                    await context.BudgetGroups.AddRangeAsync(GetPreconfiguredBudgetGroups());
                     await context.SaveChangesAsync();
                 }
 
@@ -49,17 +49,17 @@ namespace Infrastructure.Data
             }
         }
 
-        static List<BudgetGroup> GetPreconfiguredGroups()
+        static List<BudgetGroup> GetPreconfiguredBudgetGroups()
         {
             return new List<BudgetGroup>()
             {
-                new BudgetGroup("Housing"),
-                new BudgetGroup("Transportation"),
-                new BudgetGroup("Food"),
-                new BudgetGroup("Personal"),
-                new BudgetGroup("Health"),
-                new BudgetGroup("Insurance"),
-                new BudgetGroup("Debt"),
+                new BudgetGroup(1, "Housing"),
+                new BudgetGroup(1, "Transportation"),
+                new BudgetGroup(1, "Food"),
+                new BudgetGroup(1, "Personal"),
+                new BudgetGroup(1, "Health"),
+                new BudgetGroup(1, "Insurance"),
+                new BudgetGroup(1, "Debt"),
             };
         }
 

@@ -1,11 +1,12 @@
 ﻿using Core.Entities;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using System.Reflection;
 
 namespace Infrastructure.Data
 {
-    public class FinanceAppDbContext : IdentityDbContext<User>
+    public class FinanceAppDbContext : IdentityDbContext<IdentityUser<int>, IdentityRole<int>, int>
     {
         public FinanceAppDbContext(DbContextOptions<FinanceAppDbContext> options) : base(options)
         {
@@ -18,7 +19,6 @@ namespace Infrastructure.Data
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
-            modelBuilder.Entity<BudgetGroup>().HasOne(b => b.User).WithMany(u => u.BudgetGroups);
             modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
         }
     }

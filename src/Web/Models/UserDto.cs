@@ -5,7 +5,7 @@ namespace Web.Models
 {
     public class UserDto
     {
-        public int UserId { get; set; }
+        public string Id { get; set; }
         public decimal MonthlyIncome { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }

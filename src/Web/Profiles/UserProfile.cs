@@ -1,12 +1,13 @@
 ﻿using AutoMapper;
 using Core.Entities;
+using Microsoft.AspNetCore.Identity;
 using Web.Models;
 
 namespace Web.Profiles
 {
-    public class AppUserProfile : Profile
+    public class UserProfile : Profile
     {
-        public AppUserProfile()
+        public UserProfile()
         {
             CreateMap<User, UserDto>();
             CreateMap<UserForCreationDto, User>();

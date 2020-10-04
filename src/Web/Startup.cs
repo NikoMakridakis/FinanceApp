@@ -35,7 +35,10 @@ namespace Web
             services.AddDbContext<FinanceAppDbContext>(options =>
                 options.UseSqlServer(_configuration.GetConnectionString("DefaultConnection")));
 
-            services.AddIdentityCore<User>().AddEntityFrameworkStores<FinanceAppDbContext>().AddSignInManager<SignInManager<User>>();
+            services.AddIdentity<User, IdentityRole<int>>()
+                .AddEntityFrameworkStores<FinanceAppDbContext>()
+                .AddDefaultTokenProviders()
+                .AddSignInManager<SignInManager<User>>();
 
             services.AddAuthentication();
 

@@ -2,7 +2,6 @@
 using Core.Entities;
 using Core.Interfaces;
 using Microsoft.AspNetCore.Mvc;
-using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Web.Models;
@@ -31,7 +30,7 @@ namespace Web.Controllers
 
         // GET: api/user/{userId}
         [HttpGet("{userId}", Name = "GetUser")]
-        public async Task<ActionResult<UserDto>> GetUser(Guid userId)
+        public async Task<ActionResult<UserDto>> GetUser(int userId)
         {
             User user = await _repo.GetUserByUserIdAsync(userId);
 
@@ -50,12 +49,12 @@ namespace Web.Controllers
             User user = _mapper.Map<User>(userForCreationDto);
             await _repo.AddUserAsync(user);
             UserDto userDto = _mapper.Map<UserDto>(user);
-            return CreatedAtRoute(nameof(GetUser), new { userId = userDto.UserId }, userDto);
+            return CreatedAtRoute(nameof(GetUser), new { id = userDto.Id }, userDto);
         }
 
         // PUT: api/user/{userId}
         [HttpPut("{userId}")]
-        public async Task<ActionResult<UserDto>> PutUser(Guid userId, UserForUpdateDto userForUpdateDto)
+        public async Task<ActionResult<UserDto>> PutUser(int userId, UserForUpdateDto userForUpdateDto)
         {
             User user = await _repo.GetUserByUserIdAsync(userId);
 
@@ -67,12 +66,12 @@ namespace Web.Controllers
             _mapper.Map(userForUpdateDto, user);
             await _repo.UpdateUserAsync(user);
             UserDto userDto = _mapper.Map<UserDto>(user);
-            return CreatedAtRoute(nameof(GetUser), new { userId = userDto.UserId }, userDto);
+            return CreatedAtRoute(nameof(GetUser), new { id = userDto.Id }, userDto);
         }
 
         // DELETE: api/user/{userId}
         [HttpDelete("{userId}")]
-        public async Task<ActionResult<UserDto>> DeleteUser(Guid userId)
+        public async Task<ActionResult<UserDto>> DeleteUser(int userId)
         {
             User user = await _repo.GetUserByUserIdAsync(userId);
 

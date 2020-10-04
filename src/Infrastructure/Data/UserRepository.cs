@@ -1,9 +1,9 @@
 ﻿using Core.Entities;
 using Core.Interfaces;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace Infrastructure.Data
@@ -11,19 +11,22 @@ namespace Infrastructure.Data
     public class UserRepository : IUserRepository
     {
         private readonly FinanceAppDbContext _context;
-        public UserRepository(FinanceAppDbContext context)
+        private readonly UserManager<User> _userManager;
+
+        public UserRepository(FinanceAppDbContext context, UserManager<User> userManager)
         {
             _context = context ?? throw new ArgumentNullException(nameof(context));
+            _userManager = userManager;
         }
 
         public async Task<IReadOnlyList<User>> GetUsersAsync()
         {
-            return await _context.Users.ToListAsync();
+            return await _userManager.Users.ToListAsync();
         }
 
-        public async Task<User> GetUserByUserIdAsync(Guid userId)
+        public async Task<User> GetUserByUserIdAsync(int userId)
         {
-            return await _context.Users.FindAsync(userId);
+            return await _userManager.Users.FirstOrDefaultAsync(u => u.Id == userId);
         }
 
         public async Task<User> AddUserAsync(User user)
@@ -44,9 +47,9 @@ namespace Infrastructure.Data
             return user;
         }
 
-        public async Task<User> DeleteUserByUserIdAsync(Guid userId)
+        public async Task<User> DeleteUserByUserIdAsync(int userId)
         {
-            User user = await _context.Users.FindAsync(userId);
+            User user = await _userManager.Users.FirstOrDefaultAsync(u => u.Id == userId);
             _context.Users.Remove(user);
             await _context.SaveChangesAsync();
             return user;

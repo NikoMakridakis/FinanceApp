@@ -10,6 +10,7 @@ namespace Infrastructure.Data.Config
         {
             builder.Property(b => b.BudgetGroupId).IsRequired();
             builder.Property(b => b.BudgetGroupTitle).HasMaxLength(50);
+            builder.Property(b => b.UserId).IsRequired();
         }
     }
 }

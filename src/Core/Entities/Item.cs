@@ -3,9 +3,12 @@
     public class Item
     {
         public int ItemId { get; set; }
-        public int BudgetGroupId { get; set; }
         public string ItemTitle { get; set; }
         public decimal ItemMontlyAmount { get; set; }
+
+        public BudgetGroup BudgetGroup { get; set; }
+        public int BudgetGroupId { get; set; }
+
 
         public Item()
         {
