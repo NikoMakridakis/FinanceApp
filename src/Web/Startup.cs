@@ -36,22 +36,11 @@ namespace Web
             services.AddDbContext<FinanceAppDbContext>(options =>
                 options.UseSqlServer(_configuration.GetConnectionString("DefaultConnection")));
 
-            services.AddIdentity<User, IdentityRole<int>>()
-                .AddEntityFrameworkStores<FinanceAppDbContext>()
-                .AddDefaultTokenProviders()
-                .AddSignInManager<SignInManager<User>>();
+            services.AddIdentityConfiguration();
 
-            services.AddAuthenticationServices(_configuration);
+            services.AddAuthenticationConfiguration(_configuration);
 
-            services.AddSwaggerGen(c =>
-            {
-                c.SwaggerDoc("v1", new OpenApiInfo
-                {
-                    Version = "v1",
-                    Title = "FinanceApp API",
-                    Description = "ASP.NET Core Web API"
-                });
-            });
+            services.AddSwaggerConfiguration();
 
             services.AddScoped<IBudgetGroupRepository, BudgetGroupRepository>();
             services.AddScoped<IItemRepository, ItemRepository>();

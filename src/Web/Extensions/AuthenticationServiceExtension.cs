@@ -1,9 +1,5 @@
-﻿using System;
-using System.Text;
-using Core.Entities;
-using Infrastructure.Data;
+﻿using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
@@ -12,7 +8,7 @@ namespace Web.Extensions
 {
     public static class AuthenticationServiceExtension
     {
-        public static IServiceCollection AddAuthenticationServices(this IServiceCollection services, IConfiguration configuration)
+        public static IServiceCollection AddAuthenticationConfiguration(this IServiceCollection services, IConfiguration configuration)
         {
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(options =>
