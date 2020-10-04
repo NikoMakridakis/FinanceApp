@@ -1,10 +1,10 @@
 ﻿using AutoMapper;
 using Core.Entities;
-using Core.Interfaces;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 using Web.Models;
+using SignInResult = Microsoft.AspNetCore.Identity.SignInResult;
 
 namespace Web.Controllers
 {
@@ -12,77 +12,47 @@ namespace Web.Controllers
     [ApiController]
     public class UserController : ControllerBase
     {
-        private readonly IUserRepository _repo;
+        private readonly UserManager<User> _userManager;
+        private readonly SignInManager<User> _signInManager;
         private readonly IMapper _mapper;
-        public UserController(IUserRepository repo, IMapper mapper)
+        public UserController(UserManager<User> userManager, SignInManager<User> signInManager, IMapper mapper)
         {
-            _repo = repo;
+            _userManager = userManager;
+            _signInManager = signInManager;
             _mapper = mapper;
         }
 
-        // GET: api/user
-        [HttpGet]
-        public async Task<ActionResult<IReadOnlyList<UserDto>>> GetUsers()
+        [HttpPost("login")]
+        public async Task<ActionResult<UserDto>> Login(UserLoginDto userLoginDto)
         {
-            IReadOnlyList<User> user = await _repo.GetUsersAsync();
-            return Ok(_mapper.Map<IReadOnlyList<UserDto>>(user));
-        }
-
-        // GET: api/user/{userId}
-        [HttpGet("{userId}", Name = "GetUser")]
-        public async Task<ActionResult<UserDto>> GetUser(int userId)
-        {
-            User user = await _repo.GetUserByUserIdAsync(userId);
+            string email = userLoginDto.Email;
+            User user = await _userManager.FindByEmailAsync(email);
 
             if (user == null)
             {
-                return NotFound($"Unable to find user with ID '{userId}'.");
+                return NotFound($"Unable to find user with email '{email}'.");
             }
 
-            return Ok(_mapper.Map<UserDto>(user));
-        }
+            SignInResult result = await _signInManager.CheckPasswordSignInAsync(user, userLoginDto.Password, true);
 
-        // POST: api/user
-        [HttpPost]
-        public async Task<ActionResult<UserDto>> PostUser(UserForCreationDto userForCreationDto)
-        {
-            User user = _mapper.Map<User>(userForCreationDto);
-            await _repo.AddUserAsync(user);
-            UserDto userDto = _mapper.Map<UserDto>(user);
-            return CreatedAtRoute(nameof(GetUser), new { id = userDto.Id }, userDto);
-        }
-
-        // PUT: api/user/{userId}
-        [HttpPut("{userId}")]
-        public async Task<ActionResult<UserDto>> PutUser(int userId, UserForUpdateDto userForUpdateDto)
-        {
-            User user = await _repo.GetUserByUserIdAsync(userId);
-
-            if (user == null)
+            if (!result.Succeeded)
             {
-                return NotFound($"Unable to find user with ID '{userId}'.");
+                return Unauthorized("The username or password is incorrect.");
             }
 
-            _mapper.Map(userForUpdateDto, user);
-            await _repo.UpdateUserAsync(user);
-            UserDto userDto = _mapper.Map<UserDto>(user);
-            return CreatedAtRoute(nameof(GetUser), new { id = userDto.Id }, userDto);
-        }
-
-        // DELETE: api/user/{userId}
-        [HttpDelete("{userId}")]
-        public async Task<ActionResult<UserDto>> DeleteUser(int userId)
-        {
-            User user = await _repo.GetUserByUserIdAsync(userId);
-
-            if (user == null)
+            return new UserDto
             {
-                return NotFound($"Unable to find user with ID '{userId}'.");
-            }
-
-            await _repo.DeleteUserByUserIdAsync(userId);
-            UserDto userDto = _mapper.Map<UserDto>(user);
-            return Ok(userDto);
+                Email = user.Email,
+                UserName = user.UserName,
+                Token = "This will be a token",
+                MonthlyIncome = user.MonthlyIncome,
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                BudgetGroups = user.BudgetGroups
+            };
         }
+
+
+        
     }
 }

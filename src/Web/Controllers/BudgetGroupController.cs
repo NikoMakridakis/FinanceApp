@@ -1,7 +1,9 @@
 ﻿using AutoMapper;
 using Core.Entities;
 using Core.Interfaces;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Web.Models;
@@ -13,10 +15,12 @@ namespace Web.Controllers
     public class BudgetGroupController : ControllerBase
     {
         private readonly IBudgetGroupRepository _repo;
+        private readonly UserManager<User> _userManager;
         private readonly IMapper _mapper;
-        public BudgetGroupController(IBudgetGroupRepository repo, IMapper mapper)
+        public BudgetGroupController(IBudgetGroupRepository repo, UserManager<User> userManager, IMapper mapper)
         {
             _repo = repo;
+            _userManager = userManager;
             _mapper = mapper;
         }
 
@@ -24,10 +28,12 @@ namespace Web.Controllers
         [HttpGet]
         public async Task<ActionResult<IReadOnlyList<BudgetGroupDto>>> GetBudgetGroups([FromQuery] int? userId)
         {
-            //if (userId != null && !_repo.UserByUserIdExists(userId))
-            //{
-            //    return NotFound($"Unable to find user with ID '{userId}'.");
-            //}
+            User user = await _userManager.Users.FirstOrDefaultAsync(u => u.Id == userId);
+
+            if (userId != null && user == null)
+            {
+                return NotFound($"Unable to find user with ID '{userId}'.");
+            }
 
             IReadOnlyList<BudgetGroup> group = await _repo.GetBudgetGroupsAsync(userId);
             return Ok(_mapper.Map<IReadOnlyList<BudgetGroupDto>>(group));
@@ -50,12 +56,14 @@ namespace Web.Controllers
         [HttpPost]
         public async Task<ActionResult<BudgetGroupDto>> PostBudgetGroup(BudgetGroupForCreationDto budgetGroupForCreationDto)
         {
-            //int userId = budgetGroupForCreationDto.UserId;
+            int userId = budgetGroupForCreationDto.UserId;
 
-            //if (!_repo.UserByUserIdExists(userId))
-            //{
-            //    return NotFound($"Unable to find user with ID '{userId}'.");
-            //}
+            User user = await _userManager.Users.FirstOrDefaultAsync(u => u.Id == userId);
+
+            if (user == null)
+            {
+                return NotFound($"Unable to find user with ID '{userId}'.");
+            }
 
             BudgetGroup budgetGroup = _mapper.Map<BudgetGroup>(budgetGroupForCreationDto);
             await _repo.AddBudgetGroupAsync(budgetGroup);

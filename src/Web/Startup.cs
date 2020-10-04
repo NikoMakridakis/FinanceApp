@@ -12,6 +12,7 @@ using AutoMapper;
 using System;
 using Core.Entities;
 using Microsoft.AspNetCore.Identity;
+using Web.Extensions;
 
 namespace Web
 {
@@ -40,7 +41,7 @@ namespace Web
                 .AddDefaultTokenProviders()
                 .AddSignInManager<SignInManager<User>>();
 
-            services.AddAuthentication();
+            services.AddAuthenticationServices(_configuration);
 
             services.AddSwaggerGen(c =>
             {
@@ -52,7 +53,6 @@ namespace Web
                 });
             });
 
-            services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IBudgetGroupRepository, BudgetGroupRepository>();
             services.AddScoped<IItemRepository, ItemRepository>();
 
