@@ -26,29 +26,29 @@ namespace Web.Controllers
         public async Task<ActionResult<UserDto>> Login(UserLoginDto userLoginDto)
         {
             string email = userLoginDto.Email;
-            User user = await _userManager.FindByEmailAsync(email);
+            User userByEmail = await _userManager.FindByEmailAsync(email);
 
-            if (user == null)
+            if (userByEmail == null)
             {
-                return NotFound($"Unable to find user with email '{email}'.");
+                return NotFound($"Unable to find user with the email '{email}'.");
             }
 
-            SignInResult result = await _signInManager.CheckPasswordSignInAsync(user, userLoginDto.Password, true);
+            SignInResult resultFromEmail = await _signInManager.CheckPasswordSignInAsync(userByEmail, userLoginDto.Password, true);
 
-            if (!result.Succeeded)
+            if (!resultFromEmail.Succeeded)
             {
-                return Unauthorized("The username or password is incorrect.");
+                return Unauthorized("The login information is incorrect.");
             }
 
             return new UserDto
             {
-                Email = user.Email,
-                UserName = user.UserName,
+                Email = userByEmail.Email,
+                UserName = userByEmail.UserName,
                 Token = "This will be a token",
-                MonthlyIncome = user.MonthlyIncome,
-                FirstName = user.FirstName,
-                LastName = user.LastName,
-                BudgetGroups = user.BudgetGroups
+                MonthlyIncome = userByEmail.MonthlyIncome,
+                FirstName = userByEmail.FirstName,
+                LastName = userByEmail.LastName,
+                BudgetGroups = userByEmail.BudgetGroups
             };
         }
 

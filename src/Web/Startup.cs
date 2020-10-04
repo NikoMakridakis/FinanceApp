@@ -5,13 +5,10 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.OpenApi.Models;
 using Infrastructure.Data;
 using Core.Interfaces;
 using AutoMapper;
 using System;
-using Core.Entities;
-using Microsoft.AspNetCore.Identity;
 using Web.Extensions;
 
 namespace Web

@@ -9,6 +9,7 @@ namespace Infrastructure.Data.Config
         public void Configure(EntityTypeBuilder<User> builder)
         {
             builder.Property(u => u.MonthlyIncome).HasColumnType("decimal(18,2)");
+            builder.Property(u => u.Email).IsRequired();
         }
     }
 }

@@ -23,8 +23,8 @@ namespace Infrastructure.Data
                         MonthlyIncome = 5000,
                         FirstName = "Niko",
                         LastName = "Makridakis",
-                        UserName = "demouser@microsoft.com",
-                        Email = "demouser@microsoft.com"
+                        UserName = "demouser",
+                        Email = "demouser@microsoft.com",
                     };
 
                     await userManager.CreateAsync(user, "Pass@word1");
