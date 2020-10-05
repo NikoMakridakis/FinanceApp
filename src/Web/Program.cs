@@ -5,8 +5,13 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Serilog;
+using Serilog.Events;
+using Serilog.Core;
 using System;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Configuration;
+using System.IO;
 
 namespace Web
 {
@@ -20,25 +25,37 @@ namespace Web
             using (var scope = host.Services.CreateScope())
             {
                 var services = scope.ServiceProvider;
-                var loggerFactory = services.GetRequiredService<ILoggerFactory>();
+
+                var configuration = new ConfigurationBuilder()
+                    .SetBasePath(Directory.GetCurrentDirectory())
+                    .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
+                    .Build();
+
+                Log.Logger = new LoggerConfiguration()
+                    .ReadFrom.Configuration(configuration)
+                    .CreateLogger();
+
                 try
                 {
+                    Log.Information("Seeding the database.");
                     var context = services.GetRequiredService<FinanceAppDbContext>();
                     var userManager = services.GetRequiredService<UserManager<User>>();
-                    await FinanceAppDbContextSeed.SeedAsync(context, userManager, loggerFactory);
+                    var logger = services.GetRequiredService<ILoggerFactory>();
+                    await FinanceAppDbContextSeed.SeedAsync(context, userManager, logger);
                 }
                 catch (Exception ex)
                 {
-                    var logger = loggerFactory.CreateLogger<Program>();
-                    logger.LogError(ex, "An error occurred seeding the DB.");
+                    Log.Fatal(ex, "Error seeding the database.");
                 }
             }
 
+            Log.Information("Application starting up.");
             host.Run();
         }
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>
             Host.CreateDefaultBuilder(args)
+                .UseSerilog()
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder.UseStartup<Startup>();

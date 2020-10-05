@@ -10,7 +10,7 @@ namespace Infrastructure.Data
 {
     public class FinanceAppDbContextSeed
     {
-        public static async Task SeedAsync(FinanceAppDbContext context, UserManager<User> userManager, ILoggerFactory loggerFactory)
+        public static async Task SeedAsync(FinanceAppDbContext context, UserManager<User> userManager, ILoggerFactory logger)
         {
             try
             {
@@ -44,7 +44,7 @@ namespace Infrastructure.Data
             }
             catch (Exception ex)
             {
-                var log = loggerFactory.CreateLogger<FinanceAppDbContextSeed>();
+                var log = logger.CreateLogger<FinanceAppDbContextSeed>();
                 log.LogError(ex.Message);
             }
         }

@@ -10,6 +10,7 @@ using Core.Interfaces;
 using AutoMapper;
 using System;
 using Web.Extensions;
+using Serilog;
 
 namespace Web
 {
@@ -66,6 +67,7 @@ namespace Web
             app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseSpaStaticFiles();
+            app.UseSerilogRequestLogging();
 
             app.UseSwagger();
             app.UseSwaggerUI(c =>
@@ -75,7 +77,6 @@ namespace Web
             });
 
             app.UseRouting();
-
             app.UseAuthentication();
             app.UseAuthorization();
 
