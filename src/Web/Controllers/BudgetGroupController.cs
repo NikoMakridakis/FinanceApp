@@ -4,6 +4,7 @@ using Core.Interfaces;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Web.Models;
@@ -16,11 +17,13 @@ namespace Web.Controllers
     {
         private readonly IBudgetGroupRepository _repo;
         private readonly UserManager<User> _userManager;
+        private readonly ILogger<BudgetGroupController> _logger;
         private readonly IMapper _mapper;
-        public BudgetGroupController(IBudgetGroupRepository repo, UserManager<User> userManager, IMapper mapper)
+        public BudgetGroupController(IBudgetGroupRepository repo, UserManager<User> userManager, ILogger<BudgetGroupController> logger, IMapper mapper)
         {
             _repo = repo;
             _userManager = userManager;
+            _logger = logger;
             _mapper = mapper;
         }
 
@@ -35,8 +38,11 @@ namespace Web.Controllers
                 return NotFound($"Unable to find user with ID '{userId}'.");
             }
 
-            IReadOnlyList<BudgetGroup> group = await _repo.GetBudgetGroupsAsync(userId);
-            return Ok(_mapper.Map<IReadOnlyList<BudgetGroupDto>>(group));
+            _logger.LogInformation("Fetching all budget groups associated with the user.");
+            IReadOnlyList<BudgetGroup> budgetGroups = await _repo.GetBudgetGroupsAsync(userId);
+            _logger.LogInformation($"Returning {budgetGroups.Count} budget groups associated with the user.");
+
+            return Ok(_mapper.Map<IReadOnlyList<BudgetGroupDto>>(budgetGroups));
         }
 
         // GET: api/budgetGroup/{budgetGroupId}
