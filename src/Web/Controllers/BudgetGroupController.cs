@@ -4,8 +4,6 @@ using Core.Interfaces;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
-using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Web.Models;
@@ -18,13 +16,11 @@ namespace Web.Controllers
     {
         private readonly IBudgetGroupRepository _repo;
         private readonly UserManager<User> _userManager;
-        private readonly ILogger<BudgetGroupController> _logger;
         private readonly IMapper _mapper;
-        public BudgetGroupController(IBudgetGroupRepository repo, UserManager<User> userManager, ILogger<BudgetGroupController> logger, IMapper mapper)
+        public BudgetGroupController(IBudgetGroupRepository repo, UserManager<User> userManager, IMapper mapper)
         {
             _repo = repo;
             _userManager = userManager;
-            _logger = logger;
             _mapper = mapper;
         }
 

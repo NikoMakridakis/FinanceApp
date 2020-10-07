@@ -2,6 +2,7 @@
 using Core.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System.Threading.Tasks;
 using Web.Models;
@@ -28,15 +29,16 @@ namespace Web.Controllers
         [HttpPost("login")]
         public async Task<ActionResult<UserDto>> Login(UserLoginDto userLoginDto)
         {
+            string userName = userLoginDto.UserName;
             string email = userLoginDto.Email;
-            User userByEmail = await _userManager.FindByEmailAsync(email);
+            User user = await _userManager.Users.FirstOrDefaultAsync(u => u.UserName == userName || u.Email == email);
 
-            if (userByEmail == null)
+            if (user == null)
             {
-                return NotFound($"Unable to find user with the email '{email}'.");
+                return NotFound($"Unable to find user.");
             }
 
-            SignInResult result = await _signInManager.CheckPasswordSignInAsync(userByEmail, userLoginDto.Password, true);
+            SignInResult result = await _signInManager.CheckPasswordSignInAsync(user, userLoginDto.Password, true);
 
             if (result.Succeeded)
             {
@@ -48,19 +50,22 @@ namespace Web.Controllers
                 return Unauthorized("The login information is incorrect.");
             }
 
-            return new UserDto
-            {
-                Email = userByEmail.Email,
-                UserName = userByEmail.UserName,
-                Token = "This will be a token",
-                MonthlyIncome = userByEmail.MonthlyIncome,
-                FirstName = userByEmail.FirstName,
-                LastName = userByEmail.LastName,
-                BudgetGroups = userByEmail.BudgetGroups
-            };
+            return Ok(_mapper.Map<UserDto>(userLoginDto));
         }
 
+            [HttpPost("register")]
+        public async Task<ActionResult<UserDto>> Register(UserRegisterDto userRegisterDto)
+        {
+            User user = _mapper.Map<User>(userRegisterDto);
 
-        
+            IdentityResult result = await _userManager.CreateAsync(user, userRegisterDto.Password);
+
+            if (!result.Succeeded)
+            {
+                return BadRequest();
+            }
+
+            return Ok(_mapper.Map<UserDto>(user));
+        }
     }
 }

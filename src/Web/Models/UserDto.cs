@@ -11,6 +11,17 @@ namespace Web.Models
         public decimal MonthlyIncome { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
-        public List<BudgetGroup> BudgetGroups { get; set; }
+        public List<BudgetGroup> BudgetGroups { get; set; } =
+
+        new List<BudgetGroup>()
+        {
+            new BudgetGroup(1, "Housing"),
+            new BudgetGroup(1, "Transportation"),
+            new BudgetGroup(1, "Food"),
+            new BudgetGroup(1, "Personal"),
+            new BudgetGroup(1, "Health"),
+            new BudgetGroup(1, "Insurance"),
+            new BudgetGroup(1, "Debt"),
+        };
     }
 }
