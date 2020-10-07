@@ -23,7 +23,7 @@ namespace Infrastructure.Data
                 return await _context.BudgetGroups.ToListAsync();
             }
 
-            return await _context.BudgetGroups.ToListAsync();
+            return await _context.BudgetGroups.Where(b => b.UserId == userId).ToListAsync();
         }
 
         public async Task<BudgetGroup> GetBudgetGroupByIdAsync(int budgetGroupId)

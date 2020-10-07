@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Web.Models;
@@ -38,9 +39,7 @@ namespace Web.Controllers
                 return NotFound($"Unable to find user with ID '{userId}'.");
             }
 
-            _logger.LogInformation("Fetching all budget groups associated with the user.");
             IReadOnlyList<BudgetGroup> budgetGroups = await _repo.GetBudgetGroupsAsync(userId);
-            _logger.LogInformation($"Returning {budgetGroups.Count} budget groups associated with the user.");
 
             return Ok(_mapper.Map<IReadOnlyList<BudgetGroupDto>>(budgetGroups));
         }
