@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Core.Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -27,30 +28,40 @@ namespace Web.Controllers
         }
 
         [HttpPost("login")]
-        public async Task<ActionResult<UserDto>> Login(UserLoginDto userLoginDto)
+        [AllowAnonymous]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> Login(UserLoginDto userLoginDto)
         {
-            string userName = userLoginDto.UserName;
-            string email = userLoginDto.Email;
-            User user = await _userManager.Users.FirstOrDefaultAsync(u => u.UserName == userName || u.Email == email);
-
-            if (user == null)
+            if (ModelState.IsValid)
             {
-                return NotFound($"Unable to find user.");
+                string email = userLoginDto.Email;
+                User user = await _userManager.FindByEmailAsync(email);
+
+                if (user == null)
+                {
+                    return NotFound($"Unable to find user with email '{email}'.");
+                }
+
+                SignInResult result = await _signInManager.CheckPasswordSignInAsync(user, userLoginDto.Password, lockoutOnFailure: true);
+
+                if (result.Succeeded)
+                {
+                    _logger.LogInformation($"The user successfully logged in.");
+                }
+
+                if (result.IsLockedOut)
+                {
+                    _logger.LogInformation($"The user has been locked out.");
+                }
+
+                if (!result.Succeeded)
+                {
+                    return Unauthorized("The login attempt failed.");
+                }
+
+                return Ok(_mapper.Map<UserDto>(userLoginDto));
             }
 
-            SignInResult result = await _signInManager.CheckPasswordSignInAsync(user, userLoginDto.Password, true);
-
-            if (result.Succeeded)
-            {
-                _logger.LogInformation($"The user successfully logged in.");
-            }
-
-            if (!result.Succeeded)
-            {
-                return Unauthorized("The login information is incorrect.");
-            }
-
-            return Ok(_mapper.Map<UserDto>(userLoginDto));
         }
 
             [HttpPost("register")]
