@@ -5,7 +5,9 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using System;
 using System.Threading.Tasks;
+using Web.Extensions;
 using Web.Models;
 using SignInResult = Microsoft.AspNetCore.Identity.SignInResult;
 
@@ -29,47 +31,55 @@ namespace Web.Controllers
 
         [HttpPost("login")]
         [AllowAnonymous]
-        [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Login(UserLoginDto userLoginDto)
+        public async Task<ActionResult<UserDto>> Login(UserForLoginDto userForLoginDto)
         {
-            if (ModelState.IsValid)
+            string email = userForLoginDto.Email;
+            User user = await _userManager.FindByEmailAsync(email);
+
+            if (user == null)
             {
-                string email = userLoginDto.Email;
-                User user = await _userManager.FindByEmailAsync(email);
-
-                if (user == null)
-                {
-                    return NotFound($"Unable to find user with email '{email}'.");
-                }
-
-                SignInResult result = await _signInManager.CheckPasswordSignInAsync(user, userLoginDto.Password, lockoutOnFailure: true);
-
-                if (result.Succeeded)
-                {
-                    _logger.LogInformation($"The user successfully logged in.");
-                }
-
-                if (result.IsLockedOut)
-                {
-                    _logger.LogInformation($"The user has been locked out.");
-                }
-
-                if (!result.Succeeded)
-                {
-                    return Unauthorized("The login attempt failed.");
-                }
-
-                return Ok(_mapper.Map<UserDto>(userLoginDto));
+                return NotFound($"Unable to find user with email '{email}'.");
             }
 
+            SignInResult result = await _signInManager.CheckPasswordSignInAsync(user, userForLoginDto.Password, lockoutOnFailure: true);
+
+            if (result.Succeeded)
+            {
+                _logger.LogInformation("The user successfully logged in.");
+            }
+
+            if (result.IsLockedOut)
+            {
+                _logger.LogInformation("The user has been locked out.");
+
+                int lockoutMinutesRemaining = user.GetLockoutMinutesRemaining();
+
+                return Unauthorized($"The user '{email}' has been locked out. Please try again in {lockoutMinutesRemaining} minutes.");
+            }
+
+            if (!result.Succeeded)
+            {
+                return Unauthorized("The login attempt failed.");
+            }
+
+            return Ok(_mapper.Map<UserDto>(user));
         }
 
-            [HttpPost("register")]
-        public async Task<ActionResult<UserDto>> Register(UserRegisterDto userRegisterDto)
+        [HttpPost("register")]
+        [AllowAnonymous]
+        public async Task<ActionResult<UserDto>> Register(UserForRegisterDto userForRegisterDto)
         {
-            User user = _mapper.Map<User>(userRegisterDto);
+            string email = userForRegisterDto.Email;
+            User user = await _userManager.FindByEmailAsync(email);
 
-            IdentityResult result = await _userManager.CreateAsync(user, userRegisterDto.Password);
+            if (user != null)
+            {
+                return BadRequest($"The email '{email}' has already been used.");
+            }
+
+            user = _mapper.Map<User>(userForRegisterDto);
+
+            IdentityResult result = await _userManager.CreateAsync(user, userForRegisterDto.Password);
 
             if (!result.Succeeded)
             {

@@ -9,7 +9,9 @@ namespace Web.Profiles
         public BudgetGroupProfile()
         {
             CreateMap<BudgetGroup, BudgetGroupDto>();
+
             CreateMap<BudgetGroupForCreationDto, BudgetGroup>();
+
             CreateMap<BudgetGroupForUpdateDto, BudgetGroup>();
         }
     }

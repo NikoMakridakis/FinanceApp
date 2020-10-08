@@ -8,8 +8,10 @@ namespace Web.Profiles
     {
         public UserProfile()
         {
-            CreateMap<UserLoginDto, UserDto>();
-            CreateMap<UserRegisterDto, User>();
+            //When registering a user, the email is used instead of the username.
+            CreateMap<UserForRegisterDto, User>()
+                .ForMember(u => u.UserName, opt => opt.MapFrom(x => x.Email));
+
             CreateMap<User, UserDto>();
         }
     }
