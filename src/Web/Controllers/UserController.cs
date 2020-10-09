@@ -1,11 +1,13 @@
 ﻿using AutoMapper;
 using Core.Entities;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using Web.Extensions;
 using Web.Models;
@@ -45,7 +47,14 @@ namespace Web.Controllers
 
             if (result.Succeeded)
             {
+                var identity = new ClaimsIdentity(IdentityConstants.ApplicationScheme);
+                identity.AddClaim(new Claim(ClaimTypes.Name, user.UserName));
+                await HttpContext.SignInAsync(IdentityConstants.ApplicationScheme,
+                    new ClaimsPrincipal(identity));
+                
                 _logger.LogInformation("The user successfully logged in.");
+
+                return RedirectToAction(nameof(BudgetGroupController.GetBudgetGroups), "Home");
             }
 
             if (result.IsLockedOut)
