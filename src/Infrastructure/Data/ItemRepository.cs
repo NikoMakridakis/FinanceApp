@@ -16,14 +16,9 @@ namespace Infrastructure.Data
             _context = context ?? throw new ArgumentNullException(nameof(context));
         }
 
-        public async Task<IReadOnlyList<Item>> GetItemsAsync(int? budgetGroupId)
+        public async Task<IReadOnlyList<Item>> GetItemsAsync(int budgetGroupId)
         {
-            if (budgetGroupId == null)
-            {
-                return await _context.Items.ToListAsync();
-            }
-
-            return await _context.Items.Where(i => i.BudgetGroupId == budgetGroupId).ToListAsync();
+            return await _context.Items.Where(b => b.BudgetGroupId == budgetGroupId).ToListAsync();
         }
 
         public async Task<Item> GetItemByItemIdAsync(int itemId)
@@ -31,7 +26,7 @@ namespace Infrastructure.Data
             return await _context.Items.FindAsync(itemId);
         }
 
-        public async Task<Item> AddItemAsync(Item item)
+        public async Task AddItemAsync(Item item)
         {
             if (item == null)
             {
@@ -40,20 +35,17 @@ namespace Infrastructure.Data
 
             _context.Items.Add(item);
             await _context.SaveChangesAsync();
-            return item;
         }
 
-        public async Task<Item> UpdateItemAsync(Item item)
+        public async Task UpdateItemAsync(Item item)
         {
             await _context.SaveChangesAsync();
-            return item;
         }
-        public async Task<Item> DeleteItemByItemIdAsync(int itemId)
+        public async Task DeleteItemByItemIdAsync(int itemId)
         {
             Item item = await _context.Items.FindAsync(itemId);
             _context.Items.Remove(item);
             await _context.SaveChangesAsync();
-            return item;
         }
 
         public bool ItemByItemIdExists(int itemId)
@@ -61,7 +53,7 @@ namespace Infrastructure.Data
             return _context.Items.Any(i => i.ItemId == itemId);
         }
 
-        public bool BudgetGroupByBudgetGroupIdExists(int? budgetGroupId)
+        public bool BudgetGroupByBudgetGroupIdExists(int budgetGroupId)
         {
             return _context.BudgetGroups.Any(g => g.BudgetGroupId == budgetGroupId);
         }
