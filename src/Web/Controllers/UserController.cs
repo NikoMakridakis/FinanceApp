@@ -4,9 +4,7 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using System;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using Web.Extensions;
@@ -38,7 +36,7 @@ namespace Web.Controllers
             string email = userForLoginDto.Email;
             User user = await _userManager.FindByEmailAsync(email);
 
-            if (user == null)
+            if (user == null)   
             {
                 return NotFound($"Unable to find user with email '{email}'.");
             }

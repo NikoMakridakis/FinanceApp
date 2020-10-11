@@ -6,11 +6,11 @@ namespace Core.Interfaces
 {
     public interface IBudgetGroupRepository
     {
-        Task<IReadOnlyList<BudgetGroup>> GetBudgetGroupsAsync(int? userId);
+        Task<IReadOnlyList<BudgetGroup>> GetBudgetGroupsAsync(int userId);
         Task<BudgetGroup> GetBudgetGroupByIdAsync(int budgetGroupId);
-        Task<BudgetGroup> AddBudgetGroupAsync(BudgetGroup budgetGroup);
-        Task<BudgetGroup> UpdateBudgetGroupAsync(BudgetGroup budgetGroup);
-        Task<BudgetGroup> DeleteBudgetGroupByIdAsync(int budgetGroupId);
+        Task AddBudgetGroupAsync(BudgetGroup budgetGroup);
+        Task UpdateBudgetGroupAsync(BudgetGroup budgetGroup);
+        Task DeleteBudgetGroupByIdAsync(int budgetGroupId);
         bool BudgetGroupByIdExists(int budgetGroupId);
     }
 }

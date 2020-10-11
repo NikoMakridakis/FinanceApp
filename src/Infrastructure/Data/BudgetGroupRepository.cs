@@ -16,13 +16,8 @@ namespace Infrastructure.Data
             _context = context ?? throw new ArgumentNullException(nameof(context));
         }
 
-        public async Task<IReadOnlyList<BudgetGroup>> GetBudgetGroupsAsync(int? userId)
+        public async Task<IReadOnlyList<BudgetGroup>> GetBudgetGroupsAsync(int userId)
         {
-            if (userId == null)
-            {
-                return await _context.BudgetGroups.ToListAsync();
-            }
-
             return await _context.BudgetGroups.Where(b => b.UserId == userId).ToListAsync();
         }
 
@@ -31,7 +26,7 @@ namespace Infrastructure.Data
             return await _context.BudgetGroups.FindAsync(budgetGroupId);
         }
 
-        public async Task<BudgetGroup> AddBudgetGroupAsync(BudgetGroup budgetGroup)
+        public async Task AddBudgetGroupAsync(BudgetGroup budgetGroup)
         {
             if (budgetGroup == null)
             {
@@ -40,21 +35,18 @@ namespace Infrastructure.Data
 
             _context.BudgetGroups.Add(budgetGroup);
             await _context.SaveChangesAsync();
-            return budgetGroup;
         }
 
-        public async Task<BudgetGroup> UpdateBudgetGroupAsync(BudgetGroup budgetGroup)
+        public async Task UpdateBudgetGroupAsync(BudgetGroup budgetGroup)
         {
             await _context.SaveChangesAsync();
-            return budgetGroup;
         }
 
-        public async Task<BudgetGroup> DeleteBudgetGroupByIdAsync(int budgetGroupId)
+        public async Task DeleteBudgetGroupByIdAsync(int budgetGroupId)
         {
             BudgetGroup budgetGroup = await _context.BudgetGroups.FindAsync(budgetGroupId);
             _context.BudgetGroups.Remove(budgetGroup);
             await _context.SaveChangesAsync();
-            return budgetGroup;
         }
 
         public bool BudgetGroupByIdExists(int budgetGroupId)
