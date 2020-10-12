@@ -26,31 +26,29 @@ function Copyright() {
     );
 }
 
-function useStyles() {
-    makeStyles((theme) => ({
-        paper: {
-            marginTop: theme.spacing(8),
+const useStyles = makeStyles({
+    paper: {
+            marginTop: '8px',
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'center',
-        },
-        avatar: {
-            margin: theme.spacing(1),
-            backgroundColor: theme.palette.secondary.main,
-        },
-        form: {
-            width: '100%',
-            marginTop: theme.spacing(1),
-        },
-        submit: {
-            margin: theme.spacing(3, 0, 2),
-        }
-    }))
-};
+    },
+    avatar: {
+        margin: '1px',
+        backgroundColor: '#DC004E',
+    },
+    form: {
+        width: '100%',
+        marginTop: '1px',
+    },
+    submit: {
+        margin: '3px, 0px, 2px',
+    },
+});
 
 function Login() {
 
-    useStyles();
+    const classes = useStyles();
 
     return (
         <Container component="main" maxWidth="xs">
