@@ -25,7 +25,7 @@ const useStyles = makeStyles({
 });
 
 
-function NavigationBar(props) {
+function NavigationBar() {
 
     const classes = useStyles();
     const history = useHistory();
@@ -33,17 +33,15 @@ function NavigationBar(props) {
 
     const [drawerIsOpen, toggleDrawer] = useState(false);
 
-    toggleDrawer = booleanValue => () => {
-        this.setState({
-            drawerIsOpen: booleanValue
-        });
+    function handleToggle(bool) {
+        toggleDrawer(bool);
     };
 
     return (
         <div className={classes.root}>
             <AppBar position="static" className={classes.bar}>
                 <Toolbar>
-                    <IconButton edge="start" className={classes.menuButton} color="inherit" aria-label="menu">
+                    <IconButton onClick={handleToggle} className={classes.menuButton} edge="start" color="inherit" aria-label="menu">
                         <MenuIcon />
                     </IconButton>
                     <Typography variant="h6" className={classes.title}>
@@ -54,8 +52,7 @@ function NavigationBar(props) {
             </AppBar>
 
             <NavigationDrawer
-                drawerIsOpen={this.state.drawerIsOpen}
-                toggleDrawer={this.toggleDrawer}
+                drawerIsOpen={drawerIsOpen}
             />
         </div>
     );

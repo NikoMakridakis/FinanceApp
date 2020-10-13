@@ -1,7 +1,7 @@
 ﻿import React from 'react';
 import clsx from 'clsx';
 import { makeStyles } from '@material-ui/core/styles';
-import SwipeableDrawer from '@material-ui/core/SwipeableDrawer';
+import Drawer from '@material-ui/core/Drawer';
 import Button from '@material-ui/core/Button';
 import List from '@material-ui/core/List';
 import Divider from '@material-ui/core/Divider';
@@ -20,14 +20,14 @@ const useStyles = makeStyles({
     },
 });
 
-function SwipeableTemporaryDrawer() {
+function NavigationDrawer() {
     const classes = useStyles();
     const [state, setState] = React.useState({
         left: false,
     });
 
     const toggleDrawer = (anchor, open) => (event) => {
-        if (event && event.type === 'keydown' && (event.key === 'Tab' || event.key === 'Shift')) {
+        if (event.type === 'keydown' && (event.key === 'Tab' || event.key === 'Shift')) {
             return;
         }
 
@@ -65,21 +65,16 @@ function SwipeableTemporaryDrawer() {
 
     return (
         <div>
-            {['left'].map((anchor) => (
+            {[<MenuIcon />].map((anchor) => (
                 <React.Fragment key={anchor}>
                     <Button onClick={toggleDrawer(anchor, true)}>{anchor}</Button>
-                    <SwipeableDrawer
-                        anchor={anchor}
-                        open={state[anchor]}
-                        onClose={toggleDrawer(anchor, false)}
-                        onOpen={toggleDrawer(anchor, true)}
-                    >
+                    <Drawer anchor={anchor} open={state[anchor]} onClose={toggleDrawer(anchor, false)}>
                         {list(anchor)}
-                    </SwipeableDrawer>
+                    </Drawer>
                 </React.Fragment>
             ))}
         </div>
     );
 }
 
-export default SwipeableTemporaryDrawer;
+export default NavigationDrawer
