@@ -30,6 +30,7 @@ namespace Web.Controllers
         }
 
         [HttpPost("login")]
+        [ValidateAntiForgeryToken]
         [AllowAnonymous]
         public async Task<ActionResult<UserDto>> Login(UserForLoginDto userForLoginDto)
         {
@@ -38,7 +39,8 @@ namespace Web.Controllers
 
             if (user == null)   
             {
-                return NotFound($"Unable to find user with email '{email}'.");
+                _logger.LogError($"Unable to find user with email '{email}'.");
+                return NotFound();
             }
 
             SignInResult result = await _signInManager.CheckPasswordSignInAsync(user, userForLoginDto.Password, lockoutOnFailure: true);
@@ -47,6 +49,7 @@ namespace Web.Controllers
             {
                 var identity = new ClaimsIdentity(IdentityConstants.ApplicationScheme);
                 identity.AddClaim(new Claim(ClaimTypes.Name, user.UserName));
+
                 await HttpContext.SignInAsync(IdentityConstants.ApplicationScheme,
                     new ClaimsPrincipal(identity));
                 
@@ -57,16 +60,15 @@ namespace Web.Controllers
 
             if (result.IsLockedOut)
             {
-                _logger.LogInformation("The user has been locked out.");
-
                 int lockoutMinutesRemaining = user.GetLockoutMinutesRemaining();
-
-                return Unauthorized($"The user '{email}' has been locked out. Please try again in {lockoutMinutesRemaining} minutes.");
+                _logger.LogInformation($"The user '{email}' has been locked out for {lockoutMinutesRemaining} minutes.");
+                return Unauthorized();
             }
 
             if (!result.Succeeded)
             {
-                return Unauthorized("The login attempt failed.");
+                _logger.LogInformation($"The user '{email}' has failed the login attempt.");
+                return Unauthorized();
             }
 
             return Ok(_mapper.Map<UserDto>(user));
