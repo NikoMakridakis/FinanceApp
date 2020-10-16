@@ -31,7 +31,7 @@ namespace Web.Extensions
                 options.Lockout.AllowedForNewUsers = true;
 
                 // User settings.
-                options.User.RequireUniqueEmail = false;
+                options.User.RequireUniqueEmail = true;
             });
         }
     }

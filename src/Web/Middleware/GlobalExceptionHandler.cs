@@ -51,7 +51,7 @@ namespace Web.Middleware
             var result = JsonSerializer.Serialize(new
             {
                 StatusCode = statusCode,
-                Message = message
+                Message = message,
             });
 
             await httpContext.Response.WriteAsync(result);

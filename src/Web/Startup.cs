@@ -13,6 +13,7 @@ using Web.Extensions;
 using Serilog;
 using Microsoft.Extensions.Logging;
 using Web.Middleware;
+using Infrastructure.Services;
 
 namespace Web
 {
@@ -44,6 +45,7 @@ namespace Web
 
             services.AddScoped<IBudgetGroupRepository, BudgetGroupRepository>();
             services.AddScoped<IItemRepository, ItemRepository>();
+            services.AddScoped<ITokenService, TokenService>();
 
             // In production, the React files will be served from this directory
             services.AddSpaStaticFiles(configuration =>

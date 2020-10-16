@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Core.Entities;
 using Core.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -28,6 +29,7 @@ namespace Web.Controllers
         }
 
         // GET: api/budgetGroup
+        [Authorize]
         [HttpGet]
         public async Task<ActionResult<IReadOnlyList<BudgetGroupDto>>> GetBudgetGroups([FromQuery] int userId)
         {
