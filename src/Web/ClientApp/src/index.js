@@ -10,10 +10,9 @@ ReactDOM.render(
         <BrowserRouter>
             <Switch>
                 <Route path="/" exact component={Home} />
-                <Route path="/login" component={Login} />
+                <Route path="/Account/login" component={Login} />
                 <Route path="/budget" component={BudgetGroupList} />
-                <Route path="*" component={NotFound} />
             </Switch>
         </BrowserRouter>,
-    document.getElementById('root')
+    document.getElementById('root') 
 );

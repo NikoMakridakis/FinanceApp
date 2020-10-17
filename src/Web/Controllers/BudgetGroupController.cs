@@ -29,6 +29,7 @@ namespace Web.Controllers
         }
 
         // GET: api/budgetGroup
+        [Authorize]
         [HttpGet]
         public async Task<ActionResult<IReadOnlyList<BudgetGroupDto>>> GetBudgetGroups([FromQuery] int userId)
         {
