@@ -34,11 +34,11 @@ namespace Infrastructure.Services
                 Subject = new ClaimsIdentity(claims),
                 Expires = DateTime.Now.AddDays(7),
                 SigningCredentials = credentials,
-                Issuer = _configuration["Token:Issuer"]
+                Issuer = _configuration["Token:Issuer"],
+                Audience = _configuration["Token:Audience"]
             };
 
             JwtSecurityTokenHandler tokenHandler = new JwtSecurityTokenHandler();
-
             SecurityToken token = tokenHandler.CreateToken(tokenDescriptor);
 
             return tokenHandler.WriteToken(token);

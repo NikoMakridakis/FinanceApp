@@ -1,4 +1,6 @@
-﻿namespace Web.Models
+﻿using System;
+
+namespace Web.Models
 {
     public class UserDto
     {
