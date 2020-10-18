@@ -4,7 +4,6 @@ import { BrowserRouter, Route, Switch } from "react-router-dom";
 import Home from './components/Home';
 import Login from './components/Login';
 import BudgetGroupList from './components/BudgetGroupList';
-import NotFound from './components/NotFound';
 
 ReactDOM.render(
         <BrowserRouter>

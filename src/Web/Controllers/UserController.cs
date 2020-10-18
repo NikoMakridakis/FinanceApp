@@ -91,8 +91,6 @@ namespace Web.Controllers
                 return BadRequest();
             }
 
-            //return Ok(_mapper.Map<UserDto>(user));
-
             return new UserDto
             {
                 Email = user.Email,
