@@ -1,5 +1,5 @@
 ﻿import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import axios from '../../axios/axios';
 
 
 function BudgetGroupList() {
@@ -10,7 +10,7 @@ function BudgetGroupList() {
 
     useEffect(() => {
         async function fetchBudgetGroups() {
-            axios.get("https://localhost:44387/api/BudgetGroup?UserId=" + budgetGroupId)
+            axios.get('api/BudgetGroup?UserId=' + budgetGroupId)
                 .then(response => {
                     console.log(response);
                     setBudgetGroups(response.data);

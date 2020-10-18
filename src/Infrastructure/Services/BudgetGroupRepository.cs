@@ -19,12 +19,12 @@ namespace Infrastructure.Services
 
         public async Task<IReadOnlyList<BudgetGroup>> GetBudgetGroupsForUserAsync(int userId)
         {
-            return await _context.BudgetGroups.Where(b => b.UserId == userId).ToListAsync();
+            return await _context.BudgetGroups.Where(budgetGroup => budgetGroup.UserId == userId).ToListAsync();
         }
 
-        public async Task<BudgetGroup> GetBudgetGroupByIdAsync(int budgetGroupId)
+        public async Task<BudgetGroup> GetBudgetGroupByIdForUserAsync(int budgetGroupId, int userId)
         {
-            return await _context.BudgetGroups.FindAsync(budgetGroupId);
+            return await _context.BudgetGroups.Where(budgetGroup => budgetGroup.BudgetGroupId == budgetGroupId && budgetGroup.UserId == userId).FirstOrDefaultAsync();
         }
 
         public async Task AddBudgetGroupForUserAsync(BudgetGroup budgetGroup)
@@ -38,21 +38,21 @@ namespace Infrastructure.Services
             await _context.SaveChangesAsync();
         }
 
-        public async Task UpdateBudgetGroupAsync(BudgetGroup budgetGroup)
+        public async Task UpdateBudgetGroupForUserAsync(BudgetGroup budgetGroup)
         {
             await _context.SaveChangesAsync();
         }
 
-        public async Task DeleteBudgetGroupByIdAsync(int budgetGroupId)
+        public async Task DeleteBudgetGroupByIdForUserAsync(int budgetGroupId)
         {
             BudgetGroup budgetGroup = await _context.BudgetGroups.FindAsync(budgetGroupId);
             _context.BudgetGroups.Remove(budgetGroup);
             await _context.SaveChangesAsync();
         }
 
-        public bool BudgetGroupByIdExists(int budgetGroupId)
+        public async Task<bool> BudgetGroupByIdForUserExists(int budgetGroupId, int userId)
         {
-            return _context.BudgetGroups.Any(g => g.BudgetGroupId == budgetGroupId);
+            return await _context.BudgetGroups.AnyAsync(budgetGroup => budgetGroup.BudgetGroupId == budgetGroupId && budgetGroup.UserId == userId);
         }
     }
 }
