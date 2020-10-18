@@ -17,7 +17,7 @@ namespace Infrastructure.Services
             _context = context ?? throw new ArgumentNullException(nameof(context));
         }
 
-        public async Task<IReadOnlyList<BudgetGroup>> GetBudgetGroupsAsync(int userId)
+        public async Task<IReadOnlyList<BudgetGroup>> GetBudgetGroupsForUserAsync(int userId)
         {
             return await _context.BudgetGroups.Where(b => b.UserId == userId).ToListAsync();
         }
@@ -27,7 +27,7 @@ namespace Infrastructure.Services
             return await _context.BudgetGroups.FindAsync(budgetGroupId);
         }
 
-        public async Task AddBudgetGroupAsync(BudgetGroup budgetGroup)
+        public async Task AddBudgetGroupForUserAsync(BudgetGroup budgetGroup)
         {
             if (budgetGroup == null)
             {

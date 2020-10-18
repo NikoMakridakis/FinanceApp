@@ -41,7 +41,7 @@ namespace Web.Controllers
                 return NotFound();
             }
 
-            IReadOnlyList<BudgetGroup> budgetGroups = await _repo.GetBudgetGroupsAsync(userId);
+            IReadOnlyList<BudgetGroup> budgetGroups = await _repo.GetBudgetGroupsForUserAsync(userId);
 
             _logger.LogInformation($"Returned all BudgetGroups associated with the UserId '{userId}'.");
             return Ok(_mapper.Map<IReadOnlyList<BudgetGroupDto>>(budgetGroups));
@@ -79,7 +79,7 @@ namespace Web.Controllers
             }
 
             BudgetGroup budgetGroup = _mapper.Map<BudgetGroup>(budgetGroupForCreationDto);
-            await _repo.AddBudgetGroupAsync(budgetGroup);
+            await _repo.AddBudgetGroupForUserAsync(budgetGroup);
             BudgetGroupDto budgetGroupDto = _mapper.Map<BudgetGroupDto>(budgetGroup);
 
             _logger.LogInformation($"Created BudgetGroup with the BudgetGroupId '{budgetGroupDto.BudgetGroupId}'.");
