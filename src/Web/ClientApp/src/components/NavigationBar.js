@@ -32,15 +32,15 @@ function NavigationBar() {
 
     return (
         <div className={classes.root}>
-            <AppBar position="static" className={classes.bar}>
+            <AppBar position='static' className={classes.bar}>
                 <Toolbar>
-                    <IconButton className={classes.menuButton} edge="start" color="inherit" aria-label="menu">
+                    <IconButton className={classes.menuButton} edge='start' color='inherit' aria-label='menu'>
                         <MenuIcon />
                     </IconButton>
-                    <Typography variant="h6" className={classes.title}>
+                    <Typography variant='h6' className={classes.title}>
                         BudgetApp
                     </Typography>
-                    <Button onClick={navigateToLogin} color="inherit">Login</Button>
+                    <Button onClick={navigateToLogin} color='inherit'>Login</Button>
                 </Toolbar>
             </AppBar>
         </div>

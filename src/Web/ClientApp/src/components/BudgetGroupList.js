@@ -1,6 +1,7 @@
 ﻿import React, { useState, useEffect } from 'react';
-import axios from '../axios/axios';
+import axios from 'axios';
 
+const API_URL = 'https://localhost:44387'
 
 function BudgetGroupList() {
 
@@ -10,7 +11,7 @@ function BudgetGroupList() {
 
     useEffect(() => {
         async function fetchBudgetGroups() {
-            axios.get(baseURL + budgetGroupId)
+            axios.get(API_URL + budgetGroupId)
                 .then(response => {
                     console.log(response);
                     setBudgetGroups(response.data);
