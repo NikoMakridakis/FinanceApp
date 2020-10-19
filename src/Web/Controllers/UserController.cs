@@ -64,7 +64,7 @@ namespace Web.Controllers
 
             return new UserDto {
                 Email = user.Email,
-                Token = _tokenService.CreateToken(user),
+                AccessToken = _tokenService.CreateToken(user),
             };
         }
 
@@ -94,7 +94,7 @@ namespace Web.Controllers
             return new UserDto
             {
                 Email = user.Email,
-                Token = _tokenService.CreateToken(user)
+                AccessToken = _tokenService.CreateToken(user)
             };
         }
     }

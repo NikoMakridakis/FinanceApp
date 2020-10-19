@@ -43,6 +43,14 @@ namespace Web
 
             services.AddSwaggerConfiguration();
 
+            services.AddCors(opt =>
+            {
+                opt.AddPolicy("CorsPolicy", policy =>
+                {
+                    policy.AllowAnyHeader().AllowAnyMethod().WithOrigins("https://localhost:44387");
+                });
+            });
+
             services.AddScoped<IBudgetGroupRepository, BudgetGroupRepository>();
             services.AddScoped<IItemRepository, ItemRepository>();
             services.AddScoped<ITokenService, TokenService>();
@@ -82,6 +90,7 @@ namespace Web
             });
 
             app.UseRouting();
+            app.UseCors("CorsPolicy");
             app.UseAuthentication();
             app.UseAuthorization();
 
