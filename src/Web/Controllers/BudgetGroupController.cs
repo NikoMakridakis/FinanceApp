@@ -15,6 +15,7 @@ namespace Web.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class BudgetGroupController : ControllerBase
     {
         private readonly IBudgetGroupRepository _repo;
@@ -30,7 +31,6 @@ namespace Web.Controllers
         }
 
         // GET: api/budgetGroup
-        [Authorize]
         [HttpGet]
         public async Task<ActionResult<IReadOnlyList<BudgetGroupDto>>> GetBudgetGroups()
         {

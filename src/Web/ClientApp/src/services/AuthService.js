@@ -1,5 +1,7 @@
 ﻿import axios from 'axios';
 
+import AuthHeaderService from './AuthHeaderService';
+
 const API_URL = 'https://localhost:44387'
 
 function register(email, password) {
@@ -10,11 +12,19 @@ function register(email, password) {
 }
 
 function login(email, password) {
+    var authorizationHeader = AuthHeaderService()
+
     return axios
         .post(API_URL + '/api/user/login', {
             email,
-            password
-        })
+            password,
+        }, {
+            headers: {
+                authorizationHeader
+            }
+        }
+
+    )
         .then(response => {
             if (response.data.accessToken) {
                 localStorage.setItem('email', JSON.stringify(response.data));
@@ -29,7 +39,7 @@ function logout() {
 }
 
 function getCurrentUser() {
-    return JSON.parse(localStorage.getItem('email'));;
+    return JSON.parse(localStorage.getItem('email'));
 }
 
 export default {
