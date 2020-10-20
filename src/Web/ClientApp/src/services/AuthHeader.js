@@ -1,6 +1,6 @@
 ﻿// To access protected resources, an HTTP request needs an Authorization header with the JWT token.
 
-function AuthHeaderService() {
+function AuthHeader() {
     const user = JSON.parse(localStorage.getItem('user'));
 
     if (user && user.accessToken) {
@@ -10,4 +10,4 @@ function AuthHeaderService() {
     }
 }
 
-export default AuthHeaderService()
+export default AuthHeader()

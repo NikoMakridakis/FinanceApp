@@ -1,4 +1,5 @@
 ﻿import React, { useState } from 'react';
+import { useForm } from "react-hook-form";
 import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -16,6 +17,7 @@ import Container from '@material-ui/core/Container';
 import Copyright from './Copyright';
 import AuthService from "../services/AuthService";
 
+//https://codesandbox.io/s/o766kp4z05
 
 const useStyles = makeStyles((theme) => ({
     paper: {
@@ -43,8 +45,12 @@ const useStyles = makeStyles((theme) => ({
 
 function Login(props) {
 
+    const classes = useStyles();
+
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+
+    const { register, handleSubmit } = useForm();
 
     function onChangeEmail(e) {
         const email = e.target.value;
@@ -56,7 +62,9 @@ function Login(props) {
         setPassword(password);
     };
 
-    function handleLogin() {
+    function handleLogin(e) {
+        e.preventDefault();
+        
         AuthService.login(email, password).then(
             () => {
                 props.history.push("/profile");
@@ -64,8 +72,6 @@ function Login(props) {
             }
         );
     }
-
-    const classes = useStyles();
 
     return (
         <Container component="main" maxWidth="xs">
@@ -77,26 +83,34 @@ function Login(props) {
                 <Typography component="h1" variant="h5">
                     Sign in
                 </Typography>
-                <form onSubmit={handleLogin} className={classes.form} noValidate>
+                <form onSubmit={handleLogin} className={classes.form}>
                     <TextField
                         onChange={onChangeEmail}
                         value={email}
+                        name="email"
                         variant="outlined"
                         margin="normal"
                         fullWidth
                         id="email"
                         label="Email Address"
-                        name="email"
                         autoComplete="email"
                         autoFocus
+                        ref={register({
+                            required: "required",
+                            pattern: {
+                                value: /S+@S+.S+/,
+                                message: "Entered value does not match email format"
+                            }
+                        })}
                     />
                     <TextField
+                        ref={register}
                         onChange={onChangePassword}
                         value={password}
+                        name="password"
                         variant="outlined"
                         margin="normal"
                         fullWidth
-                        name="password"
                         label="Password"
                         type="password"
                         id="password"

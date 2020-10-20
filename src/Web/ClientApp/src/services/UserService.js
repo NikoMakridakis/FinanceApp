@@ -1,13 +1,12 @@
 ﻿import axios from 'axios';
-import AuthHeaderService from './AuthHeaderService';
+import AuthHeader from './AuthHeader';
 
 const API_URL = 'https://localhost:44387'
 
-const getBudgetList = () => {
-    return axios.get(API_URL + '/api/BudgetGroup', { headers: AuthHeaderService() });
+const getBudgetGroups = () => {
+    return axios.get(API_URL + '/api/BudgetGroup', { headers: AuthHeader() });
 };
 
 export default {
-    getPublicContent,
-    getBudgetList
+    getBudgetGroups
 };
