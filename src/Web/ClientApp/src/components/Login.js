@@ -1,5 +1,5 @@
 ﻿import React, { useState } from 'react';
-import { useForm } from "react-hook-form";
+import { useForm, Controller } from 'react-hook-form';
 import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -13,11 +13,10 @@ import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
+import WarningRoundedIcon from '@material-ui/icons/WarningRounded';
 
 import Copyright from './Copyright';
-import AuthService from "../services/AuthService";
-
-//https://codesandbox.io/s/o766kp4z05
+import AuthService from '../services/AuthService';
 
 const useStyles = makeStyles((theme) => ({
     paper: {
@@ -41,90 +40,120 @@ const useStyles = makeStyles((theme) => ({
         textAlign: 'right',
         margin: 'auto',
     },
+    error: {
+        display: 'flex',
+        flexDirection: 'row',
+        alignItems: 'center',
+    },
+    warningIcon: {
+        color: '#DC004E',
+        fontSize: '16px',
+        marginRight: '6px',
+
+    },
+    warningText: {
+        color: '#DC004E',
+    },
 }));
 
 function Login(props) {
 
     const classes = useStyles();
 
-    const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
 
-    const { register, handleSubmit } = useForm();
+    const { register, handleSubmit, errors, control } = useForm();
 
-    function onChangeEmail(e) {
-        const email = e.target.value;
+    function onChangeEmail(input) {
+        const email = input.target.value;
         setEmail(email);
     };
 
-    function onChangePassword(e) {
-        const password = e.target.value;
+    function onChangePassword(input) {
+        const password = input.target.value;
         setPassword(password);
     };
 
-    function handleLogin(e) {
-        e.preventDefault();
-        
-        AuthService.login(email, password).then(
+    function onSubmit(data) {
+        console.log(data);
+
+        //data.preventDefault();
+
+        //handleLogin(data);
+    };
+
+    function handleLogin(data) {
+        AuthService.login(data.email, data.password).then(
             () => {
-                props.history.push("/profile");
+                props.history.push('/profile');
                 window.location.reload();
             }
         );
-    }
+    };
 
     return (
-        <Container component="main" maxWidth="xs">
+        <Container component='main' maxWidth='xs'>
             <CssBaseline />
             <div className={classes.paper}>
                 <Avatar className={classes.avatar}>
                     <LockOutlinedIcon />
                 </Avatar>
-                <Typography component="h1" variant="h5">
+                <Typography component='h1' variant='h5'>
                     Sign in
                 </Typography>
-                <form onSubmit={handleLogin} className={classes.form}>
+                <form onSubmit={handleSubmit(onSubmit)} className={classes.form} noValidate>
                     <TextField
-                        onChange={onChangeEmail}
-                        value={email}
-                        name="email"
-                        variant="outlined"
-                        margin="normal"
-                        fullWidth
-                        id="email"
-                        label="Email Address"
-                        autoComplete="email"
-                        autoFocus
-                        ref={register({
-                            required: "required",
+                        inputRef={register({
+                            required: 'Email is required',
                             pattern: {
-                                value: /S+@S+.S+/,
-                                message: "Entered value does not match email format"
+                                // regex pattern below checks for the following:
+                                // contains at least one character before '@'
+                                // contains only one '@' character
+                                // contains only one '.' after '@'
+                                value: /^[^@s]+@[^@s.]+.[^@.s]+$/,
+                                message: 'Invalid email address'
                             }
                         })}
-                    />
-                    <TextField
-                        ref={register}
-                        onChange={onChangePassword}
-                        value={password}
-                        name="password"
-                        variant="outlined"
-                        margin="normal"
+                        onChange={onChangeEmail}
+                        name='email'
+                        variant='outlined'
+                        margin='normal'
                         fullWidth
-                        label="Password"
-                        type="password"
-                        id="password"
-                        autoComplete="current-password"
+                        id='email'
+                        label='Email Address'
+                        autoComplete='email'
+                        autoFocus
+                    />
+                    {errors.email &&
+                        <Box className={classes.error}>
+                            <WarningRoundedIcon className={classes.warningIcon} />
+                            <Typography className={classes.warningText}>{errors.email.message}</Typography>
+                        </Box>
+                    }
+                    <TextField
+                        inputRef={register}
+                        onChange={onChangePassword}
+                        name='password'
+                        variant='outlined'
+                        margin='normal'
+                        fullWidth
+                        label='Password'
+                        type='password'
+                        id='password'
+                        autoComplete='current-password'
                     />
                     <Grid container>
                         <Grid item xs>
                             <FormControlLabel
-                                control={<Checkbox value="remember" color="primary" />}
-                                label="Remember me"
+                                control={
+                                    <Controller as={Checkbox} control={control} name='remember' color='primary' defaultValue={false} />
+                                }
+                                label='Remember me'
                             />
                         </Grid>
                         <Grid item xs className={classes.forgotPassword}>
-                            <Link href="#" variant="body2">
+                            <Link href='#' variant='body2'>
                                 <Typography>
                                     Forgot password?
                                 </Typography>
@@ -132,19 +161,19 @@ function Login(props) {
                         </Grid>
                     </Grid>
                     <Button
-                        type="submit"
+                        type='submit'
                         fullWidth
-                        variant="contained"
-                        color="primary"
+                        variant='contained'
+                        color='primary'
                         className={classes.submit}
                     >
                         Sign In
                     </Button>
                     <Box>
-                        <Typography align="center" variant="body1">
-                            { "Don't have an account? " }
-                            <Link href="#" variant="body1">
-                                    {"Sign Up"}
+                        <Typography align='center' variant='body1'>
+                            { 'Don\'t have an account? ' }
+                            <Link href='#' variant='body1'>
+                                    {'Sign Up'}
                             </Link>
                         </Typography>
                     </Box>
