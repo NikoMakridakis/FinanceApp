@@ -32,6 +32,27 @@ namespace Web.Controllers
             _tokenService = tokenService;
         }
 
+        // GET: api/user
+        [Authorize]
+        [HttpGet]
+        public async Task<ActionResult<UserDto>> GetCurrentUser()
+        {
+            var user = await _userManager.FindByEmailFromClaimsPrinciple(HttpContext.User);
+
+            return new UserDto
+            {
+                Email = user.Email,
+                AccessToken = _tokenService.CreateToken(user),
+            };
+        }
+
+        [HttpGet("emailexists")]
+        public async Task<ActionResult<bool>> CheckEmailExistsAsync([FromQuery] string email)
+        {
+            return await _userManager.FindByEmailAsync(email) != null;
+        }
+
+        // POST: api/user/login
         [HttpPost("login")]
         [AllowAnonymous]
         public async Task<ActionResult<UserDto>> Login(UserForLoginDto userForLoginDto)
@@ -68,6 +89,7 @@ namespace Web.Controllers
             };
         }
 
+        // POST: api/user/register
         [HttpPost("register")]
         [AllowAnonymous]
         public async Task<ActionResult<UserDto>> Register(UserForRegisterDto userForRegisterDto)

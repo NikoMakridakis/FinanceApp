@@ -1,17 +1,17 @@
 ﻿import React, { useState } from 'react';
-import { useForm, Controller } from 'react-hook-form';
+import { useForm } from 'react-hook-form';
+import { makeStyles } from '@material-ui/core/styles';
+import { FormControlLabel } from '@material-ui/core';
 import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import TextField from '@material-ui/core/TextField';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
 import Link from '@material-ui/core/Link';
 import Grid from '@material-ui/core/Grid';
 import Box from '@material-ui/core/Box';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
-import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import WarningRoundedIcon from '@material-ui/icons/WarningRounded';
 
@@ -40,10 +40,13 @@ const useStyles = makeStyles((theme) => ({
         textAlign: 'right',
         margin: 'auto',
     },
-    error: {
+    row: {
         display: 'flex',
         flexDirection: 'row',
         alignItems: 'center',
+    },
+    check: {
+        marginLeft: '-12px',
     },
     warningIcon: {
         color: '#DC004E',
@@ -63,7 +66,7 @@ function Login(props) {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
 
-    const { register, handleSubmit, errors, control } = useForm();
+    const { register, handleSubmit, errors } = useForm();
 
     function onChangeEmail(input) {
         const email = input.target.value;
@@ -107,11 +110,9 @@ function Login(props) {
                         inputRef={register({
                             required: 'Email is required',
                             pattern: {
-                                // regex pattern below checks for the following:
-                                // contains at least one character before '@'
-                                // contains only one '@' character
-                                // contains only one '.' after '@'
-                                value: /^[^@s]+@[^@s.]+.[^@.s]+$/,
+                                // regex pattern below verifies email as per RFC2822 standards
+                                // source: https://regexr.com/5em0n
+                                value: /[a-zA-Z0-9!#$ %& '*+/=?^_`{|}~-]+(?:\.[a-zA-Z0-9!#$%&' * +/=?^_`{|}~-]+)*@(?:[a-zA-Z0-9](?:[a-zA-Z0-9-]*[a-zA-Z0-9])?\.)+[a-zA-Z0-9](?:[a-zA-Z0-9-]*[a-zA-Z0-9])?/,
                                 message: 'Invalid email address'
                             }
                         })}
@@ -144,11 +145,15 @@ function Login(props) {
                         autoComplete='current-password'
                     />
                     <Grid container>
-                        <Grid item xs>
+                        <Grid item xs className={classes.row}>
                             <FormControlLabel
                                 control={
-                                    <Controller as={Checkbox} control={control} name='remember' color='primary' defaultValue={false} />
-                                }
+                                    <Checkbox
+                                        inputRef={register}
+                                        name='remember'
+                                        color='primary'
+                                        defaultValue={false}
+                                    />}
                                 label='Remember me'
                             />
                         </Grid>
