@@ -35,23 +35,34 @@ namespace Web.Controllers
         // GET: api/user
         [Authorize]
         [HttpGet]
-        public async Task<ActionResult<UserDto>> GetCurrentUser()
+        public async Task<ActionResult<UserDto>> GetEmailFromCurrentUser()
         {
-            var user = await _userManager.FindByEmailFromClaimsPrinciple(HttpContext.User);
+            User user = await _userManager.FindByEmailFromClaimsPrinciple(HttpContext.User);
 
-            return new UserDto
+            string email = user.Email;
+            
+            _logger.LogInformation($"Returned user associated with the email '{email}'.");
+
+            return Ok(email);
+        }
+
+        // GET: api/user/emailExists
+        [Authorize]
+        [HttpGet("emailExists")]
+        public async Task<ActionResult<bool>> CheckEmailExists([FromQuery] string email)
+        {
+            User user = await _userManager.FindByEmailAsync(email);
+
+            if (user == null)
             {
-                Email = user.Email,
-                AccessToken = _tokenService.CreateToken(user),
-            };
-        }
+                _logger.LogError($"Unable to find user with the email '{email}'.");
+                return NotFound(false);
+            }
 
-        [HttpGet("emailexists")]
-        public async Task<ActionResult<bool>> CheckEmailExistsAsync([FromQuery] string email)
-        {
-            return await _userManager.FindByEmailAsync(email) != null;
+            _logger.LogInformation($"The email '{email}' exists in the database.");
+            return Ok(true);
         }
-
+        
         // POST: api/user/login
         [HttpPost("login")]
         [AllowAnonymous]
