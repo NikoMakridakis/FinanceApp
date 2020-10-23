@@ -1,33 +1,13 @@
 ﻿import React from "react";
 import { Route, Redirect } from "react-router-dom";
-import AuthHeader from "../services/AuthHeader";
+import AuthService from "../services/AuthService";
 
-function ProtectedRoute()
-({
-    component: Component,
-    ...rest
-}) => {
-    return (
-        <Route
-            {...rest}
-            render={props => {
-                if (AuthHeader()) {
-                    return <Component {...props} />;
-                } else {
-                    return (
-                        <Redirect
-                            to={{
-                                pathname: "/",
-                                state: {
-                                    from: props.location
-                                }
-                            }}
-                        />
-                    );
-                }
-            }}
-        />
-    );
-};
+const PrivateRoute = ({ component: Component, ...rest }) => (
+    <Route {...rest} render={(props) => (
+        AuthService.isAuthenticated === true
+            ? <Component {...props} />
+            : <Redirect to='/login' />
+    )} />
+)
 
-export default ProtectedRoute;
+export default PrivateRoute;

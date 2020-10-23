@@ -79,11 +79,7 @@ function Login(props) {
     };
 
     function onSubmit(data) {
-        console.log(data);
-
-        //data.preventDefault();
-
-        //handleLogin(data);
+        handleLogin(data);
     };
 
     function handleLogin(data) {
@@ -117,6 +113,7 @@ function Login(props) {
                             }
                         })}
                         onChange={onChangeEmail}
+                        value={email}
                         name='email'
                         variant='outlined'
                         margin='normal'
@@ -135,6 +132,7 @@ function Login(props) {
                     <TextField
                         inputRef={register}
                         onChange={onChangePassword}
+                        value={password}
                         name='password'
                         variant='outlined'
                         margin='normal'

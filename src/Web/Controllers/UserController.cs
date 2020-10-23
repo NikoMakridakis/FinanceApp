@@ -62,7 +62,24 @@ namespace Web.Controllers
             _logger.LogInformation($"The email '{email}' exists in the database.");
             return Ok(true);
         }
-        
+
+        // POST: api/user/isAuthenticated
+        [Authorize]
+        [HttpPost("isAuthenticated")]
+        public async Task<ActionResult> CheckUserIsAuthenticated()
+        {
+            User user = await _userManager.FindByEmailFromClaimsPrinciple(HttpContext.User);
+            string email = user.Email;
+
+            if (user != null)
+            {
+                _logger.LogInformation($"The user with the '{email}' is authenticated.");
+                return Ok();
+            }
+
+            return Unauthorized();
+        }
+
         // POST: api/user/login
         [HttpPost("login")]
         [AllowAnonymous]
