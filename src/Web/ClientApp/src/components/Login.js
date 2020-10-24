@@ -59,7 +59,7 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-function Login(props) {
+function Login() {
 
     const classes = useStyles();
 
@@ -83,12 +83,10 @@ function Login(props) {
     };
 
     function handleLogin(data) {
-        AuthService.login(data.email, data.password).then(
-            () => {
-                props.history.push('/profile');
-                window.location.reload();
-            }
-        );
+        console.log(data);
+        AuthService.login(data.email, data.password).then(() => {
+            window.location = '/profile';
+        });
     };
 
     return (

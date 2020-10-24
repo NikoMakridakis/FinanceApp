@@ -1,5 +1,21 @@
 ﻿import axios from '../axios/axios';
-import AuthHeader from './AuthHeader';
+
+// To access protected resources, an HTTP request needs an Authorization header with the JWT token.
+function addAuthHeader() {
+    const user = JSON.parse(localStorage.getItem('user'));
+
+    if (user && user.accessToken) {
+        const accessToken = user.accessToken;
+        axios.interceptors.request.use(
+            function (config) {
+                config.headers.Authorization = accessToken ? `Bearer ${accessToken}` : '';
+                return config;
+            }
+        );
+    } else {
+        return { };
+    }
+}
 
 function register(email, password) {
     return axios.post('/api/user/register', {
@@ -18,6 +34,7 @@ function login(email, password) {
             if (response.data.accessToken) {
                 localStorage.setItem('user', JSON.stringify(response.data));
             }
+            console.log(response.data);
             return response.data;
         });
 };
@@ -32,11 +49,14 @@ function getCurrentUser() {
 
 function isAuthenticated() {
     axios.post('/api/user/isAuthenticated', {
-        headers: AuthHeader()
+        headers: addAuthHeader()
     })
     .then(function (response) {
-        //handle success
-        console.log(response);
+        if (response.status === 200) {
+            localStorage.setItem('isAuthenticated', true);
+        } else {
+            localStorage.setItem('isAuthenticated', false)
+        }
     })
     .catch(function (response) {
         //handle error
@@ -45,6 +65,7 @@ function isAuthenticated() {
 };
 
 export default {
+    addAuthHeader,
     register,
     login,
     logout,

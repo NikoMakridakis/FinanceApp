@@ -3,6 +3,6 @@
 export default axios.create({
     baseURL: 'https://localhost:44387',
     headers: {
-        'Content-Type': 'application/json',
+        'Content-Type': 'application/json'
     }
 });
