@@ -15,8 +15,8 @@ import Typography from '@material-ui/core/Typography';
 import Container from '@material-ui/core/Container';
 import WarningRoundedIcon from '@material-ui/icons/WarningRounded';
 
-import Copyright from './Copyright';
-import AuthService from '../services/AuthService';
+import Copyright from '../../components/Copyright';
+import AuthService from '../../services/AuthService';
 
 const useStyles = makeStyles((theme) => ({
     paper: {
@@ -59,7 +59,7 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-function Login() {
+function Login(props) {
 
     const classes = useStyles();
 
@@ -79,14 +79,8 @@ function Login() {
     };
 
     function onSubmit(data) {
-        handleLogin(data);
-    };
-
-    function handleLogin(data) {
-        console.log(data);
-        AuthService.login(data.email, data.password).then(() => {
-            window.location = '/profile';
-        });
+        AuthService.login(data.email, data.password);
+        props.history.push('/budget');
     };
 
     return (

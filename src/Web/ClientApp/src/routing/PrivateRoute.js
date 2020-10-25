@@ -6,8 +6,7 @@ const PrivateRoute = ({ component: Component, ...rest }) => (
     <Route
         {...rest}
         render={
-            //props => AuthService.isAuthenticated() ? (<Component {...props} />) : (<Redirect to={{ pathname: '/login' }} />)
-            console.log(AuthService.isAuthenticated())
+            props => AuthService.getCurrentUser() ? (<Component {...props} />) : (<Redirect to={{ pathname: '/login' }} />)
         }
     />
 );

@@ -34,8 +34,9 @@ function login(email, password) {
             if (response.data.accessToken) {
                 localStorage.setItem('user', JSON.stringify(response.data));
             }
-            console.log(response.data);
             return response.data;
+        }, (error) => {
+            console.log(error);
         });
 };
 
@@ -47,28 +48,10 @@ function getCurrentUser() {
     return JSON.parse(localStorage.getItem('user'));
 };
 
-function isAuthenticated() {
-    axios.post('/api/user/isAuthenticated', {
-        headers: addAuthHeader()
-    })
-    .then(function (response) {
-        if (response.status === 200) {
-            localStorage.setItem('isAuthenticated', true);
-        } else {
-            localStorage.setItem('isAuthenticated', false)
-        }
-    })
-    .catch(function (response) {
-        //handle error
-        console.log(response);
-    });
-};
-
 export default {
     addAuthHeader,
     register,
     login,
     logout,
     getCurrentUser,
-    isAuthenticated,
 };

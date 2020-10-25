@@ -1,13 +1,13 @@
 ﻿import React from "react";
 
-function Profile() {
+function Budget() {
     return (
         <div>
             <h1>
-                Test
+                Private Budget
             </h1>
         </div>
     );
 };
 
-export default Profile;
+export default Budget;

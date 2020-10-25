@@ -1,8 +1,8 @@
 ﻿import axios from '../axios/axios';
-import AuthHeader from './AuthHeader';
+import addAuthHeader from './AuthHeader';
 
 const getBudgetGroups = () => {
-    return axios.get('/api/BudgetGroup', { headers: AuthHeader() });
+    return axios.get('/api/BudgetGroup', { headers: addAuthHeader() });
 };
 
 export default {
