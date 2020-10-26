@@ -3,7 +3,6 @@
 // To access protected resources, an HTTP request needs an Authorization header with the JWT token.
 function addAuthHeader() {
     const user = JSON.parse(localStorage.getItem('user'));
-
     if (user && user.accessToken) {
         const accessToken = user.accessToken;
         axios.interceptors.request.use(
