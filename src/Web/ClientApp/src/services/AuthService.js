@@ -33,6 +33,8 @@ function login(email, password) {
             if (response.data.accessToken) {
                 localStorage.setItem('user', JSON.stringify(response.data));
             }
+            console.log('login response:');
+            console.log(response.data);
             return response.data;
         }, (error) => {
             console.log(error);

@@ -78,8 +78,9 @@ function Login(props) {
         setPassword(password);
     };
 
-    function onSubmit(data) {
-        AuthService.login(data.email, data.password);
+    async function onSubmit(data) {
+        await AuthService.login(data.email, data.password);
+        props.checkAuthorization();
         props.history.push('/budget');
     };
 

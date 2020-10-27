@@ -16,8 +16,8 @@ function App() {
         checkAuthorization();
     }, []);
 
-    function checkAuthorization() {
-        let user = AuthService.getCurrentUser();
+    async function checkAuthorization() {
+        let user = await AuthService.getCurrentUser();
         console.log('AuthService checkAuthorization from App.js');
         console.log(user);
         if (user !== null) {
@@ -31,7 +31,9 @@ function App() {
         <Router>
             <Switch>
                 <Route exact path={["/home", "/"]} component={Home} />
-                <Route exact path='/login' component={Login} />
+                <Route exact path='/login' render={(props) => (
+                    <Login {...props} checkAuthorization={checkAuthorization} />
+                )}/>
                 <Route exact path='/register' component={Register} />
                 <Route exact path='/welcome' render={() => (authorized === true ? (<Welcome />) : (<Redirect to="/login" />))} />
                 <Route exact path='/budget' render={() => (authorized === true ? (<Budget />) : (<Redirect to="/login" />))} />
