@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect } from "react";
+﻿import React, { useState } from "react";
 import { BrowserRouter as Router, Switch, Route, Redirect } from "react-router-dom";
 
 import AuthService from './services/AuthService';
@@ -12,17 +12,19 @@ function App() {
 
     const [authorized, setAuthorized] = useState(false);
 
-    useEffect(() => {
-        checkAuthorization();
-    }, []);
-
-    async function checkAuthorization() {
-        let user = await AuthService.getCurrentUser();
-        console.log('AuthService checkAuthorization from App.js');
+    function setAuthorization() {
+        console.log('fetching current user from App.setAuthorization');
+        const response = AuthService.getCurrentUser();
+        console.log('AuthService.getCurrentUser response:');
+        console.log(response);
+        const user = response.data;
+        console.log('user data:');
         console.log(user);
         if (user !== null) {
+            console.log('state set to true');
             setAuthorized(true);
         } else {
+            console.log('state set to false');
             setAuthorized(false);
         }
     };
@@ -32,7 +34,7 @@ function App() {
             <Switch>
                 <Route exact path={["/home", "/"]} component={Home} />
                 <Route exact path='/login' render={(props) => (
-                    <Login {...props} checkAuthorization={checkAuthorization} />
+                    <Login {...props} setAuthorization={setAuthorization} />
                 )}/>
                 <Route exact path='/register' component={Register} />
                 <Route exact path='/welcome' render={() => (authorized === true ? (<Welcome />) : (<Redirect to="/login" />))} />

@@ -77,11 +77,11 @@ function Login(props) {
         const password = input.target.value;
         setPassword(password);
     };
-
+    
     async function onSubmit(data) {
         await AuthService.login(data.email, data.password);
-        props.checkAuthorization();
-        props.history.push('/budget');
+        await props.setAuthorization();
+        await props.history.push('/budget');
     };
 
     return (
