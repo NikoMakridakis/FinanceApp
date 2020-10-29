@@ -65,6 +65,7 @@ function Login(props) {
 
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [isLoginError, setIsLoginError] = useState(false);
 
     const { register, handleSubmit, errors } = useForm();
 
@@ -77,11 +78,25 @@ function Login(props) {
         const password = input.target.value;
         setPassword(password);
     };
-    
+
+    function navigateToRegister() {
+        props.history.push('/register');
+    };
+
     async function onSubmit(data) {
-        await AuthService.login(data.email, data.password);
-        await props.setAuthorization();
-        await props.history.push('/budget');
+        try {
+            const response = await AuthService.login(data.email, data.password);
+            if (response === 401 || 404) {
+                setIsLoginError(true);
+                return response;
+            };
+
+            props.history.push('/budget');
+
+        } catch (error) {
+            console.log(error);
+        }
+
     };
 
     return (
@@ -117,9 +132,15 @@ function Login(props) {
                         autoFocus
                     />
                     {errors.email &&
-                        <Box className={classes.error}>
+                        <Box className={classes.row}>
                             <WarningRoundedIcon className={classes.warningIcon} />
                             <Typography className={classes.warningText}>{errors.email.message}</Typography>
+                        </Box>
+                    }
+                    {isLoginError &&
+                        <Box className={classes.row}>
+                            <WarningRoundedIcon className={classes.warningIcon} />
+                            <Typography className={classes.warningText}>Incorrect email or password.</Typography>
                         </Box>
                     }
                     <TextField
@@ -168,7 +189,7 @@ function Login(props) {
                     <Box>
                         <Typography align='center' variant='body1'>
                             { 'Don\'t have an account? ' }
-                            <Link href='#' variant='body1'>
+                            <Link href='#' variant='body1' onClick={navigateToRegister}>
                                     {'Sign Up'}
                             </Link>
                         </Typography>

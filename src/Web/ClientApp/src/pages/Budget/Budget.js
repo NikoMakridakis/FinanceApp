@@ -14,8 +14,7 @@ function Budget() {
         UserService.getBudgetGroups()
             .then(response => {
                 setBudgetGroups(response);
-                console.log('getBudgetGroups from Budget.js');
-                console.log(response);
+                console.log(`getBudgetGroups from Budget.js reponse: ${response}`);
             })
             .catch(error => {
                 console.log(error);

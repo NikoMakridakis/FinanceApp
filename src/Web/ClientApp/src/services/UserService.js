@@ -9,8 +9,7 @@ async function getBudgetGroups() {
                 {
                     headers: AuthService.addAuthHeader()
                 })
-        console.log('UserService getBudgetGroups response:')
-        console.log(response.data);
+        console.log(`UserService getBudgetGroups response: ${response.data}`);
         return response.data;
     } catch (error) {
         console.log(error);

@@ -25,23 +25,25 @@ function register(email, password) {
 
 async function login(email, password) {
     try {
-        console.log('login post request sent from AuthService.login');
         const response = await axios.post('/api/user/login',
             {
                 email,
                 password,
             })
-        console.log('login response:')
-        console.log(response.data);
+
+        console.log(`login response: ${response.data}`);
 
         if (response.data.accessToken) {
-            console.log('set user in local storage with email and access token');
             localStorage.setItem('user', JSON.stringify(response.data));
         }
 
         return response.data;
+
     } catch (error) {
-        console.log(error);
+        const errorStatusCode = error.response.status;
+        if (errorStatusCode === 401 || 404) {
+            return errorStatusCode
+        }
     }
 }
 
@@ -53,8 +55,7 @@ async function getCurrentUser() {
     try {
         console.log('fetching current user from local storage from AuthService.getCurrentUser');
         const response = await JSON.parse(localStorage.getItem('user'));
-        console.log('getCurrentUser response:');
-        console.log(response.data);
+        console.log(`getCurrentUser response: ${response.data}`);
         return response.data;
     } catch (error) {
         console.log(error);
