@@ -12,7 +12,7 @@ function addAuthHeader() {
             }
         );
     } else {
-        return { };
+        return { }
     }
 }
 
@@ -20,7 +20,7 @@ function register(email, password) {
     return axios.post('/api/user/register', {
         email,
         password
-    });
+    })
 }
 
 async function login(email, password) {
@@ -31,17 +31,16 @@ async function login(email, password) {
                 password,
             })
 
-        console.log(`login response: ${response.data}`);
-
         if (response.data.accessToken) {
             localStorage.setItem('user', JSON.stringify(response.data));
+            console.log(`login response: ${JSON.stringify(response.data)}`);
+            return response.data;
         }
-
-        return response.data;
 
     } catch (error) {
         const errorStatusCode = error.response.status;
         if (errorStatusCode === 401 || 404) {
+            console.log(`login response catch error status code: ${JSON.stringify(errorStatusCode)}`);
             return errorStatusCode
         }
     }
@@ -49,7 +48,7 @@ async function login(email, password) {
 
 function logout() {
     localStorage.removeItem('user');
-};
+}
 
 async function getCurrentUser() {
     try {
@@ -60,7 +59,7 @@ async function getCurrentUser() {
     } catch (error) {
         console.log(error);
     }
-};
+}
 
 export default {
     addAuthHeader,
@@ -68,4 +67,4 @@ export default {
     login,
     logout,
     getCurrentUser,
-};
+}

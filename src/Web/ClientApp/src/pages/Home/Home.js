@@ -8,7 +8,7 @@ function Home() {
 
     function navigateToHome() {
         history.push('/home');
-    };
+    }
 
     function navigateToLogin() {
         history.push('/login');
@@ -50,7 +50,7 @@ function Home() {
                 </li>
             </ul>
         </div>
-    );
-};
+    )
+}
 
 export default Home;

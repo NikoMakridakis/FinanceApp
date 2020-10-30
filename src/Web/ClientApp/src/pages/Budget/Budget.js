@@ -1,25 +1,35 @@
 ﻿import React, { useState, useEffect } from 'react';
 
-import UserService from '../../services/UserService';
+import getBudgetGroups from '../../services/UserService';
 
-function Budget() {
+function Budget(props) {
 
     const [budgetGroups, setBudgetGroups] = useState([]);
+    const [isAuthorized, setIsAuthorized] = useState(false);
+
 
     useEffect(() => {
+        async function fetchBudgetGroups() {
+            try {
+                const response = await getBudgetGroups();
+                setBudgetGroups(response);
+                setIsAuthorized(true);
+
+            } catch (error) {
+
+                if (error === 401 || 404) {
+                    console.log('UserService.getBudgetGroups error response:');
+                    console.log(error);
+                    window.location.href = '/login';
+                }
+
+                console.log(error);
+            }
+        }
         fetchBudgetGroups();
     }, []);
 
-    function fetchBudgetGroups() {
-        UserService.getBudgetGroups()
-            .then(response => {
-                setBudgetGroups(response);
-                console.log(`getBudgetGroups from Budget.js reponse: ${response}`);
-            })
-            .catch(error => {
-                console.log(error);
-            });
-    };
+    
 
     return (
         <div>
@@ -27,7 +37,7 @@ function Budget() {
                 Private Budget
             </h1>
             <ul>
-                {budgetGroups &&
+                {budgetGroups && isAuthorized &&
                     budgetGroups.map((budget) => (
                         <li key={budget.budgetGroupId}>
                             {budget.budgetGroupTitle}
@@ -35,7 +45,7 @@ function Budget() {
                     ))}
             </ul>
         </div>
-    );
-};
+    )
+}
 
 export default Budget;

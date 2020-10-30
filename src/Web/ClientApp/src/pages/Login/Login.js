@@ -57,7 +57,7 @@ const useStyles = makeStyles((theme) => ({
     warningText: {
         color: '#DC004E',
     },
-}));
+}))
 
 function Login(props) {
 
@@ -72,32 +72,34 @@ function Login(props) {
     function onChangeEmail(input) {
         const email = input.target.value;
         setEmail(email);
-    };
+    }
 
     function onChangePassword(input) {
         const password = input.target.value;
         setPassword(password);
-    };
+    }
 
     function navigateToRegister() {
         props.history.push('/register');
-    };
+    }
 
     async function onSubmit(data) {
         try {
-            const response = await AuthService.login(data.email, data.password);
-            if (response === 401 || 404) {
-                setIsLoginError(true);
-                return response;
-            };
-
+            await AuthService.login(data.email, data.password);
+            setIsLoginError(false);
             props.history.push('/budget');
 
         } catch (error) {
+
+            if (error === 401 || 404) {
+                setIsLoginError(true);
+                return error;
+            }
+
             console.log(error);
         }
 
-    };
+    }
 
     return (
         <Container component='main' maxWidth='xs'>
@@ -200,7 +202,7 @@ function Login(props) {
                 <Copyright />
             </Box>
         </Container>
-    );
+    )
 }
 
 export default Login;

@@ -57,7 +57,7 @@ const useStyles = makeStyles((theme) => ({
     warningText: {
         color: '#DC004E',
     },
-}));
+}))
 
 function Login(props) {
 
@@ -72,16 +72,16 @@ function Login(props) {
     function onChangeEmail(input) {
         const email = input.target.value;
         setEmail(email);
-    };
+    }
 
     function onChangePassword(input) {
         const password = input.target.value;
         setPassword(password);
-    };
+    }
 
     function navigateToRegister() {
         props.history.push('/register');
-    };
+    }
 
     async function onSubmit(data) {
         try {
@@ -97,7 +97,7 @@ function Login(props) {
             console.log(error);
         }
 
-    };
+    }
 
     return (
         <Container component='main' maxWidth='xs'>
@@ -200,7 +200,7 @@ function Login(props) {
                 <Copyright />
             </Box>
         </Container>
-    );
+    )
 }
 
 export default Login;
