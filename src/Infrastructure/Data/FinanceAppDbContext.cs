@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using System.Reflection;
 
-namespace Infrastructure.Data
+namespace Web.Data
 {
     public class FinanceAppDbContext : IdentityDbContext<IdentityUser<int>, IdentityRole<int>, int>
     {

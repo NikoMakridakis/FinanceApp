@@ -1,7 +1,7 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore.Migrations;
 
-namespace Infrastructure.Data.Migrations
+namespace Web.Data.Migrations
 {
     public partial class InitialCreate : Migration
     {
@@ -28,7 +28,7 @@ namespace Infrastructure.Data.Migrations
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    UserName = table.Column<string>(maxLength: 100, nullable: true),
+                    UserName = table.Column<string>(maxLength: 256, nullable: true),
                     NormalizedUserName = table.Column<string>(maxLength: 256, nullable: true),
                     Email = table.Column<string>(maxLength: 100, nullable: true),
                     NormalizedEmail = table.Column<string>(maxLength: 256, nullable: true),
@@ -36,7 +36,7 @@ namespace Infrastructure.Data.Migrations
                     PasswordHash = table.Column<string>(nullable: true),
                     SecurityStamp = table.Column<string>(nullable: true),
                     ConcurrencyStamp = table.Column<string>(nullable: true),
-                    PhoneNumber = table.Column<string>(maxLength: 25, nullable: true),
+                    PhoneNumber = table.Column<string>(nullable: true),
                     PhoneNumberConfirmed = table.Column<bool>(nullable: false),
                     TwoFactorEnabled = table.Column<bool>(nullable: false),
                     LockoutEnd = table.Column<DateTimeOffset>(nullable: true),
@@ -44,8 +44,7 @@ namespace Infrastructure.Data.Migrations
                     AccessFailedCount = table.Column<int>(nullable: false),
                     Discriminator = table.Column<string>(nullable: false),
                     MonthlyIncome = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
-                    FirstName = table.Column<string>(maxLength: 25, nullable: true),
-                    LastName = table.Column<string>(maxLength: 25, nullable: true)
+                    FullName = table.Column<string>(maxLength: 100, nullable: true)
                 },
                 constraints: table =>
                 {

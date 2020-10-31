@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Infrastructure.Data;
+using Web.Data;
 using Core.Interfaces;
 using AutoMapper;
 using System;
@@ -13,7 +13,8 @@ using Web.Extensions;
 using Serilog;
 using Microsoft.Extensions.Logging;
 using Web.Middleware;
-using Infrastructure.Services;
+using Web.Services;
+using Web.Services.EmailService;
 
 namespace Web
 {
@@ -42,6 +43,12 @@ namespace Web
             services.AddAuthenticationConfiguration(_configuration);
 
             services.AddSwaggerConfiguration();
+
+            var emailConfig = _configuration
+                .GetSection("EmailConfiguration")
+                .Get<EmailConfiguration>();
+            services.AddSingleton(emailConfig);
+            services.AddScoped<IEmailSender, EmailSender>();
 
             services.AddCors(opt =>
             {

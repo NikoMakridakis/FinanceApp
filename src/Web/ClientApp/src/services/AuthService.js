@@ -16,31 +16,74 @@ function addAuthHeader() {
     }
 }
 
-function register(email, password) {
-    return axios.post('/api/user/register', {
-        email,
-        password
-    })
+async function register(email, password, confirmPassword) {
+    try {
+        const response = await axios.post('/api/user/register',
+            {
+                email,
+                password,
+                confirmPassword
+            })
+        const responseStatusCode = response.status;
+        if (responseStatusCode === 200) {
+            localStorage.setItem('user', JSON.stringify(response.data));
+            console.log('AuthService.register response:');
+            console.log(response);
+            return responseStatusCode;
+        }
+    } catch (error) {
+        const errorStatusCode = error.response.status;
+        if (errorStatusCode === 401) {
+            console.log('AuthService.register response catch error status code:');
+            console.log(errorStatusCode);
+            return errorStatusCode
+        }
+    }
 }
 
-async function login(email, password) {
+async function loginForStaySignedIn(email, password) {
     try {
         const response = await axios.post('/api/user/login',
             {
                 email,
                 password,
             })
-
-        if (response.data.accessToken) {
+        const responseStatusCode = response.status;
+        if (responseStatusCode === 200) {
             localStorage.setItem('user', JSON.stringify(response.data));
-            console.log(`login response: ${JSON.stringify(response.data)}`);
-            return response.data;
-        }
-
+            console.log('AuthService.loginForStaySignedIn response:');
+            console.log(response);
+            return responseStatusCode;
+        } 
     } catch (error) {
         const errorStatusCode = error.response.status;
         if (errorStatusCode === 401 || 404) {
-            console.log(`login response catch error status code: ${JSON.stringify(errorStatusCode)}`);
+            console.log('AuthService.login response catch error status code:');
+            console.log(errorStatusCode);
+            return errorStatusCode
+        }
+    }
+}
+
+async function loginForNotStaySignedIn(email, password) {
+    try {
+        const response = await axios.post('/api/user/login',
+            {
+                email,
+                password,
+            })
+        const responseStatusCode = response.status;
+        if (responseStatusCode === 200) {
+            sessionStorage.setItem('user', JSON.stringify(response.data));
+            console.log('AuthService.loginForNotStaySignedIn response:');
+            console.log(response);
+            return responseStatusCode;
+        }
+    } catch (error) {
+        const errorStatusCode = error.response.status;
+        if (errorStatusCode === 401 || 404) {
+            console.log('AuthService.login response catch error status code:');
+            console.log(errorStatusCode);
             return errorStatusCode
         }
     }
@@ -50,21 +93,10 @@ function logout() {
     localStorage.removeItem('user');
 }
 
-async function getCurrentUser() {
-    try {
-        console.log('fetching current user from local storage from AuthService.getCurrentUser');
-        const response = await JSON.parse(localStorage.getItem('user'));
-        console.log(`getCurrentUser response: ${response.data}`);
-        return response.data;
-    } catch (error) {
-        console.log(error);
-    }
-}
-
 export default {
     addAuthHeader,
     register,
-    login,
+    loginForStaySignedIn,
+    loginForNotStaySignedIn,
     logout,
-    getCurrentUser,
 }

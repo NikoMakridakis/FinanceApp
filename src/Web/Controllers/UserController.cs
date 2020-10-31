@@ -8,6 +8,7 @@ using Microsoft.Extensions.Logging;
 using System.Threading.Tasks;
 using Web.Extensions;
 using Web.Models;
+using Web.Services.EmailService;
 using SignInResult = Microsoft.AspNetCore.Identity.SignInResult;
 
 namespace Web.Controllers
@@ -21,63 +22,26 @@ namespace Web.Controllers
         private readonly ILogger<UserController> _logger;
         private readonly IMapper _mapper;
         private readonly ITokenService _tokenService;
+        private readonly IEmailSender _emailSender;
 
         public UserController(UserManager<User> userManager, SignInManager<User> signInManager, ILogger<UserController> logger,
-            IMapper mapper, ITokenService tokenService)
+            IMapper mapper, ITokenService tokenService, IEmailSender emailSender)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _logger = logger;
             _mapper = mapper;
             _tokenService = tokenService;
+            _emailSender = emailSender;
         }
 
-        // GET: api/user
-        [Authorize]
-        [HttpGet]
-        public async Task<ActionResult<UserDto>> GetEmailFromCurrentUser()
+        // POST: api/user/reset?email=example@test.com
+        [HttpPost("reset")]
+        public async Task<ActionResult> SendResetEmail([FromQuery] string email)
         {
-            User user = await _userManager.FindByEmailFromClaimsPrinciple(HttpContext.User);
-
-            string email = user.Email;
-            
-            _logger.LogInformation($"Returned user associated with the email '{email}'.");
-
-            return Ok(email);
-        }
-
-        // GET: api/user/emailExists
-        [Authorize]
-        [HttpGet("emailExists")]
-        public async Task<ActionResult<bool>> CheckEmailExists([FromQuery] string email)
-        {
-            User user = await _userManager.FindByEmailAsync(email);
-
-            if (user == null)
-            {
-                _logger.LogError($"Unable to find user with the email '{email}'.");
-                return NotFound(false);
-            }
-
-            _logger.LogInformation($"The email '{email}' exists in the database.");
-            return Ok(true);
-        }
-
-        // POST: api/user/isAuthenticated
-        [Authorize]
-        [HttpPost("isAuthenticated")]
-        public async Task<ActionResult> CheckUserIsAuthenticated()
-        {
-            User user = await _userManager.FindByEmailFromClaimsPrinciple(HttpContext.User);
-            string email = user.Email;
-
-            if (user != null)
-            {
-                _logger.LogInformation($"The user with the '{email}' is authenticated.");
-                return Ok();
-            }
-
-            return Unauthorized();
+            var message = new Message(new string[] { email }, "Test email async", "This is the content from our async email.");
+            await _emailSender.SendEmailAsync(message);
+            return Ok();
         }
 
         // POST: api/user/login
@@ -128,10 +92,8 @@ namespace Web.Controllers
             if (user != null)
             {
                 _logger.LogError($"The email '{email}' has already been registered to a different user.");
-                return BadRequest();
+                return Unauthorized();
             }
-
-            user = _mapper.Map<User>(userForRegisterDto);
 
             IdentityResult result = await _userManager.CreateAsync(user, userForRegisterDto.Password);
 
@@ -144,6 +106,7 @@ namespace Web.Controllers
             return new UserDto
             {
                 Email = user.Email,
+                FullName = user.FullName,
                 AccessToken = _tokenService.CreateToken(user)
             };
         }

@@ -63,42 +63,53 @@ function Login(props) {
 
     const classes = useStyles();
 
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
     const [isLoginError, setIsLoginError] = useState(false);
+    const [checkBox, setCheckBox] = useState(true);
 
     const { register, handleSubmit, errors } = useForm();
 
-    function onChangeEmail(input) {
-        const email = input.target.value;
-        setEmail(email);
+    function onChangeCheckBox() {
+        setCheckBox(!checkBox);
     }
 
-    function onChangePassword(input) {
-        const password = input.target.value;
-        setPassword(password);
-    }
-
-    function navigateToRegister() {
+    function navigateToRegister(event) {
+        event.preventDefault();
         props.history.push('/register');
     }
 
+    function navigateToReset(event) {
+        event.preventDefault();
+        props.history.push('/reset');
+    }
+
     async function onSubmit(data) {
-        try {
-            await AuthService.login(data.email, data.password);
-            setIsLoginError(false);
-            props.history.push('/budget');
-
-        } catch (error) {
-
-            if (error === 401 || 404) {
-                setIsLoginError(true);
-                return error;
+        console.log(data);
+        const staySignedIn = data.staySignedIn;
+        if (staySignedIn === true) {
+            try {
+                const response = await AuthService.loginForStaySignedIn(data.email, data.password);
+                if (response === 200) {
+                    setIsLoginError(false);
+                    props.history.push('/budget');
+                } else if (response === 401 || 404) {
+                    setIsLoginError(true);
+                }
+            } catch (error) {
+                console.log(error);
             }
-
-            console.log(error);
+        } else if (staySignedIn === false) {
+            try {
+                const response = await AuthService.loginForNotStaySignedIn(data.email, data.password);
+                if (response === 200) {
+                    setIsLoginError(false);
+                    props.history.push('/budget');
+                } else if (response === 401 || 404) {
+                    setIsLoginError(true);
+                }
+            } catch (error) {
+                console.log(error);
+            }
         }
-
     }
 
     return (
@@ -122,8 +133,6 @@ function Login(props) {
                                 message: 'Invalid email address'
                             }
                         })}
-                        onChange={onChangeEmail}
-                        value={email}
                         name='email'
                         variant='outlined'
                         margin='normal'
@@ -147,8 +156,6 @@ function Login(props) {
                     }
                     <TextField
                         inputRef={register}
-                        onChange={onChangePassword}
-                        value={password}
                         name='password'
                         variant='outlined'
                         margin='normal'
@@ -164,15 +171,16 @@ function Login(props) {
                                 control={
                                     <Checkbox
                                         inputRef={register}
-                                        name='remember'
+                                        name='staySignedIn'
                                         color='primary'
-                                        defaultValue={false}
+                                        checked={checkBox}
+                                        onChange={onChangeCheckBox}
                                     />}
-                                label='Remember me'
+                                label='Stay signed in'
                             />
                         </Grid>
                         <Grid item xs className={classes.forgotPassword}>
-                            <Link href='#' variant='body2'>
+                            <Link href='' variant='body2' onClick={navigateToReset}>
                                 <Typography>
                                     Forgot password?
                                 </Typography>
@@ -191,7 +199,7 @@ function Login(props) {
                     <Box>
                         <Typography align='center' variant='body1'>
                             { 'Don\'t have an account? ' }
-                            <Link href='#' variant='body1' onClick={navigateToRegister}>
+                            <Link href='' variant='body1' onClick={navigateToRegister}>
                                     {'Sign Up'}
                             </Link>
                         </Typography>

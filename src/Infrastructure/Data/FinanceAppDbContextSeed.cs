@@ -6,7 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace Infrastructure.Data
+namespace Web.Data
 {
     public class FinanceAppDbContextSeed
     {
@@ -21,13 +21,12 @@ namespace Infrastructure.Data
                     User user = new User
                     {
                         MonthlyIncome = 5000,
-                        FirstName = "Niko",
-                        LastName = "Makridakis",
-                        UserName = "demouser",
-                        Email = "demouser@microsoft.com",
+                        UserName = "Nmak345",
+                        FullName = "Niko Makridakis",
+                        Email = "nmak345@gmail.com",
                     };
 
-                    await userManager.CreateAsync(user, "Pass@word1");
+                    await userManager.CreateAsync(user, "Test123");
                 }
 
                 if (!await context.BudgetGroups.AnyAsync())

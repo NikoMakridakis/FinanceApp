@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace Infrastructure.Data.Config
+namespace Web.Data.Config
 {
     public class BudgetGroupConfiguration : IEntityTypeConfiguration<BudgetGroup>
     {

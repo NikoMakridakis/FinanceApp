@@ -2,10 +2,9 @@
 
 import getBudgetGroups from '../../services/UserService';
 
-function Budget(props) {
+function Budget() {
 
     const [budgetGroups, setBudgetGroups] = useState([]);
-    const [isAuthorized, setIsAuthorized] = useState(false);
 
 
     useEffect(() => {
@@ -13,14 +12,12 @@ function Budget(props) {
             try {
                 const response = await getBudgetGroups();
                 setBudgetGroups(response);
-                setIsAuthorized(true);
 
             } catch (error) {
 
                 if (error === 401 || 404) {
                     console.log('UserService.getBudgetGroups error response:');
                     console.log(error);
-                    window.location.href = '/login';
                 }
 
                 console.log(error);
@@ -37,7 +34,7 @@ function Budget(props) {
                 Private Budget
             </h1>
             <ul>
-                {budgetGroups && isAuthorized &&
+                {budgetGroups &&
                     budgetGroups.map((budget) => (
                         <li key={budget.budgetGroupId}>
                             {budget.budgetGroupTitle}

@@ -22,6 +22,9 @@ const useStyles = makeStyles((theme) => ({
         flexDirection: 'column',
         alignItems: 'center',
     },
+    resetText: {
+        marginTop: theme.spacing(4),
+    },
     avatar: {
         margin: theme.spacing(1),
         backgroundColor: theme.palette.secondary.main,
@@ -56,13 +59,10 @@ const useStyles = makeStyles((theme) => ({
     },
 }))
 
-function Register(props) {
+function Reset(props) {
 
     const classes = useStyles();
 
-    const delay = ms => new Promise(res => setTimeout(res, ms));
-
-    const [passwordIsTooShort, setPasswordIsTooShort] = useState(false);
     const [emailExists, setEmailExists] = useState(false);
 
     const { register, handleSubmit, errors } = useForm();
@@ -71,21 +71,14 @@ function Register(props) {
         setEmailExists(false);
     }
 
-    async function onChangePassword(input) {
-        const password = input.target.value;
-        await delay(500);
-        if (password.length < 6) {
-            setPasswordIsTooShort(true);
-        } else if (password.length === 6) {
-            setPasswordIsTooShort(false);
-        } else {
-            setPasswordIsTooShort(false);
-        }
-    }
-
     function navigateToLogin(event) {
         event.preventDefault();
         props.history.push('/login');
+    }
+
+    function navigateToRegister(event) {
+        event.preventDefault();
+        props.history.push('/register');
     }
 
     async function onSubmit(data) {
@@ -93,7 +86,7 @@ function Register(props) {
             const response = await AuthService.register(data.email, data.password, data.confirmPassword);
             if (response === 200) {
                 setEmailExists(false);
-                props.history.push('/welcome');
+                //props.history.push('/welcome');
             } else if (response === 401) {
                 setEmailExists(true);
             }
@@ -110,7 +103,10 @@ function Register(props) {
                     <LockOutlinedIcon />
                 </Avatar>
                 <Typography component='h1' variant='h5'>
-                    Register
+                    Reset Your Password
+                </Typography>
+                <Typography variant='body1' className={classes.resetText}>
+                    Enter the email address associated with your account and we'll send you a link to reset your password.
                 </Typography>
                 <form onSubmit={handleSubmit(onSubmit)} className={classes.form} noValidate>
                     <TextField
@@ -145,26 +141,6 @@ function Register(props) {
                             <Typography className={classes.warningText}>{errors.email.message}</Typography>
                         </Box>
                     }
-                    <TextField
-                        inputRef={register({
-                            required: true,
-                            minLength: 6,
-                        })}
-                        onChange={onChangePassword}
-                        name='password'
-                        variant='outlined'
-                        margin='normal'
-                        fullWidth
-                        label='Password'
-                        type='password'
-                        id='password'
-                    />
-                    {passwordIsTooShort &&
-                        <Box className={classes.row}>
-                            <WarningRoundedIcon className={classes.warningIcon} />
-                            <Typography className={classes.warningText}>Your password must be at least 6 characters.</Typography>
-                        </Box>
-                    }
                     <Button
                         type='submit'
                         fullWidth
@@ -172,13 +148,20 @@ function Register(props) {
                         color='primary'
                         className={classes.submit}
                     >
-                        Register
+                        Continue
                     </Button>
                     <Box>
                         <Typography align='center' variant='body1'>
-                            {'Have an account? '}
                             <Link href='' variant='body1' onClick={navigateToLogin}>
-                                {'Sign In'}
+                                {'Return to sign in'}
+                            </Link>
+                        </Typography>
+                    </Box>
+                    <Box>
+                        <Typography align='center' variant='body1'>
+                            {'Don\'t have an account? '}
+                            <Link href='' variant='body1' onClick={navigateToRegister}>
+                                {'Sign Up'}
                             </Link>
                         </Typography>
                     </Box>
@@ -191,4 +174,4 @@ function Register(props) {
     )
 }
 
-export default Register;
+export default Reset;

@@ -1,5 +1,5 @@
 using Core.Entities;
-using Infrastructure.Data;
+using Web.Data;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
