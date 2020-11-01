@@ -14,10 +14,14 @@ namespace Web.Data
         {
             try
             {
+
                 context.Database.Migrate();
 
                 if (!await context.Users.AnyAsync())
                 {
+                    var log = logger.CreateLogger<FinanceAppDbContextSeed>();
+                    log.LogInformation("Seeding the database.");
+
                     User user = new User
                     {
                         MonthlyIncome = 5000,

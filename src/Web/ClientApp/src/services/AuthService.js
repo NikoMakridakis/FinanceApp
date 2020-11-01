@@ -58,6 +58,9 @@ async function loginForStaySignedIn(email, password) {
     } catch (error) {
         const errorStatusCode = error.response.status;
         if (errorStatusCode === 401 || 404) {
+            if (error.response.data.isLockedOut) {
+                return error.response.data;
+            }
             console.log('AuthService.login response catch error status code:');
             console.log(errorStatusCode);
             return errorStatusCode
@@ -82,6 +85,9 @@ async function loginForNotStaySignedIn(email, password) {
     } catch (error) {
         const errorStatusCode = error.response.status;
         if (errorStatusCode === 401 || 404) {
+            if (error.response.data.isLockedOut) {
+                return error.response.data;
+            }
             console.log('AuthService.login response catch error status code:');
             console.log(errorStatusCode);
             return errorStatusCode

@@ -5,14 +5,14 @@ namespace Web.Extensions
 {
     public static class GetLockoutMinutesExtension
     {
-        public static int GetLockoutMinutesRemaining(this User user)
+        public static int GetLockoutSecondsRemaining(this User user)
         {
             DateTimeOffset lockoutEndTime = (DateTimeOffset)user.LockoutEnd;
             DateTimeOffset currentTime = DateTimeOffset.Now;
             TimeSpan lockoutTimeRemaining = lockoutEndTime - currentTime;
-            int lockoutMinutesRemaining = (int)lockoutTimeRemaining.TotalMinutes;
+            int lockoutSecondsRemaining = (int)lockoutTimeRemaining.TotalSeconds;
 
-            return lockoutMinutesRemaining;
+            return lockoutSecondsRemaining;
         }
     }
 }

@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using System;
 using System.Threading.Tasks;
 using Web.Extensions;
 using Web.Models;
@@ -54,28 +55,40 @@ namespace Web.Controllers
 
             if (user == null)   
             {
-                _logger.LogError($"Unable to find user with the email '{email}'.");
-                return NotFound();
+                string error = $"Unable to find user with the email '{email}'.";
+                _logger.LogError(error);
+                return NotFound(error);
             }
 
             SignInResult result = await _signInManager.CheckPasswordSignInAsync(user, userForLoginDto.Password, lockoutOnFailure: true);
 
             if (result.IsLockedOut)
             {
-                int lockoutMinutesRemaining = user.GetLockoutMinutesRemaining();
-                _logger.LogInformation($"The user with the email '{email}' has been locked out for {lockoutMinutesRemaining} minutes.");
-                return Unauthorized();
+                int lockoutSecondsRemaining = user.GetLockoutSecondsRemaining();
+                string error = $"The user with the email '{email}' has been locked out for {lockoutSecondsRemaining} seconds.";
+                _logger.LogInformation(error);
+
+                UserDto userLockedOut = new UserDto
+                {
+                    Email = user.Email,
+                    IsLockedOut = true,
+                    LockoutSeconds = lockoutSecondsRemaining
+                };
+
+                return Unauthorized(userLockedOut);
             }
 
             if (!result.Succeeded)
             {
-                _logger.LogInformation($"The user with the email '{email}' has failed the login attempt.");
-                return Unauthorized();
+                string error = $"The user with the email '{email}' has failed the login attempt.";
+                _logger.LogInformation(error);
+                return Unauthorized(error);
             }
 
             _logger.LogInformation("The user successfully logged in.");
 
-            return new UserDto {
+            return new UserDto
+            {
                 Email = user.Email,
                 AccessToken = _tokenService.CreateToken(user),
             };

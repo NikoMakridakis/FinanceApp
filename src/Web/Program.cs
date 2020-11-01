@@ -35,7 +35,6 @@ namespace Web
 
                 try
                 {
-                    Log.Information("Seeding the database.");
                     var context = services.GetRequiredService<FinanceAppDbContext>();
                     var userManager = services.GetRequiredService<UserManager<User>>();
                     var logger = services.GetRequiredService<ILoggerFactory>();
