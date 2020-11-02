@@ -56,6 +56,7 @@ const useStyles = makeStyles((theme) => ({
     },
     warningText: {
         color: '#DC004E',
+        fontSize: '12px',
     },
 }))
 
@@ -65,7 +66,6 @@ function Login(props) {
 
     const [isLoginError, setIsLoginError] = useState(false);
     const [isLockedOut, setIsLockedOut] = useState(false);
-    const [countdownIsActive, setCountdownIsActive] = useState(false);
     const [lockoutTimeLeft, setLockoutTimeLeft] = useState(0);
     const [checkBox, setCheckBox] = useState(true);
 
@@ -85,44 +85,25 @@ function Login(props) {
         props.history.push('/reset');
     }
 
-    function lockoutCountdown(time) {
-        const newTime = time - 1;
-        setLockoutTimeLeft(newTime);
-        console.log(newTime);
-
-        setTimeout(() => {
-            if (newTime === 1 || newTime < 1) {
-                setIsLockedOut(false);
-                setCountdownIsActive(false);
-                return;
-            }
-            lockoutCountdown(newTime)
-        }, 1000);
-    }
-
     async function onSubmit(data) {
         console.log(data);
         const staySignedIn = data.staySignedIn;
         if (staySignedIn === true) {
             try {
-                if (!isLockedOut) {
-                    const response = await AuthService.loginForStaySignedIn(data.email, data.password);
-                    if (response === 200) {
-                        setIsLoginError(false);
-                        setIsLockedOut(false);
-                        props.history.push('/budget');
-                    } if (response === 401 || 404) {
-                        setIsLoginError(true);
-                        setIsLockedOut(false);
-                    } if (response.isLockedOut) {
-                        setIsLoginError(false);
-                        setIsLockedOut(true);
-                        if (!countdownIsActive) {
-                            setCountdownIsActive(true);
-                            if (response.lockoutSeconds > 0) {
-                                lockoutCountdown(response.lockoutSeconds);
-                            }
-                        }
+                const response = await AuthService.loginForStaySignedIn(data.email, data.password);
+                if (response === 200) {
+                    setIsLoginError(false);
+                    setIsLockedOut(false);
+                    props.history.push('/budget');
+                } if (response === 401 || 404) {
+                    setIsLoginError(true);
+                    setIsLockedOut(false);
+                } if (response.isLockedOut) {
+                    setIsLoginError(false);
+                    setIsLockedOut(true);
+                    if (response.lockoutSeconds > 0) {
+                        const minutesLeft = Math.ceil(response.lockoutSeconds / 60);
+                        setLockoutTimeLeft(minutesLeft);
                     }
                 }
             } catch (error) {
@@ -130,17 +111,21 @@ function Login(props) {
             }
         } else if (staySignedIn === false) {
             try {
-                const response = await AuthService.loginForNotStaySignedIn(data.email, data.password);
+                const response = await AuthService.loginForStaySignedIn(data.email, data.password);
                 if (response === 200) {
                     setIsLoginError(false);
                     setIsLockedOut(false);
                     props.history.push('/budget');
-                } else if (response === 401 || 404) {
+                } if (response === 401 || 404) {
                     setIsLoginError(true);
                     setIsLockedOut(false);
-                } else if (response.isLockedOut) {
-                    setIsLoginError(true);
+                } if (response.isLockedOut) {
+                    setIsLoginError(false);
                     setIsLockedOut(true);
+                    if (response.lockoutSeconds > 0) {
+                        const minutesLeft = Math.ceil(response.lockoutSeconds / 60);
+                        setLockoutTimeLeft(minutesLeft);
+                    }
                 }
             } catch (error) {
                 console.log(error);
@@ -190,10 +175,16 @@ function Login(props) {
                             <Typography className={classes.warningText}>Incorrect email or password.</Typography>
                         </Box>
                     }
-                    {isLockedOut &&
+                    {isLockedOut && lockoutTimeLeft > 1 &&
                         <Box className={classes.row}>
                             <WarningRoundedIcon className={classes.warningIcon} />
-                            <Typography className={classes.warningText}>Please try again in {lockoutTimeLeft} seconds.</Typography>
+                            <Typography className={classes.warningText}>Too many login attempts. Please try again in {lockoutTimeLeft} minutes.</Typography>
+                        </Box>
+                    }
+                    {isLockedOut && lockoutTimeLeft === 1 &&
+                        <Box className={classes.row}>
+                            <WarningRoundedIcon className={classes.warningIcon} />
+                            <Typography className={classes.warningText}>Too many login attempts. Please try again in {lockoutTimeLeft} minute.</Typography>
                         </Box>
                     }
                     <TextField

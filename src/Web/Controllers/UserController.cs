@@ -1,11 +1,12 @@
 ﻿using AutoMapper;
 using Core.Entities;
 using Core.Interfaces;
+using Microsoft.AspNetCore.Antiforgery;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using System;
 using System.Threading.Tasks;
 using Web.Extensions;
 using Web.Models;
@@ -36,14 +37,7 @@ namespace Web.Controllers
             _emailSender = emailSender;
         }
 
-        // POST: api/user/reset?email=example@test.com
-        [HttpPost("reset")]
-        public async Task<ActionResult> SendResetEmail([FromQuery] string email)
-        {
-            var message = new Message(new string[] { email }, "Test email async", "This is the content from our async email.");
-            await _emailSender.SendEmailAsync(message);
-            return Ok();
-        }
+        
 
         // POST: api/user/login
         [HttpPost("login")]
@@ -108,6 +102,8 @@ namespace Web.Controllers
                 return Unauthorized();
             }
 
+            user = _mapper.Map<User>(userForRegisterDto);
+
             IdentityResult result = await _userManager.CreateAsync(user, userForRegisterDto.Password);
 
             if (!result.Succeeded)
@@ -122,6 +118,29 @@ namespace Web.Controllers
                 FullName = user.FullName,
                 AccessToken = _tokenService.CreateToken(user)
             };
+        }
+
+        // POST: api/user/reset
+        [HttpPost("reset")]
+        public async Task<ActionResult> SendResetEmail(UserForgotPasswordDto userForgotPasswordDto)
+        {
+            string email = userForgotPasswordDto.Email;
+            User user = await _userManager.FindByEmailAsync(email);
+
+            if (user == null)
+            {
+                string error = $"Unable to find user with the email '{email}'.";
+                _logger.LogError(error);
+                return NotFound(error);
+            }
+
+            string resetToken = await _userManager.GeneratePasswordResetTokenAsync(user);
+
+
+
+            var message = new Message(new string[] { email }, "Test email async", "This is the content from our async email.");
+            await _emailSender.SendEmailAsync(message);
+            return Ok();
         }
     }
 }

@@ -78,7 +78,7 @@ async function loginForNotStaySignedIn(email, password) {
         const responseStatusCode = response.status;
         if (responseStatusCode === 200) {
             sessionStorage.setItem('user', JSON.stringify(response.data));
-            console.log('AuthService.loginForNotStaySignedIn response:');
+            console.log('AuthService.loginForStaySignedIn response:');
             console.log(response);
             return responseStatusCode;
         }
