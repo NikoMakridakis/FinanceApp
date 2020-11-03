@@ -11,6 +11,7 @@ import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
 import Container from '@material-ui/core/Container';
 import WarningRoundedIcon from '@material-ui/icons/WarningRounded';
+import CheckCircleIcon from '@material-ui/icons/CheckCircle';
 
 import Copyright from '../../components/Copyright';
 import AuthService from '../../services/AuthService';
@@ -48,6 +49,14 @@ const useStyles = makeStyles((theme) => ({
     check: {
         marginLeft: '-12px',
     },
+    successIcon: {
+        color: '#1EA672',
+        fontSize: '16px',
+        marginRight: '6px',
+    },
+    successText: {
+        fontSize: '14px',
+    },
     warningIcon: {
         color: '#DC004E',
         fontSize: '16px',
@@ -56,6 +65,7 @@ const useStyles = makeStyles((theme) => ({
     },
     warningText: {
         color: '#DC004E',
+        fontSize: '14px',
     },
 }))
 
@@ -64,6 +74,7 @@ function Reset(props) {
     const classes = useStyles();
 
     const [emailExists, setEmailExists] = useState(false);
+    const [emailSent, setEmailSent] = useState(false);
 
     const { register, handleSubmit, errors } = useForm();
 
@@ -83,12 +94,13 @@ function Reset(props) {
 
     async function onSubmit(data) {
         try {
-            const response = await AuthService.register(data.email, data.password, data.confirmPassword);
+            const response = await AuthService.forgotPassword(data.email);
             if (response === 200) {
                 setEmailExists(false);
-                //props.history.push('/welcome');
-            } else if (response === 401) {
+                setEmailSent(true);
+            } else if (response === 401 || 404) {
                 setEmailExists(true);
+                setEmailSent(false);
             }
         } catch (error) {
             console.log(error);
@@ -132,13 +144,27 @@ function Reset(props) {
                     {emailExists &&
                         <Box className={classes.row}>
                             <WarningRoundedIcon className={classes.warningIcon} />
-                            <Typography className={classes.warningText}>An account already exists with this email.</Typography>
+                            <Typography className={classes.warningText}>We couldn't find that email. Please try again.</Typography>
                         </Box>
                     }
                     {errors.email &&
                         <Box className={classes.row}>
                             <WarningRoundedIcon className={classes.warningIcon} />
                             <Typography className={classes.warningText}>{errors.email.message}</Typography>
+                        </Box>
+                    }
+                    {emailSent &&
+                        <Box>
+                            <Box className={classes.row}>
+                                <CheckCircleIcon className={classes.successIcon} />
+                                <Typography className={classes.successText}>Thanks, check your email for instructions to reset your password.</Typography>
+                            </Box>
+                            <Box className={classes.row}>
+                                <Typography className={classes.successText}>Didn't get the email? Check your spam folder or </Typography>
+                                <Link href='' variant='body1' onClick={navigateToRegister}>
+                                    {'resend'} .
+                                </Link>
+                            </Box>
                         </Box>
                     }
                     <Button

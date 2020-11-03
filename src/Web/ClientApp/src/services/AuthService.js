@@ -16,13 +16,12 @@ function addAuthHeader() {
     }
 }
 
-async function register(email, password, confirmPassword) {
+async function register(email, password) {
     try {
         const response = await axios.post('/api/user/register',
             {
                 email,
-                password,
-                confirmPassword
+                password
             })
         const responseStatusCode = response.status;
         if (responseStatusCode === 200) {
@@ -95,6 +94,23 @@ async function loginForNotStaySignedIn(email, password) {
     }
 }
 
+async function forgotPassword(email) {
+    try {
+        const response = await axios.post('/api/user/forgotPassword', { email })
+        const responseStatusCode = response.status;
+        if (responseStatusCode === 200) {
+            console.log('verification email sent!');
+            return responseStatusCode;
+        }
+    } catch (error) {
+        const errorStatusCode = error.response.status;
+        if (errorStatusCode === 401 || 404) {
+            console.log('Error, no email sent');
+            return errorStatusCode
+        }
+    }
+}
+
 function logout() {
     localStorage.removeItem('user');
 }
@@ -104,5 +120,6 @@ export default {
     register,
     loginForStaySignedIn,
     loginForNotStaySignedIn,
+    forgotPassword,
     logout,
 }

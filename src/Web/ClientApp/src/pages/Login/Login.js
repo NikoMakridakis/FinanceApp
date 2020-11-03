@@ -56,7 +56,7 @@ const useStyles = makeStyles((theme) => ({
     },
     warningText: {
         color: '#DC004E',
-        fontSize: '12px',
+        fontSize: '14px',
     },
 }))
 

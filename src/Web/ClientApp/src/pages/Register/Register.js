@@ -53,7 +53,7 @@ const useStyles = makeStyles((theme) => ({
     },
     warningText: {
         color: '#DC004E',
-        fontSize: '12px',
+        fontSize: '14px',
     },
 }))
 
@@ -91,7 +91,7 @@ function Register(props) {
 
     async function onSubmit(data) {
         try {
-            const response = await AuthService.register(data.email, data.password, data.confirmPassword);
+            const response = await AuthService.register(data.email, data.password);
             console.log(response);
             if (response === 200) {
                 setEmailExists(false);

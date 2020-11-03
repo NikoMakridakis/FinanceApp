@@ -120,9 +120,9 @@ namespace Web.Controllers
             };
         }
 
-        // POST: api/user/reset
-        [HttpPost("reset")]
-        public async Task<ActionResult> SendResetEmail(UserForgotPasswordDto userForgotPasswordDto)
+        // POST: api/user/forgotPassword
+        [HttpPost("forgotPassword")]
+        public async Task<ActionResult> ForgotPassword(UserForgotPasswordDto userForgotPasswordDto)
         {
             string email = userForgotPasswordDto.Email;
             User user = await _userManager.FindByEmailAsync(email);
@@ -136,10 +136,46 @@ namespace Web.Controllers
 
             string resetToken = await _userManager.GeneratePasswordResetTokenAsync(user);
 
+            UserResetPasswordDto userResetPasswordDto = new UserResetPasswordDto
+            {
+                Email = user.Email,
+                ResetToken = resetToken
+            };
 
+            string callback = Url.Action(nameof(ResetPassword), "api/user", userResetPasswordDto, Request.Scheme);
+            callback = callback.Replace("%2F", "/");
 
-            var message = new Message(new string[] { email }, "Test email async", "This is the content from our async email.");
+            var message = new Message(new string[] { user.Email }, "Reset password token", callback);
             await _emailSender.SendEmailAsync(message);
+
+            return Ok();
+        }
+
+        // POST: api/user/resetPassword
+        [HttpPost]
+        public async Task<ActionResult> ResetPassword(UserResetPasswordDto userResetPasswordDto)
+        {
+            string email = userResetPasswordDto.Email;
+            User user = await _userManager.FindByEmailAsync(email);
+
+            if (user == null)
+            {
+                string error = $"Unable to find user with the email '{email}'.";
+                _logger.LogError(error);
+                return NotFound(error);
+            }
+
+            IdentityResult resetPassResult = await _userManager.ResetPasswordAsync(user, userResetPasswordDto.ResetToken, userResetPasswordDto.Password);
+            if (!resetPassResult.Succeeded)
+            {
+                foreach (IdentityError error in resetPassResult.Errors)
+                {
+                    _logger.LogError(error.Code, error.Description);
+                }
+
+                return BadRequest();
+            }
+
             return Ok();
         }
     }
