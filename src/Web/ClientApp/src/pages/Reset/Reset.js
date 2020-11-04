@@ -11,7 +11,6 @@ import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
 import Container from '@material-ui/core/Container';
 import WarningRoundedIcon from '@material-ui/icons/WarningRounded';
-import CheckCircleIcon from '@material-ui/icons/CheckCircle';
 
 import Copyright from '../../components/Copyright';
 import AuthService from '../../services/AuthService';
@@ -57,6 +56,9 @@ const useStyles = makeStyles((theme) => ({
     successText: {
         fontSize: '14px',
     },
+    resendEmailText: {
+        fontSize: '12px',
+    },
     warningIcon: {
         color: '#DC004E',
         fontSize: '16px',
@@ -75,11 +77,13 @@ function Reset(props) {
 
     const [emailExists, setEmailExists] = useState(false);
     const [emailSent, setEmailSent] = useState(false);
+    const [email, setEmail] = useState(false);
 
     const { register, handleSubmit, errors } = useForm();
 
-    function onChangeEmail() {
+    function onChangeEmail(data) {
         setEmailExists(false);
+        setEmail(data.target.value);
     }
 
     function navigateToLogin(event) {
@@ -90,6 +94,22 @@ function Reset(props) {
     function navigateToRegister(event) {
         event.preventDefault();
         props.history.push('/register');
+    }
+
+    async function resendEmail(event) {
+        event.preventDefault();
+        try {
+            const response = await AuthService.forgotPassword(email);
+            if (response === 200) {
+                setEmailExists(false);
+                setEmailSent(true);
+            } else if (response === 401 || 404) {
+                setEmailExists(true);
+                setEmailSent(false);
+            }
+        } catch (error) {
+            console.log(error);
+        }
     }
 
     async function onSubmit(data) {
@@ -155,42 +175,47 @@ function Reset(props) {
                     }
                     {emailSent &&
                         <Box>
-                            <Box className={classes.row}>
-                                <CheckCircleIcon className={classes.successIcon} />
+                            <Box className={classes.row} mt={2}>
                                 <Typography className={classes.successText}>Thanks, check your email for instructions to reset your password.</Typography>
                             </Box>
-                            <Box className={classes.row}>
-                                <Typography className={classes.successText}>Didn't get the email? Check your spam folder or </Typography>
-                                <Link href='' variant='body1' onClick={navigateToRegister}>
-                                    {'resend'} .
+                            <Box className={classes.row} mt={2}>
+                                <Box mr={0.5}>
+                                    <Typography className={classes.resendEmailText}>{'Didn\'t get the email? Check your spam folder or'}</Typography>
+                                </Box>
+                                <Link href='' onClick={resendEmail} variant='body1' className={classes.resendEmailText}>
+                                    {'resend'}.
                                 </Link>
                             </Box>
                         </Box>
                     }
-                    <Button
-                        type='submit'
-                        fullWidth
-                        variant='contained'
-                        color='primary'
-                        className={classes.submit}
-                    >
-                        Continue
-                    </Button>
-                    <Box>
-                        <Typography align='center' variant='body1'>
-                            <Link href='' variant='body1' onClick={navigateToLogin}>
-                                {'Return to sign in'}
-                            </Link>
-                        </Typography>
-                    </Box>
-                    <Box>
-                        <Typography align='center' variant='body1'>
-                            {'Don\'t have an account? '}
-                            <Link href='' variant='body1' onClick={navigateToRegister}>
-                                {'Sign Up'}
-                            </Link>
-                        </Typography>
-                    </Box>
+                    {!emailSent &&
+                        <Box>
+                            <Button
+                                type='submit'
+                                fullWidth
+                                variant='contained'
+                                color='primary'
+                                className={classes.submit}
+                            >
+                                Continue
+                            </Button>
+                            <Box>
+                                <Typography align='center' variant='body1'>
+                                    <Link href='' variant='body1' onClick={navigateToLogin}>
+                                        {'Return to sign in'}
+                                    </Link>
+                                </Typography>
+                            </Box>
+                            <Box>
+                                <Typography align='center' variant='body1'>
+                                    {'Don\'t have an account? '}
+                                    <Link href='' variant='body1' onClick={navigateToRegister}>
+                                        {'Sign Up'}
+                                    </Link>
+                                </Typography>
+                            </Box>
+                        </Box>
+                    }
                 </form>
             </div>
             <Box mt={8}>

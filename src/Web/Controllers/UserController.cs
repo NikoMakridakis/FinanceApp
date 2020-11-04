@@ -148,11 +148,11 @@ namespace Web.Controllers
             var message = new Message(new string[] { user.Email }, "Reset password token", callback);
             await _emailSender.SendEmailAsync(message);
 
-            return Ok();
+            return Ok(userResetPasswordDto);
         }
 
         // POST: api/user/resetPassword
-        [HttpPost]
+        [HttpPost("resetPassword")]
         public async Task<ActionResult> ResetPassword(UserResetPasswordDto userResetPasswordDto)
         {
             string email = userResetPasswordDto.Email;
@@ -168,12 +168,9 @@ namespace Web.Controllers
             IdentityResult resetPassResult = await _userManager.ResetPasswordAsync(user, userResetPasswordDto.ResetToken, userResetPasswordDto.Password);
             if (!resetPassResult.Succeeded)
             {
-                foreach (IdentityError error in resetPassResult.Errors)
-                {
-                    _logger.LogError(error.Code, error.Description);
-                }
-
-                return BadRequest();
+                string error = $"Failed to reset the password associated with the email '{email}'.";
+                _logger.LogError(error);
+                return BadRequest(error);
             }
 
             return Ok();
