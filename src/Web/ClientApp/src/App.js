@@ -17,7 +17,7 @@ function App() {
                 <Route exact path={["/home", "/"]} component={Home} />
                 <Route exact path='/login' component={Login} />
                 <Route exact path='/reset' component={Reset} />
-                <Route exact path='/api/user/resetPassword' component={ResetPassword} />
+                <Route exact path='/resetPassword' component={ResetPassword} />
                 <Route exact path='/register' component={Register} />
                 <Route exact path='/welcome' component={Welcome} />
                 <Route exact path='/budget' component={Budget} />

@@ -18,7 +18,7 @@ function addAuthHeader() {
 
 async function register(email, password) {
     try {
-        const response = await axios.post('/api/user/register',
+        const response = await axios.post('/user/register',
             {
                 email,
                 password
@@ -42,7 +42,7 @@ async function register(email, password) {
 
 async function loginForStaySignedIn(email, password) {
     try {
-        const response = await axios.post('/api/user/login',
+        const response = await axios.post('/user/login',
             {
                 email,
                 password,
@@ -69,7 +69,7 @@ async function loginForStaySignedIn(email, password) {
 
 async function loginForNotStaySignedIn(email, password) {
     try {
-        const response = await axios.post('/api/user/login',
+        const response = await axios.post('/user/login',
             {
                 email,
                 password,
@@ -96,7 +96,7 @@ async function loginForNotStaySignedIn(email, password) {
 
 async function forgotPassword(email) {
     try {
-        const response = await axios.post('/api/user/forgotPassword', { email })
+        const response = await axios.post('/user/forgotPassword', { email })
         const responseStatusCode = response.status;
         if (responseStatusCode === 200) {
             console.log('verification email sent!');

@@ -1,12 +1,12 @@
 ﻿using AutoMapper;
 using Core.Entities;
 using Core.Interfaces;
-using Microsoft.AspNetCore.Antiforgery;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
+using System.Net;
 using System.Threading.Tasks;
 using Web.Extensions;
 using Web.Models;
@@ -15,7 +15,7 @@ using SignInResult = Microsoft.AspNetCore.Identity.SignInResult;
 
 namespace Web.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("[controller]")]
     [ApiController]
     public class UserController : ControllerBase
     {
@@ -37,9 +37,9 @@ namespace Web.Controllers
             _emailSender = emailSender;
         }
 
-        
 
-        // POST: api/user/login
+
+        // POST: user/login
         [HttpPost("login")]
         [AllowAnonymous]
         public async Task<ActionResult<UserDto>> Login(UserForLoginDto userForLoginDto)
@@ -59,7 +59,7 @@ namespace Web.Controllers
             if (result.IsLockedOut)
             {
                 int lockoutSecondsRemaining = user.GetLockoutSecondsRemaining();
-                string error = $"The user with the email '{email}' has been locked out for {lockoutSecondsRemaining} seconds.";
+                string error = $"Failed to login the user with the email: '{email}'. The user has been locked out for {lockoutSecondsRemaining} seconds.";
                 _logger.LogInformation(error);
 
                 UserDto userLockedOut = new UserDto
@@ -74,7 +74,7 @@ namespace Web.Controllers
 
             if (!result.Succeeded)
             {
-                string error = $"The user with the email '{email}' has failed the login attempt.";
+                string error = $"Failed to login the user with the email: '{email}'.";
                 _logger.LogInformation(error);
                 return Unauthorized(error);
             }
@@ -88,7 +88,7 @@ namespace Web.Controllers
             };
         }
 
-        // POST: api/user/register
+        // POST: user/register
         [HttpPost("register")]
         [AllowAnonymous]
         public async Task<ActionResult<UserDto>> Register(UserForRegisterDto userForRegisterDto)
@@ -98,7 +98,7 @@ namespace Web.Controllers
 
             if (user != null)
             {
-                _logger.LogError($"The email '{email}' has already been registered to a different user.");
+                _logger.LogError($"Failed to register a new user with the email: '{email}'. This email has already been registered to a different user.");
                 return Unauthorized();
             }
 
@@ -108,7 +108,7 @@ namespace Web.Controllers
 
             if (!result.Succeeded)
             {
-                _logger.LogError($"The user with the email '{email}' has failed the registration attempt.");
+                _logger.LogError($"Failed to register a new user with the email: '{email}'.");
                 return BadRequest();
             }
 
@@ -120,7 +120,7 @@ namespace Web.Controllers
             };
         }
 
-        // POST: api/user/forgotPassword
+        // POST: user/forgotPassword
         [HttpPost("forgotPassword")]
         public async Task<ActionResult> ForgotPassword(UserForgotPasswordDto userForgotPasswordDto)
         {
@@ -136,22 +136,15 @@ namespace Web.Controllers
 
             string resetToken = await _userManager.GeneratePasswordResetTokenAsync(user);
 
-            UserResetPasswordDto userResetPasswordDto = new UserResetPasswordDto
-            {
-                Email = user.Email,
-                ResetToken = resetToken
-            };
-
-            string callback = Url.Action(nameof(ResetPassword), "api/user", userResetPasswordDto, Request.Scheme);
-            callback = callback.Replace("%2F", "/");
+            string callback = Url.Action(nameof(ResetPassword), "user", new { resetToken }, Request.Scheme);
 
             var message = new Message(new string[] { user.Email }, "Reset password token", callback);
             await _emailSender.SendEmailAsync(message);
 
-            return Ok(userResetPasswordDto);
+            return Ok(new { resetToken });
         }
 
-        // POST: api/user/resetPassword
+        // POST: user/resetPassword
         [HttpPost("resetPassword")]
         public async Task<ActionResult> ResetPassword(UserResetPasswordDto userResetPasswordDto)
         {
@@ -166,9 +159,38 @@ namespace Web.Controllers
             }
 
             IdentityResult resetPassResult = await _userManager.ResetPasswordAsync(user, userResetPasswordDto.ResetToken, userResetPasswordDto.Password);
+
             if (!resetPassResult.Succeeded)
             {
-                string error = $"Failed to reset the password associated with the email '{email}'.";
+                string error = $"Failed to reset the password associated with the user '{email}'.";
+                _logger.LogError(error);
+                return BadRequest(error);
+            }
+
+            return Ok();
+        }
+
+        // POST: user/verifyResetToken
+        [HttpPost("verifyResetToken")]
+        public async Task<ActionResult> VerifyResetToken(UserResetPasswordDto userResetPasswordDto)
+        {
+            string email = userResetPasswordDto.Email;
+            User user = await _userManager.FindByEmailAsync(email);
+
+            if (user == null)
+            {
+                string error = $"Unable to find user with the email '{email}'.";
+                _logger.LogError(error);
+                return NotFound(error);
+            }
+
+            string resetToken = userResetPasswordDto.ResetToken;
+
+            bool resetTokenIsValid = await _userManager.VerifyUserTokenAsync(user, _userManager.Options.Tokens.PasswordResetTokenProvider, "ResetPassword", resetToken);
+
+            if (!resetTokenIsValid)
+            {
+                string error = $"Invalid reset token associated with the user '{email}'.";
                 _logger.LogError(error);
                 return BadRequest(error);
             }
