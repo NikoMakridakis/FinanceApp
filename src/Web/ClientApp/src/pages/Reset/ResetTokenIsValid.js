@@ -57,7 +57,7 @@ const useStyles = makeStyles((theme) => ({
     },
 }))
 
-function ResetPassword(props) {
+function ResetTokenIsValid(props) {
 
     const classes = useStyles();
 
@@ -183,4 +183,4 @@ function ResetPassword(props) {
     )
 }
 
-export default ResetPassword;
+export default ResetTokenIsValid;

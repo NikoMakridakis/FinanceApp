@@ -5,8 +5,6 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
-using System.Net;
 using System.Threading.Tasks;
 using Web.Extensions;
 using Web.Models;
@@ -49,9 +47,9 @@ namespace Web.Controllers
 
             if (user == null)   
             {
-                string error = $"Unable to find user with the email '{email}'.";
-                _logger.LogError(error);
-                return NotFound(error);
+                string errorMessage = $"Unable to find user with the email: '{email}'.";
+                _logger.LogError(errorMessage);
+                return NotFound(errorMessage);
             }
 
             SignInResult result = await _signInManager.CheckPasswordSignInAsync(user, userForLoginDto.Password, lockoutOnFailure: true);
@@ -59,8 +57,8 @@ namespace Web.Controllers
             if (result.IsLockedOut)
             {
                 int lockoutSecondsRemaining = user.GetLockoutSecondsRemaining();
-                string error = $"Failed to login the user with the email: '{email}'. The user has been locked out for {lockoutSecondsRemaining} seconds.";
-                _logger.LogInformation(error);
+                string errorMessage = $"Failed to login the user with the email: '{email}'. The user has been locked out for {lockoutSecondsRemaining} seconds.";
+                _logger.LogInformation(errorMessage);
 
                 UserDto userLockedOut = new UserDto
                 {
@@ -74,12 +72,12 @@ namespace Web.Controllers
 
             if (!result.Succeeded)
             {
-                string error = $"Failed to login the user with the email: '{email}'.";
-                _logger.LogInformation(error);
-                return Unauthorized(error);
+                string errorMessage = $"Failed to login the user with the email: '{email}'.";
+                _logger.LogInformation(errorMessage);
+                return Unauthorized(errorMessage);
             }
 
-            _logger.LogInformation("The user successfully logged in.");
+            _logger.LogInformation($"Successful login for the user with the email: {email}.");
 
             return new UserDto
             {
@@ -98,8 +96,9 @@ namespace Web.Controllers
 
             if (user != null)
             {
-                _logger.LogError($"Failed to register a new user with the email: '{email}'. This email has already been registered to a different user.");
-                return Unauthorized();
+                string errorMessage = $"Failed to register a new user with the email: '{email}'. This email has already been registered to a different user.";
+                _logger.LogError(errorMessage);
+                return Unauthorized(errorMessage);
             }
 
             user = _mapper.Map<User>(userForRegisterDto);
@@ -108,9 +107,12 @@ namespace Web.Controllers
 
             if (!result.Succeeded)
             {
-                _logger.LogError($"Failed to register a new user with the email: '{email}'.");
-                return BadRequest();
+                string errorMessage = $"Failed to register a new user with the email: '{email}'.";
+                _logger.LogError(errorMessage);
+                return BadRequest(errorMessage);
             }
+
+            _logger.LogInformation($"Successfully registered a new user the the email: '{email}'.");
 
             return new UserDto
             {
@@ -129,19 +131,51 @@ namespace Web.Controllers
 
             if (user == null)
             {
+                string errorMessage = $"Failed to send reset password email. Unable to find user with the email: '{email}'.";
+                _logger.LogError(errorMessage);
+                return NotFound(errorMessage);
+            }
+
+            string resetToken = await _userManager.GeneratePasswordResetTokenAsync(user);
+
+            string callback = Url.Action("Reset", "user", new { resetToken }, Request.Scheme);
+
+            var message = new Message(new string[] { user.Email }, "Reset password token", callback);
+            await _emailSender.SendEmailAsync(message);
+
+            string successMessage = $"Successfully send the reset password email to the user with the email: '{email}'.";
+            _logger.LogInformation(successMessage);
+            return Ok(new { resetToken });
+        }
+
+        // POST: user/verifyResetToken
+        [HttpPost("verifyResetToken")]
+        public async Task<ActionResult> VerifyResetToken(UserVerifyResetTokenDto userVerifyResetTokenDto)
+        {
+            string email = userVerifyResetTokenDto.Email;
+            User user = await _userManager.FindByEmailAsync(email);
+
+            if (user == null)
+            {
                 string error = $"Unable to find user with the email '{email}'.";
                 _logger.LogError(error);
                 return NotFound(error);
             }
 
-            string resetToken = await _userManager.GeneratePasswordResetTokenAsync(user);
+            string resetToken = userVerifyResetTokenDto.ResetToken;
 
-            string callback = Url.Action(nameof(ResetPassword), "user", new { resetToken }, Request.Scheme);
+            bool resetTokenIsValid = await _userManager.VerifyUserTokenAsync(user, _userManager.Options.Tokens.PasswordResetTokenProvider, "ResetPassword", resetToken);
 
-            var message = new Message(new string[] { user.Email }, "Reset password token", callback);
-            await _emailSender.SendEmailAsync(message);
+            if (!resetTokenIsValid)
+            {
+                string error = $"Invalid reset token associated with the user '{email}'.";
+                _logger.LogError(error);
+                return BadRequest(error);
+            }
 
-            return Ok(new { resetToken });
+            string successMessage = $"Successfully verified the reset password token for the user with the email: '{email}'.";
+            _logger.LogInformation(successMessage);
+            return Ok(successMessage);
         }
 
         // POST: user/resetPassword
@@ -167,35 +201,9 @@ namespace Web.Controllers
                 return BadRequest(error);
             }
 
-            return Ok();
-        }
-
-        // POST: user/verifyResetToken
-        [HttpPost("verifyResetToken")]
-        public async Task<ActionResult> VerifyResetToken(UserResetPasswordDto userResetPasswordDto)
-        {
-            string email = userResetPasswordDto.Email;
-            User user = await _userManager.FindByEmailAsync(email);
-
-            if (user == null)
-            {
-                string error = $"Unable to find user with the email '{email}'.";
-                _logger.LogError(error);
-                return NotFound(error);
-            }
-
-            string resetToken = userResetPasswordDto.ResetToken;
-
-            bool resetTokenIsValid = await _userManager.VerifyUserTokenAsync(user, _userManager.Options.Tokens.PasswordResetTokenProvider, "ResetPassword", resetToken);
-
-            if (!resetTokenIsValid)
-            {
-                string error = $"Invalid reset token associated with the user '{email}'.";
-                _logger.LogError(error);
-                return BadRequest(error);
-            }
-
-            return Ok();
+            string successMessage = $"Successfully reset the password for the user with the email: '{email}'.";
+            _logger.LogInformation(successMessage);
+            return Ok(successMessage);
         }
     }
 }
