@@ -77,14 +77,14 @@ function ResetTokenIsInvalid(props) {
 
     const [emailExists, setEmailExists] = useState(false);
     const [emailSent, setEmailSent] = useState(false);
-    const [email, setEmail] = useState(false);
+    //const [email, setEmail] = useState('');
 
     const { register, handleSubmit, errors } = useForm();
 
-    function onChangeEmail(data) {
-        setEmailExists(false);
-        setEmail(data.target.value);
-    }
+    //function onChangeEmail(data) {
+    //    setEmailExists(false);
+    //    setEmail(data.target.value);
+    //}
 
     function navigateToLogin(event) {
         event.preventDefault();
@@ -99,7 +99,7 @@ function ResetTokenIsInvalid(props) {
     async function resendEmail(event) {
         event.preventDefault();
         try {
-            const response = await AuthService.forgotPassword(email);
+            const response = await AuthService.forgotPassword(props.email);
             if (response === 200) {
                 setEmailExists(false);
                 setEmailSent(true);
@@ -152,7 +152,7 @@ function ResetTokenIsInvalid(props) {
                                 message: 'Please enter a valid email.'
                             }
                         })}
-                        onChange={onChangeEmail}
+                        onChange={props.onChangeEmail}
                         name='email'
                         variant='outlined'
                         margin='normal'

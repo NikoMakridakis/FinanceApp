@@ -64,13 +64,8 @@ function Register(props) {
     const delay = ms => new Promise(res => setTimeout(res, ms));
 
     const [passwordIsTooShort, setPasswordIsTooShort] = useState(false);
-    const [emailExists, setEmailExists] = useState(false);
 
     const { register, handleSubmit, errors } = useForm();
-
-    function onChangeEmail() {
-        setEmailExists(false);
-    }
 
     async function onChangePassword(input) {
         const password = input.target.value;
@@ -89,15 +84,15 @@ function Register(props) {
         props.history.push('/login');
     }
 
-    async function onSubmit(data) {
+    async function onSubmit(data, props) {
         try {
             const response = await AuthService.register(data.email, data.password);
             console.log(response);
             if (response === 200) {
-                setEmailExists(false);
+                props.setEmailExists(false);
                 props.history.push('/welcome');
             } else if (response === 401) {
-                setEmailExists(true);
+                props.setEmailExists(true);
             }
         } catch (error) {
             console.log(error);
@@ -125,7 +120,8 @@ function Register(props) {
                                 message: 'Please enter a valid email.'
                             }
                         })}
-                        onChange={onChangeEmail}
+                        onChange={props.onChangeEmail}
+                        defaultValue={props.email}
                         name='email'
                         variant='outlined'
                         margin='normal'
@@ -135,7 +131,7 @@ function Register(props) {
                         autoComplete='email'
                         autoFocus
                     />
-                    {emailExists &&
+                    {props.emailExists &&
                         <Box className={classes.row}>
                             <WarningRoundedIcon className={classes.warningIcon} />
                             <Typography className={classes.warningText}>An account already exists with this email.</Typography>

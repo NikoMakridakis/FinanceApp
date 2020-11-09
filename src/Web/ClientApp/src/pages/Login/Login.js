@@ -64,8 +64,8 @@ function Login(props) {
 
     const classes = useStyles();
 
-    const [isLoginError, setIsLoginError] = useState(false);
     const [isLockedOut, setIsLockedOut] = useState(false);
+    const [isLoginError, setIsLoginError] = useState(false);
     const [lockoutTimeLeft, setLockoutTimeLeft] = useState(0);
     const [checkBox, setCheckBox] = useState(true);
 
@@ -82,7 +82,7 @@ function Login(props) {
 
     function navigateToReset(event) {
         event.preventDefault();
-        props.history.push('/reset');
+        props.history.push('/user/reset');
     }
 
     async function onSubmit(data) {
@@ -154,6 +154,8 @@ function Login(props) {
                                 message: 'Invalid email address'
                             }
                         })}
+                        onChange={props.onChangeEmail}
+                        defaultValue={props.email}
                         name='email'
                         variant='outlined'
                         margin='normal'

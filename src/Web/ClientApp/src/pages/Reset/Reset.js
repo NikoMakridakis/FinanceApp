@@ -1,23 +1,39 @@
-﻿import React, { useState } from 'react';
+﻿import React, { useState, useEffect } from 'react';
 import queryString from 'query-string';
 
+import AuthService from '../../services/AuthService';
 import ResetTokenIsInvalid from './ResetTokenIsInvalid';
 import ResetTokenIsValid from './ResetTokenIsValid';
 
-function Reset() {
+function Reset(props) {
 
-    const [resetToken, setResetToken] = useState(getResetTokenFromUrl);
     const [resetTokenIsValid, setResetTokenIsValid] = useState(false);
 
-    function getResetTokenFromUrl() {
-        const urlParameters = queryString.parse(window.location.search);
-        const resetTokenFromUrl = urlParameters.resetToken;
-        console.log(resetTokenFromUrl);
+    async function verifyResetTokenFromUrl(props, resetTokenFromUrl) {
+        try {
+            const response = await AuthService.verifyResetToken(props.email, resetTokenFromUrl);
+            console.log(response);
+            if (response === 200) {
+                setResetTokenIsValid(true);
+            } else if (response === 400 || 401 || 404) {
+                setResetTokenIsValid(false);
+            }
+        } catch (error) {
+            console.log(error);
+        }
     }
 
-    function setResetTokenFromUrl(resetTokenFromUrl) {
-        setResetToken(resetTokenFromUrl);
-    }
+    useEffect(() => {
+        function getResetTokenFromUrl() {
+            const urlParameters = queryString.parse(window.location.search);
+            const resetTokenFromUrl = urlParameters.resetToken;
+            verifyResetTokenFromUrl(resetTokenFromUrl);
+        }
+
+        getResetTokenFromUrl();
+    }, []);
+
+
 
     //function navigateToLogin(event) {
     //    event.preventDefault();
@@ -40,7 +56,7 @@ function Reset() {
     //}
 
     return (
-        <div onLoad={getResetTokenFromUrl}>
+        <div>
             {resetTokenIsValid === false &&
                 <ResetTokenIsInvalid>
                 </ResetTokenIsInvalid>

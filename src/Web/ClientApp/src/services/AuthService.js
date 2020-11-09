@@ -32,7 +32,7 @@ async function register(email, password) {
         }
     } catch (error) {
         const errorStatusCode = error.response.status;
-        if (errorStatusCode === 401) {
+        if (errorStatusCode === 400 || 401 || 404) {
             console.log('AuthService.register response catch error status code:');
             console.log(errorStatusCode);
             return errorStatusCode
@@ -56,7 +56,7 @@ async function loginForStaySignedIn(email, password) {
         } 
     } catch (error) {
         const errorStatusCode = error.response.status;
-        if (errorStatusCode === 401 || 404) {
+        if (errorStatusCode === 400 || 401 || 404) {
             if (error.response.data.isLockedOut) {
                 return error.response.data;
             }
@@ -83,7 +83,7 @@ async function loginForNotStaySignedIn(email, password) {
         }
     } catch (error) {
         const errorStatusCode = error.response.status;
-        if (errorStatusCode === 401 || 404) {
+        if (errorStatusCode === 400 || 401 || 404) {
             if (error.response.data.isLockedOut) {
                 return error.response.data;
             }
@@ -104,8 +104,27 @@ async function forgotPassword(email) {
         }
     } catch (error) {
         const errorStatusCode = error.response.status;
-        if (errorStatusCode === 401 || 404) {
+        if (errorStatusCode === 400 || 401 || 404) {
             console.log('Error, no email sent');
+            return errorStatusCode
+        }
+    }
+}
+
+async function verifyResetToken(email, resetToken) {
+    try {
+        console.log(email);
+        console.log(resetToken);
+        const response = await axios.post('/user/verifyResetToken', { email, resetToken })
+        const responseStatusCode = response.status;
+        if (responseStatusCode === 200) {
+            console.log('Success, token is valid');
+            return responseStatusCode;
+        }
+    } catch (error) {
+        const errorStatusCode = error.response.status;
+        if (errorStatusCode === 400 || 401 || 404) {
+            console.log('Error, token not valid');
             return errorStatusCode
         }
     }
@@ -121,5 +140,6 @@ export default {
     loginForStaySignedIn,
     loginForNotStaySignedIn,
     forgotPassword,
+    verifyResetToken,
     logout,
 }
