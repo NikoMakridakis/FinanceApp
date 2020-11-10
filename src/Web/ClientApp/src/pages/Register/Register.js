@@ -59,13 +59,11 @@ const useStyles = makeStyles((theme) => ({
 
 function Register(props) {
 
-    const classes = useStyles();
-
-    const delay = ms => new Promise(res => setTimeout(res, ms));
-
     const [passwordIsTooShort, setPasswordIsTooShort] = useState(false);
 
+    const delay = ms => new Promise(res => setTimeout(res, ms));
     const { register, handleSubmit, errors } = useForm();
+    const classes = useStyles();
 
     async function onChangePassword(input) {
         const password = input.target.value;
@@ -87,7 +85,6 @@ function Register(props) {
     async function onSubmit(data, props) {
         try {
             const response = await AuthService.register(data.email, data.password);
-            console.log(response);
             if (response === 200) {
                 props.setEmailExists(false);
                 props.history.push('/welcome');

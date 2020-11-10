@@ -7,62 +7,66 @@ import ResetTokenIsValid from './ResetTokenIsValid';
 
 function Reset(props) {
 
-    const [resetTokenIsValid, setResetTokenIsValid] = useState(false);
+    const [resetTokenIsValid, setResetTokenIsValid] = useState();
+    const email = props.email;
 
-    async function verifyResetTokenFromUrl(props, resetTokenFromUrl) {
-        try {
-            const response = await AuthService.verifyResetToken(props.email, resetTokenFromUrl);
-            console.log(response);
-            if (response === 200) {
-                setResetTokenIsValid(true);
-            } else if (response === 400 || 401 || 404) {
-                setResetTokenIsValid(false);
-            }
-        } catch (error) {
-            console.log(error);
-        }
+    function navigateToLogin(event) {
+        event.preventDefault();
+        props.history.push('/login');
+    }
+
+    function navigateToRegister(event) {
+        event.preventDefault();
+        props.history.push('/register');
+    }
+
+    function navigateToWelcome(event) {
+        event.preventDefault();
+        props.history.push('/welcome');
     }
 
     useEffect(() => {
         function getResetTokenFromUrl() {
             const urlParameters = queryString.parse(window.location.search);
             const resetTokenFromUrl = urlParameters.resetToken;
-            verifyResetTokenFromUrl(resetTokenFromUrl);
+            if (resetTokenFromUrl !== undefined) {
+                localStorage.setItem('resetToken', JSON.stringify(resetTokenFromUrl));
+            }
+        }
+
+        function removeResetTokenFromUrl() {
+            window.history.replaceState(null, "", "/user/reset");
+        }
+
+        async function verifyResetTokenFromUrl() {
+            try {
+                const email = JSON.parse(localStorage.getItem('email'));
+                const resetToken = JSON.parse(localStorage.getItem('resetToken'));
+                const response = await AuthService.verifyResetToken(email, resetToken);
+                if (response === 200) {
+                    setResetTokenIsValid(true);
+                } else if (response === 400 || 401 || 404) {
+                    setResetTokenIsValid(false);
+                }
+            } catch (error) {
+                console.log(error);
+            }
         }
 
         getResetTokenFromUrl();
+        removeResetTokenFromUrl();
+        verifyResetTokenFromUrl();
+
     }, []);
-
-
-
-    //function navigateToLogin(event) {
-    //    event.preventDefault();
-    //    props.history.push('/login');
-    //}
-
-    //async function onSubmit(data) {
-    //    try {
-    //        const response = await AuthService.register(data.email, data.password);
-    //        console.log(response);
-    //        if (response === 200) {
-
-    //            props.history.push('/welcome');
-    //        } else if (response === 401) {
-
-    //        }
-    //    } catch (error) {
-    //        console.log(error);
-    //    }
-    //}
 
     return (
         <div>
             {resetTokenIsValid === false &&
-                <ResetTokenIsInvalid>
+                <ResetTokenIsInvalid email={email} navigateToLogin={navigateToLogin} navigateToRegister={navigateToRegister}>
                 </ResetTokenIsInvalid>
             }
             {resetTokenIsValid === true &&
-                <ResetTokenIsValid>
+                <ResetTokenIsValid navigateToWelcome={navigateToWelcome}>
                 </ResetTokenIsValid>
             }
         </div>

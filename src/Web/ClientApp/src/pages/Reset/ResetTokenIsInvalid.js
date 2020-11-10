@@ -73,33 +73,21 @@ const useStyles = makeStyles((theme) => ({
 
 function ResetTokenIsInvalid(props) {
 
-    const classes = useStyles();
-
     const [emailExists, setEmailExists] = useState(false);
     const [emailSent, setEmailSent] = useState(false);
-    //const [email, setEmail] = useState('');
 
     const { register, handleSubmit, errors } = useForm();
+    const classes = useStyles();
 
-    //function onChangeEmail(data) {
-    //    setEmailExists(false);
-    //    setEmail(data.target.value);
-    //}
-
-    function navigateToLogin(event) {
-        event.preventDefault();
-        props.history.push('/login');
-    }
-
-    function navigateToRegister(event) {
-        event.preventDefault();
-        props.history.push('/register');
+    function saveEmailToLocalStorage(email) {
+        localStorage.setItem('email', JSON.stringify(email))
     }
 
     async function resendEmail(event) {
         event.preventDefault();
         try {
-            const response = await AuthService.forgotPassword(props.email);
+            const email = JSON.parse(localStorage.getItem('email'));
+            const response = await AuthService.forgotPassword(email);
             if (response === 200) {
                 setEmailExists(false);
                 setEmailSent(true);
@@ -116,6 +104,7 @@ function ResetTokenIsInvalid(props) {
         try {
             const response = await AuthService.forgotPassword(data.email);
             if (response === 200) {
+                saveEmailToLocalStorage(data.email);
                 setEmailExists(false);
                 setEmailSent(true);
             } else if (response === 401 || 404) {
@@ -152,7 +141,7 @@ function ResetTokenIsInvalid(props) {
                                 message: 'Please enter a valid email.'
                             }
                         })}
-                        onChange={props.onChangeEmail}
+                        defaultValue={props.email}
                         name='email'
                         variant='outlined'
                         margin='normal'
@@ -202,7 +191,7 @@ function ResetTokenIsInvalid(props) {
                         </Button>
                             <Box>
                                 <Typography align='center' variant='body1'>
-                                    <Link href='' variant='body1' onClick={navigateToLogin}>
+                                    <Link href='' variant='body1' onClick={props.navigateToLogin}>
                                         {'Return to sign in'}
                                     </Link>
                                 </Typography>
@@ -210,7 +199,7 @@ function ResetTokenIsInvalid(props) {
                             <Box>
                                 <Typography align='center' variant='body1'>
                                     {'Don\'t have an account? '}
-                                    <Link href='' variant='body1' onClick={navigateToRegister}>
+                                    <Link href='' variant='body1' onClick={props.navigateToRegister}>
                                         {'Sign Up'}
                                     </Link>
                                 </Typography>

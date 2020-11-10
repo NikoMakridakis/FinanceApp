@@ -20,27 +20,12 @@ function App() {
         <Router>
             <Switch>
                 <Route exact path={["/home", "/"]} component={Home} />
-                <Route exact path='/login'
-                    render={(props) => (
-                        <Login {...props}
-                            onChangeEmail={onChangeEmail}
-                            email={email}
-                        />)}
-                />
-                <Route exact path='/user/Reset'
-                    render={(props) => (
-                        <Reset {...props}
-                            onChangeEmail={onChangeEmail}
-                            email={email}
-                    />)}
-                />
-                <Route exact path='/register'
-                    render={(props) => (
-                        <Register {...props}
-                            onChangeEmail={onChangeEmail}
-                            email={email}
-                        />)}
-                />
+                <Route exact path='/login' render={(props) => (
+                    <Login {...props} onChangeEmail={onChangeEmail} email={email} />)} />
+                <Route exact path='/user/reset' render={(props) => (
+                    <Reset {...props} onChangeEmail={onChangeEmail} email={email} />)} />
+                <Route exact path='/register' render={(props) => (
+                    <Register {...props} onChangeEmail={onChangeEmail} email={email} />)} />
                 <Route exact path='/welcome' component={Welcome} />
                 <Route exact path='/budget' component={Budget} />
             </Switch>

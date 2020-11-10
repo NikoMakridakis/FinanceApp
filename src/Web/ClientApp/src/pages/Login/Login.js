@@ -62,14 +62,14 @@ const useStyles = makeStyles((theme) => ({
 
 function Login(props) {
 
-    const classes = useStyles();
 
     const [isLockedOut, setIsLockedOut] = useState(false);
-    const [isLoginError, setIsLoginError] = useState(false);
+    const [isLoginError, setIsLoginError] = useState(false)
     const [lockoutTimeLeft, setLockoutTimeLeft] = useState(0);
     const [checkBox, setCheckBox] = useState(true);
 
     const { register, handleSubmit, errors } = useForm();
+    const classes = useStyles();
 
     function onChangeCheckBox() {
         setCheckBox(!checkBox);
@@ -86,7 +86,6 @@ function Login(props) {
     }
 
     async function onSubmit(data) {
-        console.log(data);
         const staySignedIn = data.staySignedIn;
         if (staySignedIn === true) {
             try {

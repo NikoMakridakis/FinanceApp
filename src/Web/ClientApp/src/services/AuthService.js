@@ -113,8 +113,6 @@ async function forgotPassword(email) {
 
 async function verifyResetToken(email, resetToken) {
     try {
-        console.log(email);
-        console.log(resetToken);
         const response = await axios.post('/user/verifyResetToken', { email, resetToken })
         const responseStatusCode = response.status;
         if (responseStatusCode === 200) {
@@ -125,6 +123,23 @@ async function verifyResetToken(email, resetToken) {
         const errorStatusCode = error.response.status;
         if (errorStatusCode === 400 || 401 || 404) {
             console.log('Error, token not valid');
+            return errorStatusCode
+        }
+    }
+}
+
+async function resetPassword(email, password, confirmPassword, resetToken) {
+    try {
+        const response = await axios.post('/user/resetPassword', { email, password, confirmPassword, resetToken })
+        const responseStatusCode = response.status;
+        if (responseStatusCode === 200) {
+            console.log('Success, password reset!');
+            return responseStatusCode;
+        }
+    } catch (error) {
+        const errorStatusCode = error.response.status;
+        if (errorStatusCode === 400 || 401 || 404) {
+            console.log('Error, password not reset!');
             return errorStatusCode
         }
     }
@@ -141,5 +156,6 @@ export default {
     loginForNotStaySignedIn,
     forgotPassword,
     verifyResetToken,
+    resetPassword,
     logout,
 }

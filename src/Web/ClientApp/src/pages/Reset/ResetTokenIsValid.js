@@ -63,9 +63,8 @@ function ResetTokenIsValid(props) {
     const delay = ms => new Promise(res => setTimeout(res, ms));
 
     const [password, setPassword] = useState('');
-    const [passwordIsTooShort, setPasswordIsTooShort] = useState(false);
-    const [passwordsDoNotMatch, setPasswordsDoNotMatch] = useState(false);
-
+    const [passwordIsTooShort, setPasswordIsTooShort] = useState();
+    const [passwordsDoNotMatch, setPasswordsDoNotMatch] = useState();
 
     const { register, handleSubmit } = useForm();
 
@@ -90,18 +89,20 @@ function ResetTokenIsValid(props) {
         } else {
             setPasswordsDoNotMatch(false);
         }
-
     }
 
     async function onSubmit(data) {
         try {
-            const response = await AuthService.register(data.email, data.password);
-            console.log(response);
+            const email = await JSON.parse(localStorage.getItem('email'));
+            const resetToken = await JSON.parse(localStorage.getItem('resetToken'));
+            const response = await AuthService.resetPassword(email, data.password, data.confirmPassword, resetToken);
             if (response === 200) {
-
-                props.history.push('/welcome');
-            } else if (response === 401) {
-
+                await AuthService.loginForStaySignedIn(email, data.password);
+                localStorage.removeItem('email');
+                localStorage.removeItem('resetToken');
+            } else if (response === 400 || 401 || 404) {
+                localStorage.removeItem('email');
+                localStorage.removeItem('resetToken');
             }
         } catch (error) {
             console.log(error);
@@ -132,8 +133,9 @@ function ResetTokenIsValid(props) {
                         label='New password'
                         type='password'
                         id='password'
+                        autoFocus
                     />
-                    {passwordIsTooShort &&
+                    {passwordIsTooShort === true &&
                         <Box className={classes.row}>
                             <WarningRoundedIcon className={classes.warningIcon} />
                             <Typography className={classes.warningText}>Your password must be at least 6 characters.</Typography>
@@ -153,11 +155,23 @@ function ResetTokenIsValid(props) {
                         type='password'
                         id='confirmPassword'
                     />
-                    {passwordsDoNotMatch &&
+                    {passwordsDoNotMatch === true &&
                         <Box className={classes.row}>
                             <WarningRoundedIcon className={classes.warningIcon} />
                             <Typography className={classes.warningText}>The password doesn't match. Try again.</Typography>
                         </Box>
+                    }
+                    {passwordIsTooShort === false && passwordsDoNotMatch === false &&
+                        <Button
+                            type='submit'
+                            fullWidth
+                            variant='contained'
+                            color='primary'
+                            className={classes.submit}
+                            onClick={props.navigateToWelcome}
+                        >
+                            Continue
+                        </Button>
                     }
                     <Button
                         type='submit'
@@ -165,6 +179,7 @@ function ResetTokenIsValid(props) {
                         variant='contained'
                         color='primary'
                         className={classes.submit}
+                        disabled
                     >
                         Continue
                     </Button>
