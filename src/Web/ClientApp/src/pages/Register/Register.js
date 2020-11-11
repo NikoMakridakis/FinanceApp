@@ -11,6 +11,8 @@ import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
 import Container from '@material-ui/core/Container';
 import WarningRoundedIcon from '@material-ui/icons/WarningRounded';
+import { createMuiTheme } from '@material-ui/core/styles'
+import { ThemeProvider } from '@material-ui/styles';
 
 import Copyright from '../../components/Copyright';
 import AuthService from '../../services/AuthService';
@@ -57,24 +59,53 @@ const useStyles = makeStyles((theme) => ({
     },
 }))
 
+const disabledButton = createMuiTheme({
+    palette: {
+        action: {
+            disabledBackground: '#9EA7E2',
+            disabled: '#FDFDFE',
+        }
+    }
+});
+
 function Register(props) {
 
     const [passwordIsTooShort, setPasswordIsTooShort] = useState(false);
+    const [passwordIsSubmitted, setPasswordIsSubmitted] = useState(false);
+    const [buttonIsDisabled, setButtonIsDisabled] = useState(true);
 
     const delay = ms => new Promise(res => setTimeout(res, ms));
     const { register, handleSubmit, errors } = useForm();
     const classes = useStyles();
 
-    async function onChangePassword(input) {
-        const password = input.target.value;
+    async function onChangePassword(data) {
+        const password = data.target.value;
+
+        if (passwordIsSubmitted === true) {
+            setPasswordIsTooShort(false);
+            setPasswordIsSubmitted(false);
+            data.target.value = '';
+        }
+
         await delay(500);
-        if (password.length < 6) {
+        if (password.length === 0) {
+            setButtonIsDisabled(true);
+            setPasswordIsTooShort(false);
+        } else if (password.length < 6) {
+            setButtonIsDisabled(true);
             setPasswordIsTooShort(true);
         } else if (password.length === 6) {
+            setButtonIsDisabled(false);
             setPasswordIsTooShort(false);
         } else {
+            setButtonIsDisabled(false);
             setPasswordIsTooShort(false);
         }
+    }
+
+    function navigateToWelcome(event) {
+        event.preventDefault();
+        props.history.push('/welcome');
     }
 
     function navigateToLogin(event) {
@@ -82,12 +113,13 @@ function Register(props) {
         props.history.push('/login');
     }
 
-    async function onSubmit(data, props) {
+    async function onSubmit(data) {
+        setPasswordIsSubmitted(true);
         try {
             const response = await AuthService.register(data.email, data.password);
             if (response === 200) {
                 props.setEmailExists(false);
-                props.history.push('/welcome');
+                navigateToWelcome();
             } else if (response === 401) {
                 props.setEmailExists(true);
             }
@@ -95,6 +127,22 @@ function Register(props) {
             console.log(error);
         }
     }
+
+    let button;
+    if (buttonIsDisabled === true) {
+        button =
+            <ThemeProvider theme={disabledButton}>
+                <Button type='submit' fullWidth variant='contained' className={classes.submit} disabled>
+                    Register
+                </Button>
+            </ThemeProvider>
+    } else {
+        button =
+            <Button type='submit' fullWidth variant='contained' color='primary' className={classes.submit}>
+                Register
+            </Button>
+    }
+
 
     return (
         <Container component='main' maxWidth='xs'>
@@ -160,15 +208,7 @@ function Register(props) {
                             <Typography className={classes.warningText}>Your password must be at least 6 characters.</Typography>
                         </Box>
                     }
-                    <Button
-                        type='submit'
-                        fullWidth
-                        variant='contained'
-                        color='primary'
-                        className={classes.submit}
-                    >
-                        Register
-                    </Button>
+                    {button}
                     <Box>
                         <Typography align='center' variant='body1'>
                             {'Have an account? '}

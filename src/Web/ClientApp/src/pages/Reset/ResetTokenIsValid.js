@@ -10,6 +10,8 @@ import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
 import Container from '@material-ui/core/Container';
 import WarningRoundedIcon from '@material-ui/icons/WarningRounded';
+import { createMuiTheme } from '@material-ui/core/styles'
+import { ThemeProvider } from '@material-ui/styles';
 
 import Copyright from '../../components/Copyright';
 import AuthService from '../../services/AuthService';
@@ -56,6 +58,15 @@ const useStyles = makeStyles((theme) => ({
     },
 }))
 
+const disabledButton = createMuiTheme({
+    palette: {
+        action: {
+            disabledBackground: '#9EA7E2',
+            disabled: '#FDFDFE',
+        }
+    }
+});
+
 function ResetTokenIsValid(props) {
 
     const classes = useStyles();
@@ -63,8 +74,10 @@ function ResetTokenIsValid(props) {
     const delay = ms => new Promise(res => setTimeout(res, ms));
 
     const [password, setPassword] = useState('');
+    const [confirmPassword, setConfirmPassword] = useState('');
     const [passwordIsTooShort, setPasswordIsTooShort] = useState();
     const [passwordsDoNotMatch, setPasswordsDoNotMatch] = useState();
+    const [buttonIsDisabled, setButtonIsDisabled] = useState(true);
 
     const { register, handleSubmit } = useForm();
 
@@ -72,22 +85,44 @@ function ResetTokenIsValid(props) {
         const password = input.target.value;
         setPassword(password);
         await delay(500);
-        if (password.length < 6) {
+
+        if (password.length === 0) {
+            setPasswordIsTooShort(false);
+            setButtonIsDisabled(true);
+        } else if (password.length < 6) {
             setPasswordIsTooShort(true);
+            setButtonIsDisabled(true);
         } else if (password.length === 6) {
             setPasswordIsTooShort(false);
+            if (password === confirmPassword && confirmPassword !== '') {
+                setButtonIsDisabled(false);
+                setPasswordsDoNotMatch(false);
+            } else if (password !== confirmPassword && confirmPassword !== '') {
+                setButtonIsDisabled(true);
+                setPasswordsDoNotMatch(true);
+            }
         } else {
             setPasswordIsTooShort(false);
+            if (password === confirmPassword && confirmPassword !== '') {
+                setButtonIsDisabled(false);
+                setPasswordsDoNotMatch(false);
+            } else if (password !== confirmPassword && confirmPassword !== '') {
+                setButtonIsDisabled(true);
+                setPasswordsDoNotMatch(true);
+            }
         }
     }
 
     async function onChangeConfirmPassword(input) {
         const confirmPassword = input.target.value;
+        setConfirmPassword(confirmPassword);
         await delay(500);
         if (confirmPassword !== password) {
             setPasswordsDoNotMatch(true);
+            setButtonIsDisabled(true);
         } else {
             setPasswordsDoNotMatch(false);
+            setButtonIsDisabled(false);
         }
     }
 
@@ -100,6 +135,7 @@ function ResetTokenIsValid(props) {
                 await AuthService.loginForStaySignedIn(email, data.password);
                 localStorage.removeItem('email');
                 localStorage.removeItem('resetToken');
+                props.navigateToWelcome();
             } else if (response === 400 || 401 || 404) {
                 localStorage.removeItem('email');
                 localStorage.removeItem('resetToken');
@@ -107,6 +143,21 @@ function ResetTokenIsValid(props) {
         } catch (error) {
             console.log(error);
         }
+    }
+
+    let button;
+    if (buttonIsDisabled === true) {
+        button =
+            <ThemeProvider theme={disabledButton}>
+                <Button type='submit' fullWidth variant='contained' className={classes.submit} disabled>
+                    Continue
+                </Button>
+            </ThemeProvider>
+    } else {
+        button =
+            <Button type='submit' fullWidth variant='contained' color='primary' className={classes.submit}>
+                Continue
+            </Button>
     }
 
     return (
@@ -158,31 +209,10 @@ function ResetTokenIsValid(props) {
                     {passwordsDoNotMatch === true &&
                         <Box className={classes.row}>
                             <WarningRoundedIcon className={classes.warningIcon} />
-                            <Typography className={classes.warningText}>The password doesn't match. Try again.</Typography>
+                            <Typography className={classes.warningText}>The passwords don't match. Please try again.</Typography>
                         </Box>
                     }
-                    {passwordIsTooShort === false && passwordsDoNotMatch === false &&
-                        <Button
-                            type='submit'
-                            fullWidth
-                            variant='contained'
-                            color='primary'
-                            className={classes.submit}
-                            onClick={props.navigateToWelcome}
-                        >
-                            Continue
-                        </Button>
-                    }
-                    <Button
-                        type='submit'
-                        fullWidth
-                        variant='contained'
-                        color='primary'
-                        className={classes.submit}
-                        disabled
-                    >
-                        Continue
-                    </Button>
+                    {button}
                 </form>
             </div>
             <Box mt={8}>

@@ -11,8 +11,16 @@ import Budget from './pages/Budget/Budget';
 function App() {
 
     const [email, setEmail] = useState('');
+    const [isLoginError, setIsLoginError] = useState(false);
+    const [isLockedOut, setIsLockedOut] = useState(false);
+    const [emailExists, setEmailExists] = useState(false);
 
     function onChangeEmail(data) {
+        if (data.target.value === '') {
+            setIsLockedOut(false);
+        }
+        setIsLoginError(false);
+        setEmailExists(false);
         setEmail(data.target.value);
     }
 
@@ -21,11 +29,12 @@ function App() {
             <Switch>
                 <Route exact path={["/home", "/"]} component={Home} />
                 <Route exact path='/login' render={(props) => (
-                    <Login {...props} onChangeEmail={onChangeEmail} email={email} />)} />
+                    <Login {...props} onChangeEmail={onChangeEmail} email={email} isLoginError={isLoginError} setIsLoginError={setIsLoginError}
+                        isLockedOut={isLockedOut} setIsLockedOut={setIsLockedOut} />)} />
                 <Route exact path='/user/reset' render={(props) => (
                     <Reset {...props} onChangeEmail={onChangeEmail} email={email} />)} />
                 <Route exact path='/register' render={(props) => (
-                    <Register {...props} onChangeEmail={onChangeEmail} email={email} />)} />
+                    <Register {...props} onChangeEmail={onChangeEmail} email={email} emailExists={emailExists} setEmailExists={setEmailExists} />)} />
                 <Route exact path='/welcome' component={Welcome} />
                 <Route exact path='/budget' component={Budget} />
             </Switch>

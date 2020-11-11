@@ -63,13 +63,20 @@ const useStyles = makeStyles((theme) => ({
 function Login(props) {
 
 
-    const [isLockedOut, setIsLockedOut] = useState(false);
-    const [isLoginError, setIsLoginError] = useState(false)
+    const [passwordIsSubmitted, setPasswordIsSubmitted] = useState(false);
     const [lockoutTimeLeft, setLockoutTimeLeft] = useState(0);
     const [checkBox, setCheckBox] = useState(true);
 
     const { register, handleSubmit, errors } = useForm();
     const classes = useStyles();
+
+    function onChangePassword(data) {
+        if (passwordIsSubmitted === true) {
+            setPasswordIsSubmitted(false);
+            props.setIsLoginError(false);
+            data.target.value = '';
+        }
+    }
 
     function onChangeCheckBox() {
         setCheckBox(!checkBox);
@@ -86,20 +93,21 @@ function Login(props) {
     }
 
     async function onSubmit(data) {
+        setPasswordIsSubmitted(true);
         const staySignedIn = data.staySignedIn;
         if (staySignedIn === true) {
             try {
                 const response = await AuthService.loginForStaySignedIn(data.email, data.password);
                 if (response === 200) {
-                    setIsLoginError(false);
-                    setIsLockedOut(false);
+                    props.setIsLoginError(false);
+                    props.setIsLockedOut(false);
                     props.history.push('/budget');
                 } if (response === 401 || 404) {
-                    setIsLoginError(true);
-                    setIsLockedOut(false);
+                    props.setIsLoginError(true);
+                    props.setIsLockedOut(false);
                 } if (response.isLockedOut) {
-                    setIsLoginError(false);
-                    setIsLockedOut(true);
+                    props.setIsLoginError(false);
+                    props.setIsLockedOut(true);
                     if (response.lockoutSeconds > 0) {
                         const minutesLeft = Math.ceil(response.lockoutSeconds / 60);
                         setLockoutTimeLeft(minutesLeft);
@@ -112,15 +120,15 @@ function Login(props) {
             try {
                 const response = await AuthService.loginForStaySignedIn(data.email, data.password);
                 if (response === 200) {
-                    setIsLoginError(false);
-                    setIsLockedOut(false);
+                    props.setIsLoginError(false);
+                    props.setIsLockedOut(false);
                     props.history.push('/budget');
                 } if (response === 401 || 404) {
-                    setIsLoginError(true);
-                    setIsLockedOut(false);
+                    props.setIsLoginError(true);
+                    props.setIsLockedOut(false);
                 } if (response.isLockedOut) {
-                    setIsLoginError(false);
-                    setIsLockedOut(true);
+                    props.setIsLoginError(false);
+                    props.setIsLockedOut(true);
                     if (response.lockoutSeconds > 0) {
                         const minutesLeft = Math.ceil(response.lockoutSeconds / 60);
                         setLockoutTimeLeft(minutesLeft);
@@ -170,19 +178,19 @@ function Login(props) {
                             <Typography className={classes.warningText}>{errors.email.message}</Typography>
                         </Box>
                     }
-                    {isLoginError &&
+                    {props.isLoginError &&
                         <Box className={classes.row}>
                             <WarningRoundedIcon className={classes.warningIcon} />
                             <Typography className={classes.warningText}>Incorrect email or password.</Typography>
                         </Box>
                     }
-                    {isLockedOut && lockoutTimeLeft > 1 &&
+                    {props.isLockedOut && lockoutTimeLeft > 1 &&
                         <Box className={classes.row}>
                             <WarningRoundedIcon className={classes.warningIcon} />
                             <Typography className={classes.warningText}>Too many login attempts. Please try again in {lockoutTimeLeft} minutes.</Typography>
                         </Box>
                     }
-                    {isLockedOut && lockoutTimeLeft === 1 &&
+                    {props.isLockedOut && lockoutTimeLeft === 1 &&
                         <Box className={classes.row}>
                             <WarningRoundedIcon className={classes.warningIcon} />
                             <Typography className={classes.warningText}>Too many login attempts. Please try again in {lockoutTimeLeft} minute.</Typography>
@@ -190,6 +198,7 @@ function Login(props) {
                     }
                     <TextField
                         inputRef={register}
+                        onChange={onChangePassword}
                         name='password'
                         variant='outlined'
                         margin='normal'
