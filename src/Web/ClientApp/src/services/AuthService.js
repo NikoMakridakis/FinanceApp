@@ -16,11 +16,12 @@ function addAuthHeader() {
     }
 }
 
-async function register(email, password) {
+async function register(email, fullName, password) {
     try {
         const response = await axios.post('/user/register',
             {
                 email,
+                fullName,
                 password
             })
         const responseStatusCode = response.status;

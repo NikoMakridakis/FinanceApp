@@ -11,6 +11,9 @@ import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
 import Container from '@material-ui/core/Container';
 import WarningRoundedIcon from '@material-ui/icons/WarningRounded';
+import CircularProgress from '@material-ui/core/CircularProgress';
+import { createMuiTheme } from '@material-ui/core/styles'
+import { ThemeProvider } from '@material-ui/styles';
 
 import Copyright from '../../components/Copyright';
 import AuthService from '../../services/AuthService';
@@ -69,12 +72,31 @@ const useStyles = makeStyles((theme) => ({
         color: '#DC004E',
         fontSize: '14px',
     },
+    buttonSuccess: {
+        backgroundColor: '#5469D4',
+        '&:hover': {
+            backgroundColor: '#3D4EAC',
+        },
+    },
+    buttonProgress: {
+        color: '#FDFDFE',
+    },
 }))
+
+const disabledButton = createMuiTheme({
+    palette: {
+        action: {
+            disabledBackground: '#9EA7E2',
+            disabled: '#FDFDFE',
+        }
+    }
+});
 
 function ResetTokenIsInvalid(props) {
 
     const [emailExists, setEmailExists] = useState(false);
     const [emailSent, setEmailSent] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
 
     const { register, handleSubmit, errors } = useForm();
     const classes = useStyles();
@@ -102,14 +124,17 @@ function ResetTokenIsInvalid(props) {
 
     async function onSubmit(data) {
         try {
+            setIsLoading(true);
             const response = await AuthService.forgotPassword(data.email);
             if (response === 200) {
                 saveEmailToLocalStorage(data.email);
                 setEmailExists(false);
                 setEmailSent(true);
+                setIsLoading(false);
             } else if (response === 401 || 404) {
                 setEmailExists(true);
                 setEmailSent(false);
+                setIsLoading(false);
             }
         } catch (error) {
             console.log(error);
@@ -141,6 +166,7 @@ function ResetTokenIsInvalid(props) {
                                 message: 'Please enter a valid email.'
                             }
                         })}
+                        onChange={props.onChangeEmail}
                         defaultValue={props.email}
                         name='email'
                         variant='outlined'
@@ -179,16 +205,25 @@ function ResetTokenIsInvalid(props) {
                         </Box>
                     }
                     {!emailSent &&
-                        <Box>
+                        <ThemeProvider theme={disabledButton}>
                             <Button
                                 type='submit'
+                                disabled={isLoading === true}
                                 fullWidth
                                 variant='contained'
                                 color='primary'
                                 className={classes.submit}
                             >
-                                Continue
-                        </Button>
+                                {isLoading === true &&
+                                    <CircularProgress size={24} className={classes.buttonProgress} />
+                                }
+                                {isLoading === false &&
+                                    <Typography>
+                                        Continue
+                                    </Typography>
+                                }
+                            </Button>
+                            
                             <Box>
                                 <Typography align='center' variant='body1'>
                                     <Link href='' variant='body1' onClick={props.navigateToLogin}>
@@ -204,7 +239,7 @@ function ResetTokenIsInvalid(props) {
                                     </Link>
                                 </Typography>
                             </Box>
-                        </Box>
+                        </ThemeProvider>
                     }
                 </form>
             </div>

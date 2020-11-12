@@ -9,6 +9,7 @@ function Reset(props) {
 
     const [resetTokenIsValid, setResetTokenIsValid] = useState();
     const email = props.email;
+    const onChangeEmail = props.onChangeEmail;
 
     function navigateToLogin(event) {
         event.preventDefault();
@@ -18,6 +19,10 @@ function Reset(props) {
     function navigateToRegister(event) {
         event.preventDefault();
         props.history.push('/register');
+    }
+
+    function navigateToReset() {
+        props.history.push('/user/reset');
     }
 
     function navigateToWelcome(event) {
@@ -62,11 +67,11 @@ function Reset(props) {
     return (
         <div>
             {resetTokenIsValid === false &&
-                <ResetTokenIsInvalid email={email} navigateToLogin={navigateToLogin} navigateToRegister={navigateToRegister}>
+                <ResetTokenIsInvalid email={email} onChangeEmail={onChangeEmail} navigateToLogin={navigateToLogin} navigateToRegister={navigateToRegister}>
                 </ResetTokenIsInvalid>
             }
             {resetTokenIsValid === true &&
-                <ResetTokenIsValid navigateToWelcome={navigateToWelcome}>
+                <ResetTokenIsValid navigateToWelcome={navigateToWelcome} navigateToReset={navigateToReset}>
                 </ResetTokenIsValid>
             }
         </div>

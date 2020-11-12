@@ -14,6 +14,7 @@ import WarningRoundedIcon from '@material-ui/icons/WarningRounded';
 import { createMuiTheme } from '@material-ui/core/styles'
 import { ThemeProvider } from '@material-ui/styles';
 
+
 import Copyright from '../../components/Copyright';
 import AuthService from '../../services/AuthService';
 
@@ -103,8 +104,7 @@ function Register(props) {
         }
     }
 
-    function navigateToWelcome(event) {
-        event.preventDefault();
+    function navigateToWelcome() {
         props.history.push('/welcome');
     }
 
@@ -116,7 +116,7 @@ function Register(props) {
     async function onSubmit(data) {
         setPasswordIsSubmitted(true);
         try {
-            const response = await AuthService.register(data.email, data.password);
+            const response = await AuthService.register(data.email, data.fullName, data.password);
             if (response === 200) {
                 props.setEmailExists(false);
                 navigateToWelcome();
@@ -188,6 +188,15 @@ function Register(props) {
                             <Typography className={classes.warningText}>{errors.email.message}</Typography>
                         </Box>
                     }
+                    <TextField
+                        inputRef={register}
+                        name='fullName'
+                        variant='outlined'
+                        margin='normal'
+                        fullWidth
+                        label='Full Name'
+                        id='fullName'
+                    />
                     <TextField
                         inputRef={register({
                             required: true,

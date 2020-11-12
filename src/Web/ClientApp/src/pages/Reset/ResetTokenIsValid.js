@@ -10,6 +10,7 @@ import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
 import Container from '@material-ui/core/Container';
 import WarningRoundedIcon from '@material-ui/icons/WarningRounded';
+import Link from '@material-ui/core/Link';
 import { createMuiTheme } from '@material-ui/core/styles'
 import { ThemeProvider } from '@material-ui/styles';
 
@@ -43,6 +44,12 @@ const useStyles = makeStyles((theme) => ({
         flexDirection: 'row',
         alignItems: 'center',
     },
+    rowCenter: {
+        display: 'flex',
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
     check: {
         marginLeft: '-12px',
     },
@@ -69,17 +76,17 @@ const disabledButton = createMuiTheme({
 
 function ResetTokenIsValid(props) {
 
-    const classes = useStyles();
-
-    const delay = ms => new Promise(res => setTimeout(res, ms));
-
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
     const [passwordIsTooShort, setPasswordIsTooShort] = useState();
     const [passwordsDoNotMatch, setPasswordsDoNotMatch] = useState();
     const [buttonIsDisabled, setButtonIsDisabled] = useState(true);
+    const [tokenIsValid, setTokenIsValid] = useState();
+    const [hideInputTextFields, setHideInputTextFields] = useState(false);
 
     const { register, handleSubmit } = useForm();
+    const delay = ms => new Promise(res => setTimeout(res, ms));
+    const classes = useStyles();
 
     async function onChangePassword(input) {
         const password = input.target.value;
@@ -135,10 +142,13 @@ function ResetTokenIsValid(props) {
                 await AuthService.loginForStaySignedIn(email, data.password);
                 localStorage.removeItem('email');
                 localStorage.removeItem('resetToken');
-                props.navigateToWelcome();
+                setTokenIsValid(true);
+                setHideInputTextFields(true);
             } else if (response === 400 || 401 || 404) {
                 localStorage.removeItem('email');
                 localStorage.removeItem('resetToken');
+                setTokenIsValid(false);
+                setHideInputTextFields(true);
             }
         } catch (error) {
             console.log(error);
@@ -146,7 +156,26 @@ function ResetTokenIsValid(props) {
     }
 
     let button;
-    if (buttonIsDisabled === true) {
+    if (tokenIsValid === true) {
+        button =
+            <Box mt={5}>
+                <Typography align="center">You've successfully changed your password</Typography>
+                <Button type='submit' color='primary' fullWidth variant='contained' className={classes.submit} onClick={props.navigateToWelcome}>
+                    Continue to Home
+                </Button>
+            </Box>
+    } else if (tokenIsValid === false) {
+        button =
+            <Box mt={5} align="center">
+                <Box className={classes.rowCenter}>
+                    <WarningRoundedIcon className={classes.warningIcon} />
+                    <Typography>The passwords reset link has expired.</Typography>
+                </Box>
+                <Link href='' variant='body1' onClick={props.navigateToReset}>
+                    {'Try resetting your password again.'}
+                </Link>
+            </Box>
+    } else if (buttonIsDisabled === true) {
         button =
             <ThemeProvider theme={disabledButton}>
                 <Button type='submit' fullWidth variant='contained' className={classes.submit} disabled>
@@ -171,46 +200,50 @@ function ResetTokenIsValid(props) {
                     Reset your password
                 </Typography>
                 <form onSubmit={handleSubmit(onSubmit)} className={classes.form} noValidate>
-                    <TextField
-                        inputRef={register({
-                            required: true,
-                            minLength: 6,
-                        })}
-                        onChange={onChangePassword}
-                        name='password'
-                        variant='outlined'
-                        margin='normal'
-                        fullWidth
-                        label='New password'
-                        type='password'
-                        id='password'
-                        autoFocus
-                    />
-                    {passwordIsTooShort === true &&
-                        <Box className={classes.row}>
-                            <WarningRoundedIcon className={classes.warningIcon} />
-                            <Typography className={classes.warningText}>Your password must be at least 6 characters.</Typography>
-                        </Box>
-                    }
-                    <TextField
-                        inputRef={register({
-                            required: true,
-                            minLength: 6,
-                        })}
-                        onChange={onChangeConfirmPassword}
-                        name='confirmPassword'
-                        variant='outlined'
-                        margin='normal'
-                        fullWidth
-                        label='Confirm your password'
-                        type='password'
-                        id='confirmPassword'
-                    />
-                    {passwordsDoNotMatch === true &&
-                        <Box className={classes.row}>
-                            <WarningRoundedIcon className={classes.warningIcon} />
-                            <Typography className={classes.warningText}>The passwords don't match. Please try again.</Typography>
-                        </Box>
+                    {hideInputTextFields === false &&
+                        <div>
+                            <TextField
+                                inputRef={register({
+                                    required: true,
+                                    minLength: 6,
+                                })}
+                                onChange={onChangePassword}
+                                name='password'
+                                variant='outlined'
+                                margin='normal'
+                                fullWidth
+                                label='New password'
+                                type='password'
+                                id='password'
+                                autoFocus
+                            />
+                            {passwordIsTooShort === true &&
+                                <Box className={classes.row}>
+                                    <WarningRoundedIcon className={classes.warningIcon} />
+                                    <Typography className={classes.warningText}>Your password must be at least 6 characters.</Typography>
+                                </Box>
+                            }
+                            <TextField
+                                inputRef={register({
+                                    required: true,
+                                    minLength: 6,
+                                })}
+                                onChange={onChangeConfirmPassword}
+                                name='confirmPassword'
+                                variant='outlined'
+                                margin='normal'
+                                fullWidth
+                                label='Confirm your password'
+                                type='password'
+                                id='confirmPassword'
+                            />
+                            {passwordsDoNotMatch === true &&
+                                <Box className={classes.row}>
+                                    <WarningRoundedIcon className={classes.warningIcon} />
+                                    <Typography className={classes.warningText}>The passwords don't match. Please try again.</Typography>
+                                </Box>
+                            }
+                        </div>
                     }
                     {button}
                 </form>
