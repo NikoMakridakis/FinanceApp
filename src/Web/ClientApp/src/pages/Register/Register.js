@@ -11,6 +11,7 @@ import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
 import Container from '@material-ui/core/Container';
 import WarningRoundedIcon from '@material-ui/icons/WarningRounded';
+import CircularProgress from '@material-ui/core/CircularProgress';
 import { createMuiTheme } from '@material-ui/core/styles'
 import { ThemeProvider } from '@material-ui/styles';
 
@@ -58,6 +59,9 @@ const useStyles = makeStyles((theme) => ({
         color: '#DC004E',
         fontSize: '14px',
     },
+    buttonProgress: {
+        color: '#FDFDFE',
+    },
 }))
 
 const disabledButton = createMuiTheme({
@@ -74,6 +78,7 @@ function Register(props) {
     const [passwordIsTooShort, setPasswordIsTooShort] = useState(false);
     const [passwordIsSubmitted, setPasswordIsSubmitted] = useState(false);
     const [buttonIsDisabled, setButtonIsDisabled] = useState(true);
+    const [isLoading, setIsLoading] = useState(false);
 
     const delay = ms => new Promise(res => setTimeout(res, ms));
     const { register, handleSubmit, errors } = useForm();
@@ -115,12 +120,15 @@ function Register(props) {
 
     async function onSubmit(data) {
         setPasswordIsSubmitted(true);
+        setIsLoading(true);
         try {
             const response = await AuthService.register(data.email, data.fullName, data.password);
             if (response === 200) {
                 props.setEmailExists(false);
+                setIsLoading(false);
                 navigateToWelcome();
             } else if (response === 401) {
+                setIsLoading(false);
                 props.setEmailExists(true);
             }
         } catch (error) {
@@ -139,7 +147,14 @@ function Register(props) {
     } else {
         button =
             <Button type='submit' fullWidth variant='contained' color='primary' className={classes.submit}>
-                Register
+                {isLoading === true &&
+                    <CircularProgress size={24} className={classes.buttonProgress} />
+                }
+                {isLoading === false &&
+                    <Typography>
+                        Register
+                    </Typography>
+                }
             </Button>
     }
 

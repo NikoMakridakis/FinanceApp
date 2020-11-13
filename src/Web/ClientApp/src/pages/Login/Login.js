@@ -14,6 +14,7 @@ import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
 import Container from '@material-ui/core/Container';
 import WarningRoundedIcon from '@material-ui/icons/WarningRounded';
+import CircularProgress from '@material-ui/core/CircularProgress';
 
 import Copyright from '../../components/Copyright';
 import AuthService from '../../services/AuthService';
@@ -58,6 +59,9 @@ const useStyles = makeStyles((theme) => ({
         color: '#DC004E',
         fontSize: '14px',
     },
+    buttonProgress: {
+        color: '#FDFDFE',
+    },
 }))
 
 function Login(props) {
@@ -66,6 +70,7 @@ function Login(props) {
     const [passwordIsSubmitted, setPasswordIsSubmitted] = useState(false);
     const [lockoutTimeLeft, setLockoutTimeLeft] = useState(0);
     const [checkBox, setCheckBox] = useState(true);
+    const [isLoading, setIsLoading] = useState(false);
 
     const { register, handleSubmit, errors } = useForm();
     const classes = useStyles();
@@ -94,6 +99,7 @@ function Login(props) {
 
     async function onSubmit(data) {
         setPasswordIsSubmitted(true);
+        setIsLoading(true);
         const staySignedIn = data.staySignedIn;
         if (staySignedIn === true) {
             try {
@@ -101,13 +107,16 @@ function Login(props) {
                 if (response === 200) {
                     props.setIsLoginError(false);
                     props.setIsLockedOut(false);
+                    setIsLoading(false);
                     props.history.push('/budget');
                 } if (response === 401 || 404) {
                     props.setIsLoginError(true);
                     props.setIsLockedOut(false);
+                    setIsLoading(false);
                 } if (response.isLockedOut) {
                     props.setIsLoginError(false);
                     props.setIsLockedOut(true);
+                    setIsLoading(false);
                     if (response.lockoutSeconds > 0) {
                         const minutesLeft = Math.ceil(response.lockoutSeconds / 60);
                         setLockoutTimeLeft(minutesLeft);
@@ -122,13 +131,16 @@ function Login(props) {
                 if (response === 200) {
                     props.setIsLoginError(false);
                     props.setIsLockedOut(false);
+                    setIsLoading(false);
                     props.history.push('/budget');
                 } if (response === 401 || 404) {
                     props.setIsLoginError(true);
                     props.setIsLockedOut(false);
+                    setIsLoading(false);
                 } if (response.isLockedOut) {
                     props.setIsLoginError(false);
                     props.setIsLockedOut(true);
+                    setIsLoading(false);
                     if (response.lockoutSeconds > 0) {
                         const minutesLeft = Math.ceil(response.lockoutSeconds / 60);
                         setLockoutTimeLeft(minutesLeft);
@@ -237,7 +249,14 @@ function Login(props) {
                         color='primary'
                         className={classes.submit}
                     >
-                        Sign In
+                        {isLoading === true &&
+                            <CircularProgress size={24} className={classes.buttonProgress} />
+                        }
+                        {isLoading === false &&
+                            <Typography>
+                                Sign In
+                            </Typography>
+                        }
                     </Button>
                     <Box>
                         <Typography align='center' variant='body1'>

@@ -57,10 +57,10 @@ const useStyles = makeStyles((theme) => ({
         marginRight: '6px',
     },
     successText: {
-        fontSize: '14px',
+        fontSize: '16px',
     },
     resendEmailText: {
-        fontSize: '12px',
+        fontSize: '13px',
     },
     warningIcon: {
         color: '#DC004E',
@@ -71,6 +71,13 @@ const useStyles = makeStyles((theme) => ({
     warningText: {
         color: '#DC004E',
         fontSize: '14px',
+    },
+    emailText: {
+        color: '#3D4EAC',
+        marginTop: theme.spacing(2),
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
     },
     buttonSuccess: {
         backgroundColor: '#5469D4',
@@ -108,14 +115,17 @@ function ResetTokenIsInvalid(props) {
     async function resendEmail(event) {
         event.preventDefault();
         try {
+            setIsLoading(true);
             const email = JSON.parse(localStorage.getItem('email'));
             const response = await AuthService.forgotPassword(email);
             if (response === 200) {
                 setEmailExists(false);
                 setEmailSent(true);
+                setIsLoading(false);
             } else if (response === 401 || 404) {
                 setEmailExists(true);
                 setEmailSent(false);
+                setIsLoading(false);
             }
         } catch (error) {
             console.log(error);
@@ -152,31 +162,35 @@ function ResetTokenIsInvalid(props) {
                 <Typography component='h1' variant='h5'>
                     Reset Your Password
                 </Typography>
-                <Typography variant='body1' className={classes.resetText}>
-                    Enter the email address associated with your account and we'll send you a link to reset your password.
-                </Typography>
+                {emailSent === false &&
+                    <Typography variant='body1' className={classes.resetText}>
+                        Enter the email address associated with your account and we'll send you a link to reset your password.
+                    </Typography>
+                }
                 <form onSubmit={handleSubmit(onSubmit)} className={classes.form} noValidate>
-                    <TextField
-                        inputRef={register({
-                            required: 'Email is required',
-                            pattern: {
-                                // regex pattern below verifies email as per RFC2822 standards
-                                // source: https://regexr.com/5em0n
-                                value: /[a-zA-Z0-9!#$ %& '*+/=?^_`{|}~-]+(?:\.[a-zA-Z0-9!#$%&' * +/=?^_`{|}~-]+)*@(?:[a-zA-Z0-9](?:[a-zA-Z0-9-]*[a-zA-Z0-9])?\.)+[a-zA-Z0-9](?:[a-zA-Z0-9-]*[a-zA-Z0-9])?/,
-                                message: 'Please enter a valid email.'
-                            }
-                        })}
-                        onChange={props.onChangeEmail}
-                        defaultValue={props.email}
-                        name='email'
-                        variant='outlined'
-                        margin='normal'
-                        fullWidth
-                        id='email'
-                        label='Email Address'
-                        autoComplete='email'
-                        autoFocus
-                    />
+                    {emailSent === false &&
+                        <TextField
+                            inputRef={register({
+                                required: 'Email is required',
+                                pattern: {
+                                    // regex pattern below verifies email as per RFC2822 standards
+                                    // source: https://regexr.com/5em0n
+                                    value: /[a-zA-Z0-9!#$ %& '*+/=?^_`{|}~-]+(?:\.[a-zA-Z0-9!#$%&' * +/=?^_`{|}~-]+)*@(?:[a-zA-Z0-9](?:[a-zA-Z0-9-]*[a-zA-Z0-9])?\.)+[a-zA-Z0-9](?:[a-zA-Z0-9-]*[a-zA-Z0-9])?/,
+                                    message: 'Please enter a valid email.'
+                                }
+                            })}
+                            onChange={props.onChangeEmail}
+                            defaultValue={props.email}
+                            name='email'
+                            variant='outlined'
+                            margin='normal'
+                            fullWidth
+                            id='email'
+                            label='Email Address'
+                            autoComplete='email'
+                            autoFocus
+                        />
+                    }
                     {emailExists &&
                         <Box className={classes.row}>
                             <WarningRoundedIcon className={classes.warningIcon} />
@@ -190,18 +204,32 @@ function ResetTokenIsInvalid(props) {
                         </Box>
                     }
                     {emailSent &&
-                        <Box>
-                            <Box className={classes.row} mt={2}>
-                                <Typography className={classes.successText}>Thanks, check your email for instructions to reset your password.</Typography>
-                            </Box>
-                            <Box className={classes.row} mt={2}>
-                                <Box mr={0.5}>
-                                    <Typography className={classes.resendEmailText}>{'Didn\'t get the email? Check your spam folder or'}</Typography>
+                        <Box textAlign='center'>
+                            <Box className={classes.emailText} display='flex' alignItems='center' justifyContent='center'>
+                                <Box>
+                                    <Typography variant='h6'>{props.email}</Typography>
                                 </Box>
-                                <Link href='' onClick={resendEmail} variant='body1' className={classes.resendEmailText}>
-                                    {'resend'}.
-                                </Link>
                             </Box>
+                            <Box mt={3} display='flex' alignItems='center' justifyContent='center'>
+                                <Typography className={classes.successText}>Thanks, please check your email</Typography>
+                            </Box>
+                            
+                                {isLoading === true &&
+                                    <Box mt={2} display='flex' alignItems='center' justifyContent='center'>
+                                        <CircularProgress size={24}  />
+                                    </Box>
+                                }
+                                {isLoading === false &&
+                                    <Box className={classes.row} mt={2} display='flex' alignItems='center' justifyContent='center'>
+                                        <Box mr={0.5}>
+                                            <Typography className={classes.resendEmailText}>{'Didn\'t get the email? Check your spam folder or '}
+                                                <Link href='' onClick={resendEmail} variant='body1' className={classes.resendEmailText}>
+                                                    {'resend'}.
+                                                </Link>
+                                            </Typography>
+                                        </Box>
+                                    </Box>
+                                }
                         </Box>
                     }
                     {!emailSent &&

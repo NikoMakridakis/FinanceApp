@@ -11,6 +11,7 @@ import Typography from '@material-ui/core/Typography';
 import Container from '@material-ui/core/Container';
 import WarningRoundedIcon from '@material-ui/icons/WarningRounded';
 import Link from '@material-ui/core/Link';
+import CircularProgress from '@material-ui/core/CircularProgress';
 import { createMuiTheme } from '@material-ui/core/styles'
 import { ThemeProvider } from '@material-ui/styles';
 
@@ -63,6 +64,9 @@ const useStyles = makeStyles((theme) => ({
         color: '#DC004E',
         fontSize: '14px',
     },
+    buttonProgress: {
+        color: '#FDFDFE',
+    },
 }))
 
 const disabledButton = createMuiTheme({
@@ -83,6 +87,7 @@ function ResetTokenIsValid(props) {
     const [buttonIsDisabled, setButtonIsDisabled] = useState(true);
     const [tokenIsValid, setTokenIsValid] = useState();
     const [hideInputTextFields, setHideInputTextFields] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
 
     const { register, handleSubmit } = useForm();
     const delay = ms => new Promise(res => setTimeout(res, ms));
@@ -134,6 +139,7 @@ function ResetTokenIsValid(props) {
     }
 
     async function onSubmit(data) {
+        setIsLoading(true);
         try {
             const email = await JSON.parse(localStorage.getItem('email'));
             const resetToken = await JSON.parse(localStorage.getItem('resetToken'));
@@ -144,11 +150,13 @@ function ResetTokenIsValid(props) {
                 localStorage.removeItem('resetToken');
                 setTokenIsValid(true);
                 setHideInputTextFields(true);
+                setIsLoading(false);
             } else if (response === 400 || 401 || 404) {
                 localStorage.removeItem('email');
                 localStorage.removeItem('resetToken');
                 setTokenIsValid(false);
                 setHideInputTextFields(true);
+                setIsLoading(false);
             }
         } catch (error) {
             console.log(error);
@@ -161,7 +169,14 @@ function ResetTokenIsValid(props) {
             <Box mt={5}>
                 <Typography align="center">You've successfully changed your password</Typography>
                 <Button type='submit' color='primary' fullWidth variant='contained' className={classes.submit} onClick={props.navigateToWelcome}>
-                    Continue to Home
+                    {isLoading === true &&
+                        <CircularProgress size={24} className={classes.buttonProgress} />
+                    }
+                    {isLoading === false &&
+                        <Typography>
+                            Continue to Home
+                        </Typography>
+                    }
                 </Button>
             </Box>
     } else if (tokenIsValid === false) {
@@ -177,16 +192,23 @@ function ResetTokenIsValid(props) {
             </Box>
     } else if (buttonIsDisabled === true) {
         button =
-            <ThemeProvider theme={disabledButton}>
+           <ThemeProvider theme={disabledButton}>
                 <Button type='submit' fullWidth variant='contained' className={classes.submit} disabled>
                     Continue
                 </Button>
-            </ThemeProvider>
+           </ThemeProvider>
     } else {
         button =
-            <Button type='submit' fullWidth variant='contained' color='primary' className={classes.submit}>
-                Continue
-            </Button>
+           <Button type='submit' fullWidth variant='contained' color='primary' className={classes.submit}>
+                {isLoading === true &&
+                    <CircularProgress size={24} className={classes.buttonProgress} />
+                }
+                {isLoading === false &&
+                    <Typography>
+                        Continue
+                    </Typography>
+                }
+           </Button>
     }
 
     return (
