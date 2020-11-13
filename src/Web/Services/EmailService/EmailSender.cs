@@ -36,22 +36,13 @@ namespace Web.Services.EmailService
             emailMessage.To.AddRange(message.To);
             emailMessage.Subject = message.Subject;
 
-            var bodyBuilder = new BodyBuilder { HtmlBody = string.Format("<h2 style='color:red;'>{0}</h2>", message.Content) };
-
-            if (message.Attachments != null && message.Attachments.Any())
-            {
-                byte[] fileBytes;
-                foreach (var attachment in message.Attachments)
-                {
-                    using (var ms = new MemoryStream())
-                    {
-                        attachment.CopyTo(ms);
-                        fileBytes = ms.ToArray();
-                    }
-
-                    bodyBuilder.Attachments.Add(attachment.FileName, fileBytes, ContentType.Parse(attachment.ContentType));
-                }
-            }
+            var bodyBuilder = new BodyBuilder {
+                HtmlBody = string.Format($"" +
+                "<div style = 'background-color:black;color:white;padding:20px; font-family:Roboto; color:#555555; font-size:12px;' >" +
+                    $"<h2 style='color:red;'>{message.Content}</h2>" +
+                    "<h3> This is a test </h3>" +
+                "</div>" +
+                $"") };
 
             emailMessage.Body = bodyBuilder.ToMessageBody();
             return emailMessage;
