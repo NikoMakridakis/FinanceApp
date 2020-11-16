@@ -143,9 +143,9 @@ namespace Web.Controllers
             var message = new Message(new string[] { user.Email }, "Reset password token", callback);
             await _emailSender.SendEmailAsync(message);
 
-            string successMessage = $"Successfully send the reset password email to the user with the email: '{email}'.";
+            string successMessage = $"Successfully sent the reset password email to the user with the email: '{email}'.";
             _logger.LogInformation(successMessage);
-            return Ok(new { resetToken });
+            return Ok(successMessage);
         }
 
         // POST: user/verifyResetToken

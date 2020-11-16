@@ -73,7 +73,7 @@ const useStyles = makeStyles((theme) => ({
         fontSize: '14px',
     },
     emailText: {
-        color: '#3D4EAC',
+        opacity: '0.87',
         marginTop: theme.spacing(2),
         display: 'flex',
         flexDirection: 'column',
