@@ -1,10 +1,12 @@
 ﻿using AutoMapper;
 using Core.Entities;
 using Core.Interfaces;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using Web.Extensions;
 using Web.Models;
@@ -34,8 +36,6 @@ namespace Web.Controllers
             _tokenService = tokenService;
             _emailSender = emailSender;
         }
-
-
 
         // POST: user/login
         [HttpPost("login")]
@@ -140,7 +140,7 @@ namespace Web.Controllers
 
             string callback = Url.Action("Reset", "user", new { resetToken }, Request.Scheme);
 
-            var message = new Message(new string[] { user.Email }, "Reset password token", callback);
+            Message message = new Message(new string[] { user.Email }, "Reset password token", callback);
             await _emailSender.SendEmailAsync(message);
 
             string successMessage = $"Successfully sent the reset password email to the user with the email: '{email}'.";
@@ -204,6 +204,111 @@ namespace Web.Controllers
             string successMessage = $"Successfully reset the password for the user with the email: '{email}'.";
             _logger.LogInformation(successMessage);
             return Ok(successMessage);
+        }
+
+
+
+
+
+        // POST: user/externalLogin
+        [HttpPost("externalLogin")]
+        public IActionResult ExternalLogin(string provider, string returnUrl = null)
+        {
+            string redirectUrl = Url.Action(nameof(ExternalLoginCallback), "Account", new { returnUrl });
+            AuthenticationProperties properties = _signInManager.ConfigureExternalAuthenticationProperties(provider, redirectUrl);
+            return Challenge(properties, provider);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> ExternalLoginCallback(string returnUrl = null)
+        {
+            ExternalLoginInfo info = await _signInManager.GetExternalLoginInfoAsync();
+            if (info == null)
+            {
+                return RedirectToAction(nameof(Login));
+            }
+
+            SignInResult signInResult = await _signInManager.ExternalLoginSignInAsync(info.LoginProvider, info.ProviderKey, isPersistent: false, bypassTwoFactor: true);
+            if (signInResult.Succeeded)
+            {
+                return RedirectToLocal(returnUrl);
+            }
+            if (signInResult.IsLockedOut)
+            {
+                return RedirectToAction(nameof(ForgotPassword));
+            }
+            else
+            {
+                //ViewData["ReturnUrl"] = returnUrl;
+                //ViewData["Provider"] = info.LoginProvider;
+                string email = info.Principal.FindFirstValue(ClaimTypes.Email);
+                return Ok(new UserForExternalLoginDto { Email = email });
+            }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ExternalLoginConfirmation(UserForExternalLoginDto model, string returnUrl = null)
+        {
+            //if (!ModelState.IsValid)
+            //    return View(model);
+
+            ExternalLoginInfo info = await _signInManager.GetExternalLoginInfoAsync();
+            if (info == null)
+                return Error();
+
+            User user = await _userManager.FindByEmailAsync(model.Email);
+            IdentityResult result;
+
+            if (user != null)
+            {
+                result = await _userManager.AddLoginAsync(user, info);
+                if (result.Succeeded)
+                {
+                    await _signInManager.SignInAsync(user, isPersistent: false);
+                    return RedirectToLocal(returnUrl);
+                }
+            }
+            else
+            {
+                model.Principal = info.Principal;
+                user = _mapper.Map<User>(model);
+                result = await _userManager.CreateAsync(user);
+                if (result.Succeeded)
+                {
+                    result = await _userManager.AddLoginAsync(user, info);
+                    if (result.Succeeded)
+                    {
+                        //TODO: Send an emal for the email confirmation and add a default role as in the Register action
+                        await _signInManager.SignInAsync(user, isPersistent: false);
+                        return RedirectToLocal(returnUrl);
+                    }
+                }
+            }
+
+            foreach (var error in result.Errors)
+            {
+                ModelState.TryAddModelError(error.Code, error.Description);
+            }
+
+            return Ok(model);
+        }
+
+        private IActionResult RedirectToLocal(string returnUrl)
+        {
+            if (Url.IsLocalUrl(returnUrl))
+            {
+                return Redirect(returnUrl);
+            }
+            else
+            {
+                return RedirectToAction(nameof(UserController.Login), "Login");
+            }
+        }
+
+        [HttpGet]
+        public IActionResult Error()
+        {
+            return Error();
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Core.Entities;
+using System.Security.Claims;
 using Web.Models;
 
 namespace Web.Profiles
@@ -13,6 +14,10 @@ namespace Web.Profiles
                 .ForMember(u => u.UserName, opt => opt.MapFrom(x => x.Email));
 
             CreateMap<User, UserDto>();
+
+            CreateMap<UserForExternalLoginDto, User>()
+                .ForMember(u => u.UserName, opt => opt.MapFrom(x => x.Email));
+                //.ForMember(u => u.FirstName, opt => opt.MapFrom(x => x.Principal.FindFirst(ClaimTypes.GivenName).Value))
         }
     }
 }

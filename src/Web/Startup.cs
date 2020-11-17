@@ -16,6 +16,7 @@ using Web.Middleware;
 using Web.Services;
 using Web.Services.EmailService;
 using Microsoft.AspNetCore.Antiforgery;
+using Microsoft.AspNetCore.Identity;
 
 namespace Web
 {
@@ -42,6 +43,15 @@ namespace Web
             services.AddIdentityConfiguration();
 
             services.AddAuthenticationConfiguration(_configuration);
+
+            services.AddAuthentication()
+                .AddGoogle("google", opt =>
+                {
+                    var googleAuth = _configuration.GetSection("Authentication:Google");
+                    opt.ClientId = googleAuth["ClientId"];
+                    opt.ClientSecret = googleAuth["ClientSecret"];
+                    opt.SignInScheme = IdentityConstants.ExternalScheme;
+                });
 
             services.AddSwaggerConfiguration();
 
