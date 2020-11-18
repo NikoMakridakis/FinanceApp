@@ -45,12 +45,11 @@ namespace Web
             services.AddAuthenticationConfiguration(_configuration);
 
             services.AddAuthentication()
-                .AddGoogle("google", opt =>
+                .AddGoogle(options =>
                 {
-                    var googleAuth = _configuration.GetSection("Authentication:Google");
-                    opt.ClientId = googleAuth["ClientId"];
-                    opt.ClientSecret = googleAuth["ClientSecret"];
-                    opt.SignInScheme = IdentityConstants.ExternalScheme;
+                    IConfigurationSection googleAuth = _configuration.GetSection("Authentication:Google");
+                    options.ClientId = googleAuth["ClientId"];
+                    options.ClientSecret = googleAuth["ClientSecret"];
                 });
 
             services.AddSwaggerConfiguration();
@@ -65,7 +64,7 @@ namespace Web
             {
                 opt.AddPolicy("CorsPolicy", policy =>
                 {
-                    policy.AllowAnyHeader().AllowAnyMethod().WithOrigins("https://localhost:44387");
+                    policy.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin();
                 });
             });
 

@@ -157,9 +157,9 @@ namespace Web.Controllers
 
             if (user == null)
             {
-                string error = $"Unable to find user with the email '{email}'.";
-                _logger.LogError(error);
-                return NotFound(error);
+                string errorMessage = $"Unable to find user with the email '{email}'.";
+                _logger.LogError(errorMessage);
+                return NotFound(errorMessage);
             }
 
             string resetToken = userVerifyResetTokenDto.ResetToken;
@@ -168,9 +168,9 @@ namespace Web.Controllers
 
             if (!resetTokenIsValid)
             {
-                string error = $"Invalid reset token associated with the user '{email}'.";
-                _logger.LogError(error);
-                return BadRequest(error);
+                string errorMessage = $"Invalid reset token associated with the user '{email}'.";
+                _logger.LogError(errorMessage);
+                return BadRequest(errorMessage);
             }
 
             string successMessage = $"Successfully verified the reset password token for the user with the email: '{email}'.";
@@ -187,18 +187,18 @@ namespace Web.Controllers
 
             if (user == null)
             {
-                string error = $"Unable to find user with the email '{email}'.";
-                _logger.LogError(error);
-                return NotFound(error);
+                string errorMessage = $"Unable to find user with the email '{email}'.";
+                _logger.LogError(errorMessage);
+                return NotFound(errorMessage);
             }
 
             IdentityResult resetPassResult = await _userManager.ResetPasswordAsync(user, userResetPasswordDto.ResetToken, userResetPasswordDto.Password);
 
             if (!resetPassResult.Succeeded)
             {
-                string error = $"Failed to reset the password associated with the user '{email}'.";
-                _logger.LogError(error);
-                return BadRequest(error);
+                string errorMessage = $"Failed to reset the password associated with the user '{email}'.";
+                _logger.LogError(errorMessage);
+                return BadRequest(errorMessage);
             }
 
             string successMessage = $"Successfully reset the password for the user with the email: '{email}'.";
@@ -208,107 +208,101 @@ namespace Web.Controllers
 
 
 
-
-
-        // POST: user/externalLogin
-        [HttpPost("externalLogin")]
-        public IActionResult ExternalLogin(string provider, string returnUrl = null)
+        // GET: user/googleLogin
+        [HttpGet("googleLogin")]
+        public IActionResult GoogleLogin()
         {
-            string redirectUrl = Url.Action(nameof(ExternalLoginCallback), "Account", new { returnUrl });
+            string provider = "Google";
+
+            string redirectUrl = "/user/signin-google";
             AuthenticationProperties properties = _signInManager.ConfigureExternalAuthenticationProperties(provider, redirectUrl);
-            return Challenge(properties, provider);
+            return new ChallengeResult(provider, properties);
         }
 
-        [HttpGet]
-        public async Task<IActionResult> ExternalLoginCallback(string returnUrl = null)
+        // GET: user/signin-google
+        [HttpGet("signin-google")]
+        public async Task<IActionResult> CallBack(string remoteError = null)
         {
+            var returnUrl = Url.Content("~/");
+            if (remoteError != null)
+            {
+                string errorMessage = $"Error from external provider: {remoteError}";
+                _logger.LogError(errorMessage);
+                return BadRequest(errorMessage);
+            }
             ExternalLoginInfo info = await _signInManager.GetExternalLoginInfoAsync();
             if (info == null)
             {
-                return RedirectToAction(nameof(Login));
+                string errorMessage = "Error loading external login information.";
+                _logger.LogError(errorMessage);
+                return BadRequest(errorMessage);
             }
 
-            SignInResult signInResult = await _signInManager.ExternalLoginSignInAsync(info.LoginProvider, info.ProviderKey, isPersistent: false, bypassTwoFactor: true);
-            if (signInResult.Succeeded)
+            // Sign in the user with this external login provider if the user already has a login.
+            SignInResult result = await _signInManager.ExternalLoginSignInAsync(info.LoginProvider, info.ProviderKey, isPersistent: false, bypassTwoFactor: true);
+            string name = info.Principal.Identity.Name;
+            string loginProvider = info.LoginProvider;
+
+            if (result.Succeeded)
             {
-                return RedirectToLocal(returnUrl);
+                string successMessage = $"{name} logged in with {loginProvider} provider.";
+                _logger.LogInformation(successMessage);
+                return Ok(successMessage);
             }
-            if (signInResult.IsLockedOut)
+            if (result.IsLockedOut)
             {
-                return RedirectToAction(nameof(ForgotPassword));
+                string errorMessage = $"Error loggin in. {name} has been locked out.";
+                _logger.LogError(errorMessage);
+                return Unauthorized(errorMessage);
             }
-            else
-            {
-                //ViewData["ReturnUrl"] = returnUrl;
-                //ViewData["Provider"] = info.LoginProvider;
-                string email = info.Principal.FindFirstValue(ClaimTypes.Email);
-                return Ok(new UserForExternalLoginDto { Email = email });
-            }
+            //else
+            //{
+            //    // If the user does not have an account, then ask the user to create an account.
+            //    //ReturnUrl = returnUrl;
+            //    //LoginProvider = info.LoginProvider;
+            //    var Email = "";
+            //    var Name = info.Principal.Identity.Name;
+
+            //    if (info.Principal.HasClaim(c => c.Type == ClaimTypes.Email))
+            //    {
+            //        Email = info.Principal.FindFirstValue(ClaimTypes.Email);
+            //    }
+
+            //    var user = new IdentityUser { UserName = Email, Email = Name };
+            //    var result2 = await _userManager.CreateAsync(user);
+            //    if (result2.Succeeded)
+            //    {
+            //        result2 = await _userManager.AddLoginAsync(user, info);
+            //        if (result2.Succeeded)
+            //        {
+            //            await _signInManager.SignInAsync(user, isPersistent: false);
+            //            _logger.LogInformation("User created an account using {Name} provider.", info.LoginProvider);
+
+            //            var userId = await _userManager.GetUserIdAsync(user);
+            //            var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+            //            code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
+            //            var callbackUrl = Url.Page(
+            //                "/Account/ConfirmEmail",
+            //                pageHandler: null,
+            //                values: new { area = "Identity", userId = userId, code = code },
+            //                protocol: Request.Scheme);
+
+            //            await _emailSender.SendEmailAsync(Email, "Confirm your email",
+            //                $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
+
+            //            return Redirect("/");
+            //        }
+            //    }
+            //    foreach (var error in result2.Errors)
+            //    {
+            //        ModelState.AddModelError(string.Empty, error.Description);
+            //    }
+
+            return Redirect("/");
+            //}
         }
 
-        [HttpPost]
-        public async Task<IActionResult> ExternalLoginConfirmation(UserForExternalLoginDto model, string returnUrl = null)
-        {
-            //if (!ModelState.IsValid)
-            //    return View(model);
 
-            ExternalLoginInfo info = await _signInManager.GetExternalLoginInfoAsync();
-            if (info == null)
-                return Error();
 
-            User user = await _userManager.FindByEmailAsync(model.Email);
-            IdentityResult result;
-
-            if (user != null)
-            {
-                result = await _userManager.AddLoginAsync(user, info);
-                if (result.Succeeded)
-                {
-                    await _signInManager.SignInAsync(user, isPersistent: false);
-                    return RedirectToLocal(returnUrl);
-                }
-            }
-            else
-            {
-                model.Principal = info.Principal;
-                user = _mapper.Map<User>(model);
-                result = await _userManager.CreateAsync(user);
-                if (result.Succeeded)
-                {
-                    result = await _userManager.AddLoginAsync(user, info);
-                    if (result.Succeeded)
-                    {
-                        //TODO: Send an emal for the email confirmation and add a default role as in the Register action
-                        await _signInManager.SignInAsync(user, isPersistent: false);
-                        return RedirectToLocal(returnUrl);
-                    }
-                }
-            }
-
-            foreach (var error in result.Errors)
-            {
-                ModelState.TryAddModelError(error.Code, error.Description);
-            }
-
-            return Ok(model);
-        }
-
-        private IActionResult RedirectToLocal(string returnUrl)
-        {
-            if (Url.IsLocalUrl(returnUrl))
-            {
-                return Redirect(returnUrl);
-            }
-            else
-            {
-                return RedirectToAction(nameof(UserController.Login), "Login");
-            }
-        }
-
-        [HttpGet]
-        public IActionResult Error()
-        {
-            return Error();
-        }
     }
 }

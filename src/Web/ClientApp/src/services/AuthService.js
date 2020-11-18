@@ -95,6 +95,29 @@ async function loginForNotStaySignedIn(email, password) {
     }
 }
 
+async function googleLogin() {
+    try {
+        const response = await axios.get('/user/googleLogin');
+        const responseStatusCode = response.status;
+        if (responseStatusCode === 200) {
+            sessionStorage.setItem('user', JSON.stringify(response.data));
+            console.log('AuthService.loginForStaySignedIn response:');
+            console.log(response);
+            return responseStatusCode;
+        }
+    } catch (error) {
+        const errorStatusCode = error.response.status;
+        if (errorStatusCode === 400 || 401 || 404) {
+            if (error.response.data.isLockedOut) {
+                return error.response.data;
+            }
+            console.log('AuthService.login response catch error status code:');
+            console.log(errorStatusCode);
+            return errorStatusCode
+        }
+    }
+}
+
 async function forgotPassword(email) {
     try {
         const response = await axios.post('/user/forgotPassword', { email })
@@ -155,6 +178,7 @@ export default {
     register,
     loginForStaySignedIn,
     loginForNotStaySignedIn,
+    googleLogin,
     forgotPassword,
     verifyResetToken,
     resetPassword,
