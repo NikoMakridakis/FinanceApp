@@ -44,14 +44,6 @@ namespace Web
 
             services.AddAuthenticationConfiguration(_configuration);
 
-            services.AddAuthentication()
-                .AddGoogle(options =>
-                {
-                    IConfigurationSection googleAuth = _configuration.GetSection("Authentication:Google");
-                    options.ClientId = googleAuth["ClientId"];
-                    options.ClientSecret = googleAuth["ClientSecret"];
-                });
-
             services.AddSwaggerConfiguration();
 
             var emailConfig = _configuration

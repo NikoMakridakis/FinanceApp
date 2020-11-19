@@ -2,7 +2,7 @@
 import { useHistory } from "react-router-dom";
 import Button from '@material-ui/core/Button';
 
-function Home() {
+function Landing() {
 
     const history = useHistory();
 
@@ -53,4 +53,4 @@ function Home() {
     )
 }
 
-export default Home;
+export default Landing;

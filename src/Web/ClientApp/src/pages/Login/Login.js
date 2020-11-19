@@ -16,7 +16,6 @@ import Container from '@material-ui/core/Container';
 import WarningRoundedIcon from '@material-ui/icons/WarningRounded';
 import CircularProgress from '@material-ui/core/CircularProgress';
 
-import googleLogin from '../../images/googleLogin.png';
 import Copyright from '../../components/Copyright';
 import AuthService from '../../services/AuthService';
 
@@ -63,11 +62,6 @@ const useStyles = makeStyles((theme) => ({
     buttonProgress: {
         color: '#FDFDFE',
     },
-    externalLoginButton: {
-        padding: 0,
-        minHeight: 0,
-        minWidth: 0,
-    }
 }))
 
 function Login(props) {
@@ -155,21 +149,6 @@ function Login(props) {
             } catch (error) {
                 console.log(error);
             }
-        }
-    }
-
-    async function loginWithGoogle() {
-        try {
-            const response = await AuthService.googleLogin();
-            if (response === 200) {
-                console.log('success');
-            } if (response === 401 || 404) {
-                console.log('error');
-            } if (response.isLockedOut) {
-                console.log('error locked out');
-            }
-        } catch (error) {
-            console.log(error);
         }
     }
 
@@ -279,11 +258,6 @@ function Login(props) {
                             </Typography>
                         }
                     </Button>
-                    <Box ml={-0.5} mb={6}>
-                        <Button className={classes.externalLoginButton} onClick={loginWithGoogle}>
-                            <img src={googleLogin} alt="google login" />
-                        </Button>
-                    </Box>
                     <Box>
                         <Typography align='center' variant='body1'>
                             { 'Don\'t have an account? ' }

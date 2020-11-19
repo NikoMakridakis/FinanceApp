@@ -109,6 +109,10 @@ function Register(props) {
         }
     }
 
+    function navigateToLogin() {
+        props.history.push('/login');
+    }
+
     function navigateToWelcome() {
         props.history.push('/welcome');
     }
@@ -126,7 +130,12 @@ function Register(props) {
             if (response === 200) {
                 props.setEmailExists(false);
                 setIsLoading(false);
-                navigateToWelcome();
+                const response = await AuthService.loginForStaySignedIn(data.email, data.password);
+                if (response === 200) {
+                    navigateToWelcome();
+                } else {
+                    navigateToLogin();
+                }
             } else if (response === 401) {
                 setIsLoading(false);
                 props.setEmailExists(true);
