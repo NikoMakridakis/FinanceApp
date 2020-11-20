@@ -25,9 +25,9 @@ function Reset(props) {
         props.history.push('/user/reset');
     }
 
-    function navigateToWelcome(event) {
+    function navigateToBudget(event) {
         event.preventDefault();
-        props.history.push('/welcome');
+        props.history.push('/budget');
     }
 
     useEffect(() => {
@@ -71,7 +71,7 @@ function Reset(props) {
                 </ResetTokenIsInvalid>
             }
             {resetTokenIsValid === true &&
-                <ResetTokenIsValid navigateToWelcome={navigateToWelcome} navigateToReset={navigateToReset}>
+                <ResetTokenIsValid navigateToWelcome={navigateToBudget} navigateToReset={navigateToReset}>
                 </ResetTokenIsValid>
             }
         </div>

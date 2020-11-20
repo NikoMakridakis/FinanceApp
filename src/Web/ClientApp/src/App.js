@@ -1,6 +1,7 @@
 ﻿import React, { useState } from "react";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 
+import AuthService from './services/AuthService';
 import Landing from './pages/Landing/Landing';
 import Login from './pages/Login/Login';
 import Reset from './pages/Reset/Reset';
@@ -25,6 +26,36 @@ function App() {
         setEmail(data.target.value);
     }
 
+    async function checkAuthentication() {
+        const response = await AuthService.checkUserIsAuthenticated();
+        if (response === 200) {
+            setIsAuthenticated(true);
+        } if (response === 400 || 401 || 404) {
+            setIsAuthenticated(false);
+        }
+    }
+
+    checkAuthentication();
+       
+
+    //useEffect(() => {
+    //    let isMounted = true
+    //    const checkAuthentcation = async () => {
+    //        const response = await AuthService.checkUserIsAuthenticated();
+    //        if (isMounted === true) {
+    //            if (response === 200) {
+    //                setIsAuthenticated(true);
+    //            } if (response === 400 || 401 || 404) {
+    //                setIsAuthenticated(false);
+    //            }
+    //        }
+    //    }
+    //    checkAuthentcation().then(() => setDataLoaded(true))
+    //    return () => {
+    //        isMounted = false
+    //    }
+    //}, [dataLoaded])
+
     let routes;
     if (isAuthenticated === false) {
         routes =
@@ -35,7 +66,8 @@ function App() {
                 <Route exact path='/user/reset' render={(props) => (
                     <Reset {...props} onChangeEmail={onChangeEmail} email={email} />)} />
                 <Route exact path='/register' render={(props) => (
-                    <Register {...props} onChangeEmail={onChangeEmail} email={email} emailExists={emailExists} setEmailExists={setEmailExists} />)} />
+                    <Register {...props} onChangeEmail={onChangeEmail} email={email} emailExists={emailExists}
+                        setEmailExists={setEmailExists} setIsAuthenticated={setIsAuthenticated} />)} />
                 <Route exact path={["/landing", "/", "/*"]} component={Landing} />
             </Switch>
     } else if (isAuthenticated === true) {
@@ -48,18 +80,7 @@ function App() {
 
     return (
         <Router>
-            <Switch>
-                <Route exact path='/login' render={(props) => (
-                    <Login {...props} onChangeEmail={onChangeEmail} email={email} isLoginError={isLoginError} setIsLoginError={setIsLoginError}
-                        isLockedOut={isLockedOut} setIsLockedOut={setIsLockedOut} />)} />
-                <Route exact path='/user/reset' render={(props) => (
-                    <Reset {...props} onChangeEmail={onChangeEmail} email={email} />)} />
-                <Route exact path='/register' render={(props) => (
-                    <Register {...props} onChangeEmail={onChangeEmail} email={email} emailExists={emailExists} setEmailExists={setEmailExists} />)} />
-                <Route exact path='/welcome' component={Welcome} />
-                <Route exact path='/budget' component={Budget} />
-                <Route exact path={["/landing", "/", "/*"]} component={Landing} />
-            </Switch>
+            {routes}
         </Router>
     )
 }

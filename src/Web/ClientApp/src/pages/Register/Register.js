@@ -109,10 +109,6 @@ function Register(props) {
         }
     }
 
-    function navigateToLogin() {
-        props.history.push('/login');
-    }
-
     function navigateToWelcome() {
         props.history.push('/welcome');
     }

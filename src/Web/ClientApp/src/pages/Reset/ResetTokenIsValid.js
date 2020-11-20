@@ -145,12 +145,19 @@ function ResetTokenIsValid(props) {
             const resetToken = await JSON.parse(localStorage.getItem('resetToken'));
             const response = await AuthService.resetPassword(email, data.password, data.confirmPassword, resetToken);
             if (response === 200) {
-                await AuthService.loginForStaySignedIn(email, data.password);
+                const response = await AuthService.loginForStaySignedIn(email, data.password);
                 localStorage.removeItem('email');
                 localStorage.removeItem('resetToken');
                 setTokenIsValid(true);
                 setHideInputTextFields(true);
                 setIsLoading(false);
+
+                if (response === 200) {
+                    await props.navigateToBudget();
+                } else {
+                    await props.navigateToLogin();
+                }
+
             } else if (response === 400 || 401 || 404) {
                 localStorage.removeItem('email');
                 localStorage.removeItem('resetToken');
@@ -184,7 +191,7 @@ function ResetTokenIsValid(props) {
             <Box mt={5} align="center">
                 <Box className={classes.rowCenter}>
                     <WarningRoundedIcon className={classes.warningIcon} />
-                    <Typography>The passwords reset link has expired.</Typography>
+                    <Typography>The password reset link has expired.</Typography>
                 </Box>
                 <Link href='' variant='body1' onClick={props.navigateToReset}>
                     {'Try resetting your password again.'}

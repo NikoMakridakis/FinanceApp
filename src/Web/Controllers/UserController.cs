@@ -39,7 +39,6 @@ namespace Web.Controllers
 
         // POST: user/login
         [HttpPost("login")]
-        [AllowAnonymous]
         public async Task<ActionResult<UserDto>> Login(UserForLoginDto userForLoginDto)
         {
             string email = userForLoginDto.Email;
@@ -88,7 +87,6 @@ namespace Web.Controllers
 
         // POST: user/register
         [HttpPost("register")]
-        [AllowAnonymous]
         public async Task<ActionResult<UserDto>> Register(UserForRegisterDto userForRegisterDto)
         {
             string email = userForRegisterDto.Email;
@@ -202,6 +200,16 @@ namespace Web.Controllers
             }
 
             string successMessage = $"Successfully reset the password for the user with the email: '{email}'.";
+            _logger.LogInformation(successMessage);
+            return Ok(successMessage);
+        }
+
+        // POST: user/checkUserIsAuthenticated
+        [HttpPost("checkUserIsAuthenticated")]
+        [Authorize]
+        public ActionResult CheckUserIsAuthenticated()
+        {
+            string successMessage = $"Success. The user is authenticated.";
             _logger.LogInformation(successMessage);
             return Ok(successMessage);
         }
