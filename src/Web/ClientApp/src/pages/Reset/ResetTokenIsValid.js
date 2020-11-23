@@ -144,10 +144,11 @@ function ResetTokenIsValid(props) {
             const email = await JSON.parse(localStorage.getItem('email'));
             const resetToken = await JSON.parse(localStorage.getItem('resetToken'));
             const response = await AuthService.resetPassword(email, data.password, data.confirmPassword, resetToken);
+            localStorage.removeItem('email');
+            localStorage.removeItem('resetToken');
+
             if (response === 200) {
                 const response = await AuthService.loginForStaySignedIn(email, data.password);
-                localStorage.removeItem('email');
-                localStorage.removeItem('resetToken');
                 setTokenIsValid(true);
                 setHideInputTextFields(true);
                 setIsLoading(false);
@@ -159,8 +160,6 @@ function ResetTokenIsValid(props) {
                 }
 
             } else if (response === 400 || 401 || 404) {
-                localStorage.removeItem('email');
-                localStorage.removeItem('resetToken');
                 setTokenIsValid(false);
                 setHideInputTextFields(true);
                 setIsLoading(false);
@@ -171,6 +170,7 @@ function ResetTokenIsValid(props) {
     }
 
     let button;
+
     if (tokenIsValid === true) {
         button =
             <Box mt={5}>

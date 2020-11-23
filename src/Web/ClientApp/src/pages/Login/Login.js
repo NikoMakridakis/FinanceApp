@@ -66,7 +66,6 @@ const useStyles = makeStyles((theme) => ({
 
 function Login(props) {
 
-
     const [passwordIsSubmitted, setPasswordIsSubmitted] = useState(false);
     const [lockoutTimeLeft, setLockoutTimeLeft] = useState(0);
     const [checkBox, setCheckBox] = useState(true);
@@ -101,6 +100,7 @@ function Login(props) {
         setPasswordIsSubmitted(true);
         setIsLoading(true);
         const staySignedIn = data.staySignedIn;
+
         if (staySignedIn === true) {
             try {
                 const response = await AuthService.loginForStaySignedIn(data.email, data.password);

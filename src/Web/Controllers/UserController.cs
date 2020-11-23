@@ -203,15 +203,5 @@ namespace Web.Controllers
             _logger.LogInformation(successMessage);
             return Ok(successMessage);
         }
-
-        // POST: user/checkUserIsAuthenticated
-        [HttpPost("checkUserIsAuthenticated")]
-        [Authorize]
-        public ActionResult CheckUserIsAuthenticated()
-        {
-            string successMessage = $"Success. The user is authenticated.";
-            _logger.LogInformation(successMessage);
-            return Ok(successMessage);
-        }
     }
 }

@@ -1,26 +1,28 @@
 ﻿import React, { useState, useEffect } from 'react';
 
-import getBudgetGroups from '../../services/UserService';
+import getBudgetGroups from '../../services/BudgetService';
 
 function Budget() {
 
     const [budgetGroups, setBudgetGroups] = useState([]);
 
-
     useEffect(() => {
+        let isLoading = true;
         async function fetchBudgetGroups() {
-            try {
+            if (isLoading === true) {
                 const response = await getBudgetGroups();
-                setBudgetGroups(response);
+                try {
+                    setBudgetGroups(response);
 
-            } catch (error) {
-
-                if (error === 401 || 404) {
-                    console.log('UserService.getBudgetGroups error response:');
-                    console.log(error);
+                } catch (error) {
+                    if (error === 400 || 401 || 404) {
+                        console.log('BudgetService.getBudgetGroups error response:');
+                        console.log(error);
+                    }
                 }
-
-                console.log(error);
+                return () => {
+                    isLoading = false;
+                };
             }
         }
         fetchBudgetGroups();

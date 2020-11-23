@@ -142,6 +142,7 @@ function Register(props) {
     }
 
     let button;
+
     if (buttonIsDisabled === true) {
         button =
             <ThemeProvider theme={disabledButton}>

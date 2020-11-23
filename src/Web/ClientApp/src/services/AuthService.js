@@ -27,6 +27,7 @@ async function register(email, fullName, password) {
         const responseStatusCode = response.status;
         if (responseStatusCode === 200) {
             localStorage.setItem('user', JSON.stringify(response.data));
+            localStorage.setItem('isAuthenticated', true);
             console.log('AuthService.register response:');
             console.log(response);
             return responseStatusCode;
@@ -34,6 +35,8 @@ async function register(email, fullName, password) {
     } catch (error) {
         const errorStatusCode = error.response.status;
         if (errorStatusCode === 400 || 401 || 404) {
+            localStorage.removeItem('user');
+            localStorage.removeItem('isAuthenticated');
             console.log('AuthService.register response catch error status code:');
             console.log(errorStatusCode);
             return errorStatusCode
@@ -51,6 +54,7 @@ async function loginForStaySignedIn(email, password) {
         const responseStatusCode = response.status;
         if (responseStatusCode === 200) {
             localStorage.setItem('user', JSON.stringify(response.data));
+            localStorage.setItem('isAuthenticated', true);
             console.log('AuthService.loginForStaySignedIn response:');
             console.log(response);
             return responseStatusCode;
@@ -58,7 +62,11 @@ async function loginForStaySignedIn(email, password) {
     } catch (error) {
         const errorStatusCode = error.response.status;
         if (errorStatusCode === 400 || 401 || 404) {
+            localStorage.removeItem('user');
+            localStorage.removeItem('isAuthenticated');
             if (error.response.data.isLockedOut) {
+                console.log('AuthService.login response locked out catch error status code:');
+                console.log(errorStatusCode);
                 return error.response.data;
             }
             console.log('AuthService.login response catch error status code:');
@@ -78,6 +86,7 @@ async function loginForNotStaySignedIn(email, password) {
         const responseStatusCode = response.status;
         if (responseStatusCode === 200) {
             sessionStorage.setItem('user', JSON.stringify(response.data));
+            localStorage.setItem('isAuthenticated', true);
             console.log('AuthService.loginForStaySignedIn response:');
             console.log(response);
             return responseStatusCode;
@@ -85,7 +94,11 @@ async function loginForNotStaySignedIn(email, password) {
     } catch (error) {
         const errorStatusCode = error.response.status;
         if (errorStatusCode === 400 || 401 || 404) {
+            localStorage.removeItem('user');
+            localStorage.removeItem('isAuthenticated');
             if (error.response.data.isLockedOut) {
+                console.log('AuthService.login response locked out catch error status code:');
+                console.log(errorStatusCode);
                 return error.response.data;
             }
             console.log('AuthService.login response catch error status code:');
@@ -146,25 +159,9 @@ async function resetPassword(email, password, confirmPassword, resetToken) {
     }
 }
 
-async function checkUserIsAuthenticated() {
-    try {
-        const response = await axios.post('/user/checkUserIsAuthenticated', { headers: addAuthHeader() });
-        const responseStatusCode = response.status;
-        if (responseStatusCode === 200) {
-            console.log('Success, user is authenticated!');
-            return responseStatusCode;
-        }
-    } catch (error) {
-        const errorStatusCode = error.response.status;
-        if (errorStatusCode === 400 || 401 || 404) {
-            console.log('Error, user is not authenticated!');
-            return errorStatusCode
-        }
-    }
-}
-
 function logout() {
     localStorage.removeItem('user');
+    localStorage.removeItem('isAuthenticated');
 }
 
 export default {
@@ -175,6 +172,5 @@ export default {
     forgotPassword,
     verifyResetToken,
     resetPassword,
-    checkUserIsAuthenticated,
     logout,
 }
