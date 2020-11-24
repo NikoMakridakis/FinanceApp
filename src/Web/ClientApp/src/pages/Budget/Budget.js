@@ -1,34 +1,46 @@
 ﻿import React, { useState, useEffect } from 'react';
+//import clamp from 'lodash-es/clamp'
+//import swap from 'lodash-move'
+//import { useGesture } from 'react-use-gesture'
+//import { useSprings, animated, interpolate } from 'react-spring'
 
-import getBudgetGroups from '../../services/BudgetService';
+import BudgetService from '../../services/BudgetService';
+
+//const fn = (order, down, originalIndex, curIndex, y) => index =>
+//    down && index === originalIndex
+//        ? { y: curIndex * 100 + y, scale: 1.1, zIndex: '1', shadow: 15, immediate: n => n === 'y' || n === 'zIndex' }
+//        : { y: order.indexOf(index) * 100, scale: 1, zIndex: '0', shadow: 1, immediate: false }
 
 function Budget() {
 
     const [budgetGroups, setBudgetGroups] = useState([]);
 
-    useEffect(() => {
-        let isLoading = true;
-        async function fetchBudgetGroups() {
-            if (isLoading === true) {
-                const response = await getBudgetGroups();
-                try {
-                    setBudgetGroups(response);
+    //function navigateToLogin() {
+    //    props.history.push('/login');
+    //}
 
-                } catch (error) {
-                    if (error === 400 || 401 || 404) {
-                        console.log('BudgetService.getBudgetGroups error response:');
-                        console.log(error);
-                    }
-                }
-                return () => {
-                    isLoading = false;
-                };
-            }
+    useEffect(() => {
+        async function fetchData() {
+            const data = await fetchBudgetGroups();
+            console.log(data);
+            setBudgetGroups(data);
         }
-        fetchBudgetGroups();
+        fetchData();
     }, []);
 
-    
+    async function fetchBudgetGroups() {
+        try {
+            const response = await BudgetService.getBudgetGroups();
+            if (response.status === 200) {
+                return response.data;
+            }
+            //if (response.status === 400 || 401 || 404) {
+            //    navigateToLogin();
+            //}
+        } catch (error) {
+            console.log(error);
+        }
+    }
 
     return (
         <div>
